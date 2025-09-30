@@ -1,21 +1,22 @@
-"use client"
+"use client";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
+import { Badge } from "@/components/ui/badge";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
-import { 
-    Car, 
-    Wrench, 
-    AlertTriangle, 
-    DollarSign, 
- 
-    Clock,
-    Users,
-    Calendar,
-    BarChart3,
-    Plus
+import {
+  Car,
+  Wrench,
+  AlertTriangle,
+  DollarSign,
+  Clock,
+  Users,
+  Calendar,
+  BarChart3,
+  Plus,
+  TrendingUp,
+  TrendingDown,
 } from "lucide-react";
 import { toast } from "sonner";
 
