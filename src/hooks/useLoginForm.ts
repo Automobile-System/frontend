@@ -42,26 +42,28 @@ export function useLoginForm() {
                     router.push('/')
                     return "Login successful! Welcome back."
                 },
-                error: (error: any) => {
+                error: (error: Error) => {
                     return error?.message || "Login failed. Please try again."
                 }
             })
             
             await loginPromise
 
-        } catch (error: any) {
-            if (error?.issues) {
+        } catch (error: unknown) {
+            if (error && typeof error === 'object' && 'issues' in error) {
                 // Handle Zod validation errors
+                const zodError = error as { issues: Array<{ path: (string | number)[]; message: string }> }
                 const errors: Record<string, string> = {}
-                error.issues.forEach((issue: any) => {
+                zodError.issues.forEach((issue) => {
                     const path = issue.path[0]
-                    if (path) {
+                    if (path && typeof path === 'string') {
                         errors[path] = issue.message
                     }
                 })
                 setFieldErrors(errors)
             } else {
-                showToast.error("Login failed", error?.message || "Something went wrong")
+                const errorMessage = error instanceof Error ? error.message : "Something went wrong"
+                showToast.error("Login failed", errorMessage)
             }
         } finally {
             setLoading(false)

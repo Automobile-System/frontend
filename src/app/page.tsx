@@ -89,7 +89,7 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground">
-            Welcome back! Here's what's happening with your automobile business.
+            Welcome back! Here&apos;s what&apos;s happening with your automobile business.
           </p>
         </div>
 

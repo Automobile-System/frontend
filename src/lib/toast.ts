@@ -33,7 +33,7 @@ export const showToast = {
     }: {
       loading: string
       success: (data: T) => string
-      error: (error: any) => string
+      error: (error: Error) => string
     }
   ) => {
     return toast.promise(promise, {
