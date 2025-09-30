@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,10 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AutoManager - Fleet Management System",
-  description: "Enterprise automobile fleet management and maintenance tracking system",
-  keywords: ["fleet management", "automobile", "maintenance", "tracking", "enterprise"],
-  authors: [{ name: "Team Nemmi" }],
+  title: "Automobile Management System",
+  description: "Enterprise automobile management application developed by Team Nemmi",
 };
 
 export default function RootLayout({
@@ -26,12 +25,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
-        <Toaster richColors position="top-right" />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster 
+            position="top-right" 
+            richColors 
+            closeButton 
+            expand={true}
+            duration={4000}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );
