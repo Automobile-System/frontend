@@ -6,7 +6,7 @@ if(!BASE_URL) throw new Error("BASE_URL not set");
 
 export async function login(data:LoginRequest): Promise<LoginResponse> {
 
-    const res = await fetch(`${BASE_URL}/auth/login`, {
+    const res = await fetch(`${BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data),
