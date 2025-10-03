@@ -171,7 +171,7 @@ export default function Sidebar({ className }: SidebarProps) {
       <div className="flex h-16 items-center border-b px-6">
         <div className="flex items-center gap-2">
           <Car className="h-6 w-6 text-primary" />
-          <span className="font-bold text-xl">AutoManager</span>
+          <span className="font-bold text-xl">Carveo</span>
         </div>
       </div>
 
@@ -201,7 +201,7 @@ export default function Sidebar({ className }: SidebarProps) {
       {/* Footer */}
       <div className="border-t p-4">
         <div className="text-xs text-muted-foreground text-center">
-          <div>AutoManager v1.0</div>
+          <div>Carveo v1.0</div>
           <div>© 2025 Team Nemmi</div>
         </div>
       </div>
