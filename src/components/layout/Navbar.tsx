@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   NavigationMenu,
@@ -7,8 +7,8 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 import {
   Car,
   Users,
@@ -20,13 +20,29 @@ import {
   Package,
   UserCheck,
   AlertTriangle,
-} from "lucide-react"
-import Link from "next/link"
-import React from "react"
+} from "lucide-react";
+import Link from "next/link";
+import React from "react";
+
+
+interface NavbarItem {
+  title: string;
+  href: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+interface NavbarSection {
+  title: string;
+  items: NavbarItem[];
+}
+
 
 interface NavbarProps {
-  className?: string
+  className?: string;
+  data?: NavbarSection[];
 }
+
 
 const navigationItems = [
   {
@@ -115,11 +131,20 @@ const navigationItems = [
       },
     ],
   },
-]
+];
 
-export default function Navbar({ className }: NavbarProps) {
+export default function Navbar({ className, data }: NavbarProps) {
+
+  if (!data) {
+    data = navigationItems;
+  }
   return (
-    <div className={cn("hidden md:flex border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
+    <div
+      className={cn(
+        "hidden md:flex border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        className
+      )}
+    >
       <div className="container flex items-center px-4">
         <NavigationMenu>
           <NavigationMenuList>
@@ -148,15 +173,15 @@ export default function Navbar({ className }: NavbarProps) {
         </NavigationMenu>
       </div>
     </div>
-  )
+  );
 }
 
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a"> & {
-    title: string
-    icon: React.ComponentType<{ className?: string }>
-    href: string
+    title: string;
+    icon: React.ComponentType<{ className?: string }>;
+    href: string;
   }
 >(({ className, title, children, href, icon: Icon, ...props }, ref) => {
   return (
@@ -181,6 +206,6 @@ const ListItem = React.forwardRef<
         </Link>
       </NavigationMenuLink>
     </li>
-  )
-})
-ListItem.displayName = "ListItem"
+  );
+});
+ListItem.displayName = "ListItem";
