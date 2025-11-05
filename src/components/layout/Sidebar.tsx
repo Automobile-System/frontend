@@ -1,217 +1,148 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import {
-  Car,
-  Users,
-  FileText,
-  Settings,
-  BarChart3,
-  Calendar,
-  Wrench,
-  CreditCard,
-  Package,
-  UserCheck,
-  AlertTriangle,
-  ChevronDown,
-  ChevronRight,
-} from "lucide-react";
-import { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard,
+  Users,
+  ClipboardList,
+  Briefcase,
+  Calendar,
+  BarChartHorizontal,
+  MessageSquare,
+} from "lucide-react";
+
+type PageType = 'dashboard' | 'employees' | 'assign' | 'projects' | 'scheduler' | 'reports' | 'communication';
 
 interface SidebarProps {
+  activePage?: PageType;
   className?: string;
 }
 
-interface NavItem {
-  title: string;
-  href?: string;
-  icon: React.ComponentType<{ className?: string }>;
-  badge?: string;
-  children?: NavItem[];
-}
-
-const navigationItems: NavItem[] = [
-  {
-    title: "Dashboard",
-    href: "/",
-    icon: BarChart3,
-  },
-  {
-    title: "Vehicles",
-    icon: Car,
-    children: [
-      { title: "All Vehicles", href: "/vehicles", icon: Car },
-      { title: "Add Vehicle", href: "/vehicles/add", icon: Car },
-      { title: "Vehicle Types", href: "/vehicles/types", icon: Package },
-    ],
-  },
-  {
-    title: "Customers",
-    icon: Users,
-    children: [
-      { title: "All Customers", href: "/customers", icon: Users },
-      { title: "Add Customer", href: "/customers/add", icon: UserCheck },
-    ],
-  },
-  {
-    title: "Maintenance",
-    href: "/maintenance",
-    icon: Wrench,
-    badge: "3",
-  },
-  {
-    title: "Appointments",
-    href: "/appointments",
-    icon: Calendar,
-  },
-  {
-    title: "Invoices",
-    icon: CreditCard,
-    children: [
-      { title: "All Invoices", href: "/invoices", icon: FileText },
-      {
-        title: "Pending",
-        href: "/invoices/pending",
-        icon: AlertTriangle,
-        badge: "2",
-      },
-      { title: "Paid", href: "/invoices/paid", icon: CreditCard },
-    ],
-  },
-  {
-    title: "Reports",
-    href: "/reports",
-    icon: FileText,
-  },
-];
-
-export default function Sidebar({ className }: SidebarProps) {
+/**
+ * The Sidebar component, styled to match AdminSidebar.
+ */
+function Sidebar({ activePage, className = '' }: SidebarProps) {
   const pathname = usePathname();
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-
-  const toggleExpand = (title: string) => {
-    const newExpanded = new Set(expandedItems);
-    if (newExpanded.has(title)) {
-      newExpanded.delete(title);
-    } else {
-      newExpanded.add(title);
-    }
-    setExpandedItems(newExpanded);
+  
+  // Automatically determine active page from pathname if not explicitly provided
+  const getActivePage = (): PageType => {
+    if (activePage) return activePage;
+    
+    if (pathname.includes('/employees')) return 'employees';
+    if (pathname.includes('/task-scheduler')) return 'assign';
+    if (pathname.includes('/projects')) return 'projects';
+    if (pathname.includes('/scheduler')) return 'scheduler';
+    if (pathname.includes('/reports')) return 'reports';
+    if (pathname.includes('/communication')) return 'communication';
+    return 'dashboard';
   };
 
-  const isActive = (href: string) => {
-    return pathname === href || (href !== "/" && pathname.startsWith(href));
-  };
-
-  const renderNavItem = (item: NavItem, level = 0) => {
-    const isExpanded = expandedItems.has(item.title);
-    const hasChildren = item.children && item.children.length > 0;
-    const isItemActive = item.href ? isActive(item.href) : false;
-
-    if (hasChildren) {
-      return (
-        <div key={item.title}>
-          <Button
-            variant="ghost"
-            className={cn(
-              "w-full justify-start gap-2 h-9",
-              level > 0 && "ml-4 w-auto"
-            )}
-            onClick={() => toggleExpand(item.title)}
-          >
-            <item.icon className="h-4 w-4" />
-            <span className="flex-1 text-left">{item.title}</span>
-            {item.badge && (
-              <Badge variant="secondary" className="ml-auto">
-                {item.badge}
-              </Badge>
-            )}
-            {isExpanded ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
-          </Button>
-          {isExpanded && (
-            <div className="mt-2 space-y-2">
-              {item.children?.map((child) => renderNavItem(child, level + 1))}
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <Button
-        key={item.title}
-        variant={isItemActive ? "secondary" : "ghost"}
-        className={cn(
-          "w-full justify-start gap-2 h-9",
-          level > 0 && "ml-4 w-auto",
-          isItemActive && "bg-secondary"
-        )}
-        asChild
-      >
-        <Link href={item.href || "#"}>
-          <item.icon className="h-4 w-4" />
-          <span className="flex-1 text-left">{item.title}</span>
-          {item.badge && (
-            <Badge variant="destructive" className="ml-auto">
-              {item.badge}
-            </Badge>
-          )}
-        </Link>
-      </Button>
-    );
-  };
+  const currentActivePage = getActivePage();
 
   return (
-    <div
-      className={cn("flex h-full w-64 flex-col border-r bg-card", className)}
-    >
-      {/* Logo */}
-      <div className="flex h-16 items-center border-b px-6">
-        <div className="flex items-center gap-2">
-          <Car className="h-6 w-6 text-primary" />
-          <span className="font-bold text-xl">Carveo</span>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <div className="flex-1 overflow-auto py-6 px-4">
-        <nav className="space-y-3">
-          {navigationItems.map((item) => renderNavItem(item))}
-        </nav>
-
-        <Separator className="my-6" />
-
-        {/* Settings section */}
-        <div className="space-y-1">
-          <Button
-            variant={pathname === "/settings" ? "secondary" : "ghost"}
-            className="w-full justify-start gap-2 h-11"
-            asChild
+    <aside className={`w-[270px] bg-gradient-to-b from-teal-600 to-teal-700 text-white min-h-screen shadow-2xl ${className}`}>
+      <div className="p-6">
+        <nav className="space-y-2">
+          <Link
+            href="/manager/dashboard"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+              currentActivePage === 'dashboard'
+                ? "bg-white/25 font-semibold shadow-lg"
+                : ""
+            }`}
           >
-            <Link href="/settings">
-              <Settings className="h-4 w-4" />
-              Settings
-            </Link>
-          </Button>
-        </div>
+            <LayoutDashboard className="w-5 h-5" />
+            <span>Dashboard</span>
+          </Link>
+          <Link
+            href="/manager/employees"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+              currentActivePage === 'employees'
+                ? "bg-white/25 font-semibold shadow-lg"
+                : ""
+            }`}
+          >
+            <Users className="w-5 h-5" />
+            <span>Manage Employees</span>
+          </Link>
+          <Link
+            href="/manager/task-scheduler"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+              currentActivePage === 'assign'
+                ? "bg-white/25 font-semibold shadow-lg"
+                : ""
+            }`}
+          >
+            <ClipboardList className="w-5 h-5" />
+            <span>Assign Tasks</span>
+          </Link>
+          <Link
+            href="/manager/projects"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+              currentActivePage === 'projects'
+                ? "bg-white/25 font-semibold shadow-lg"
+                : ""
+            }`}
+          >
+            <Briefcase className="w-5 h-5" />
+            <span>Projects</span>
+          </Link>
+          <Link
+            href="/manager/scheduler"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+              currentActivePage === 'scheduler'
+                ? "bg-white/25 font-semibold shadow-lg"
+                : ""
+            }`}
+          >
+            <Calendar className="w-5 h-5" />
+            <span>Scheduler</span>
+          </Link>
+          <Link
+            href="/manager/reports"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+              currentActivePage === 'reports'
+                ? "bg-white/25 font-semibold shadow-lg"
+                : ""
+            }`}
+          >
+            <BarChartHorizontal className="w-5 h-5" />
+            <span>Reports</span>
+          </Link>
+          <Link
+            href="/manager/communication"
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+              currentActivePage === 'communication'
+                ? "bg-white/25 font-semibold shadow-lg"
+                : ""
+            }`}
+          >
+            <MessageSquare className="w-5 h-5" />
+            <span>Communication</span>
+          </Link>
+        </nav>
       </div>
+    </aside>
+  );
+}
 
-      {/* Footer */}
-      <div className="border-t p-4">
-        <div className="text-xs text-muted-foreground text-center">
-          <div>Carveo v1.0</div>
-          <div>© 2025 Team Nemmi</div>
-        </div>
-      </div>
+interface LayoutProps {
+  children: React.ReactNode;
+  activePage?: PageType;
+}
+
+/**
+ * The main Layout component that wraps your page content.
+ */
+export default function Layout({ children, activePage }: LayoutProps) {
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar activePage={activePage} />
+      <main className="flex-1">
+        {children}
+      </main>
     </div>
   );
 }
