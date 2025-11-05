@@ -645,8 +645,12 @@ export default function TimeLogs() {
               <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-2xl font-bold text-white mb-1">Edit Remarks</h2>
-                    <p className="text-blue-100 text-sm">Update notes for this time log</p>
+                    <h2 className="text-2xl font-bold text-white mb-1">
+                      Edit Remarks
+                    </h2>
+                    <p className="text-blue-100 text-sm">
+                      Update notes for this time log
+                    </p>
                   </div>
                   <Button
                     variant="ghost"
@@ -666,7 +670,9 @@ export default function TimeLogs() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Task</p>
-                      <p className="font-bold text-gray-900">{editingLog.taskName}</p>
+                      <p className="font-bold text-gray-900">
+                        {editingLog.taskName}
+                      </p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Vehicle</p>
@@ -677,17 +683,18 @@ export default function TimeLogs() {
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Date</p>
                       <p className="font-medium text-gray-900">
-                        {new Date(editingLog.date).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric'
+                        {new Date(editingLog.date).toLocaleDateString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
                         })}
                       </p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Duration</p>
                       <p className="font-medium text-gray-900">
-                        {editingLog.startTime} - {editingLog.endTime} ({editingLog.totalHours.toFixed(2)} hrs)
+                        {editingLog.startTime} - {editingLog.endTime} (
+                        {editingLog.totalHours.toFixed(2)} hrs)
                       </p>
                     </div>
                   </div>
