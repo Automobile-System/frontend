@@ -78,6 +78,13 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+  }
+  
+  /* Apply Bebas Neue only to main headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.02em;
   }
 }
 
