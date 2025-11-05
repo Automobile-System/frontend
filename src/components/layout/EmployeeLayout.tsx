@@ -65,9 +65,9 @@ export default function EmployeeLayout({ children }: EmployeeLayoutProps) {
   return (
     <div className="flex h-screen bg-[#f8f9fa]">
       {/* Sidebar */}
-      <div className="w-72 bg-[#1A0000] text-white shadow-xl">
+      <div className="w-[270px] bg-[#1A0000] text-white shadow-xl">
         <div className="p-6">
-          <h1 className="text-2xl font-bold tracking-tight">Employee Portal</h1>
+          <h1 className="text-5xl font-bold tracking-tight">Employee Portal</h1>
         </div>
         <nav className="mt-8 space-y-2 px-3">
           {menuItems.map((item) => (

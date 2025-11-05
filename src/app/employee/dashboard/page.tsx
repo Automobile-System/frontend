@@ -32,6 +32,7 @@ ChartJS.register(
 export default function EmployeeDashboard() {
   // Sample data for the summary cards
   const summaryData = {
+    name: "John Doe",
     tasksToday: 4,
     completedTasks: 21,
     totalHours: 72,
@@ -73,7 +74,7 @@ export default function EmployeeDashboard() {
           </h2>
           <p className="text-gray-600 leading-relaxed">
             Track your daily performance metrics and task progress at a glance.
-            Your dashboard shows today's assigned tasks, monthly completion
+            Your dashboard shows today is assigned tasks, monthly completion
             rates, total hours logged, and customer satisfaction ratings. Stay
             organized and maintain high service quality.
           </p>

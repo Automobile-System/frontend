@@ -272,7 +272,7 @@ export default function AssignedTasks() {
                 View and manage your assigned vehicle maintenance and repair
                 tasks. Keep track of deadlines and update task status as you
                 progress. If a pause requires customer approval the customer
-                will be notified; if they don't respond within 24 hours the
+                will be notified; if they do not respond within 24 hours the
                 admin will be alerted.
               </p>
             </div>
