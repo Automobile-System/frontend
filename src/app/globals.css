@@ -82,10 +82,29 @@
 }
 
 @layer utilities {
+  /* Global font utilities mapped to Bebas Neue */
+  .font-bebas {
+    font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.02em;
+  }
+  /* Teko for navbar - similar to Ethnocentric */
+  .font-teko {
+    font-family: var(--font-teko), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+  }
+  /* Remap existing utilities to Bebas for backwards compatibility */
   .font-inter {
-    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.02em;
   }
   .font-roboto {
-    font-family: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.02em;
+  }
+
+  /* Service header angled shape */
+  .service-header {
+    clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
   }
 }

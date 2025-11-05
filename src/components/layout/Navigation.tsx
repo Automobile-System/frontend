@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,226 +25,222 @@ import {
 import {
   Menu,
   Wrench,
-  Package,
   Calendar,
   Car,
   Settings,
-  Award,
-  Users,
-  Globe,
-  Building,
+  Battery,
+  Snowflake,
+  Droplet,
+  Sparkles,
+  FileText,
+  Wand2,
+  Wind,
+  CircleDot,
+  Zap,
+  Shield,
+  Paintbrush,
 } from "lucide-react"
 
-const services = [
-  {
-    title: "Periodic Maintenance",
-    href: "/services/maintenance",
-    description: "Regular vehicle inspections, wash & grooming, waxing services",
-    icon: <Settings className="h-6 w-6" />,
-  },
-  {
-    title: "Paints & Repairs",
-    href: "/services/paints",
-    description: "Insurance claims, nano coating, spare parts replacement",
-    icon: <Car className="h-6 w-6" />,
-  },
-  {
-    title: "Terminal Services",
-    href: "/services/terminal",
-    description: "Battery services, engine tune-up, wheel alignment",
-    icon: <Wrench className="h-6 w-6" />,
-  },
-]
-
-const branches = [
-  {
-    title: "Colombo Branch",
-    href: "/branches/colombo",
-    description: "Main branch located in heart of Colombo",
-    icon: <Building className="h-6 w-6" />,
-  },
-  {
-    title: "Kandy Branch",
-    href: "/branches/kandy",
-    description: "Full service center in hill capital",
-    icon: <Building className="h-6 w-6" />,
-  },
-  {
-    title: "Galle Branch",
-    href: "/branches/galle",
-    description: "Coastal branch with modern facilities",
-    icon: <Building className="h-6 w-6" />,
-  },
-  {
-    title: "All Branches",
-    href: "/branches",
-    description: "View all 40+ locations islandwide",
-    icon: <Globe className="h-6 w-6" />,
-  },
-]
-
-const packages = [
-  {
-    title: "Premium Package",
-    href: "/packages/premium",
-    description: "Comprehensive care for luxury vehicles",
-    icon: <Award className="h-6 w-6" />,
-  },
-  {
-    title: "Standard Package",
-    href: "/packages/standard",
-    description: "Essential services for everyday vehicles",
-    icon: <Package className="h-6 w-6" />,
-  },
-  {
-    title: "Express Package",
-    href: "/packages/express",
-    description: "Quick service for busy schedules",
-    icon: <Users className="h-6 w-6" />,
-  },
-]
+// Note: previously defined placeholder arrays (services, branches, packages)
+// were removed because the navigation no longer renders from data.
+// This prevents unused-variable warnings during builds.
 
 interface NavigationProps {
   className?: string
 }
 
 export function Navigation({ className }: NavigationProps) {
+  const pathname = usePathname()
+
+  // Auto Miraj style: larger font, normal weight, bottom border on active
+  const linkBase =
+    "relative bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent text-black hover:text-red-600 uppercase tracking-[0.15em] font-teko transition-colors text-[17px] md:text-[18px] lg:text-[19px] px-3 py-2"
+
+  const linkClass = (href: string) =>
+    cn(
+      navigationMenuTriggerStyle(), 
+      linkBase,
+      pathname === href && "text-red-600 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[3px] after:bg-red-600"
+    )
   return (
-    <header className={cn("sticky top-0 z-50 w-full border-b bg-white shadow-md", className)}>
-      <div className="container flex h-16 max-w-7xl items-center justify-between">
+    <header className={cn("sticky top-0 z-50 w-full bg-white border-b border-gray-200", className)}>
+      <div className="container flex h-[92px] max-w-7xl items-center justify-between px-8 md:px-12">
         {/* Logo */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 min-w-[200px]">
           <Link href="/" className="flex items-center">
-            <div className="flex flex-col">
-              <div className="text-2xl font-bold font-roboto">
-                <span className="text-black">Car</span>
-                <span className="text-red-600">veo</span>
+            <div className="flex flex-col gap-1">
+              <div className="text-[48px] font-extrabold tracking-wider leading-none">
+                <span className="text-black">NITRO</span>
+                <span className="text-red-600">LINE</span>
               </div>
-              <div className="w-12 h-1 bg-red-600"></div>
+              <div className="w-[96px] h-[3px] bg-red-600"></div>
             </div>
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <NavigationMenu className="hidden md:flex flex-1 justify-center">
-          <NavigationMenuList className="flex items-center space-x-1">
+        <NavigationMenu className="hidden md:flex flex-1 justify-center ml-32">
+          <NavigationMenuList className="flex items-center gap-6 lg:gap-7">
             <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
-                  HOME
-                </NavigationMenuLink>
+              <Link href="/" className={linkClass("/")}>
+                HOME
               </Link>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/about" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
-                  ABOUT US
-                </NavigationMenuLink>
+              <Link href="/about" className={linkClass("/about")}>
+                ABOUT US
               </Link>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="font-medium text-black hover:text-red-600">
+              <NavigationMenuTrigger className={linkClass("/services")}>
                 SERVICES
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
-                  <li className="row-span-3">
-                    <NavigationMenuLink asChild>
-                      <a
-                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-red-600/20 to-red-600/40 p-6 no-underline outline-none focus:shadow-md"
-                        href="/services"
-                      >
-                        <Car className="h-6 w-6" />
-                        <div className="mb-2 mt-4 text-lg font-medium">
-                          Our Services
+                <div className="w-[1000px] p-8 bg-white">
+                  <div className="grid grid-cols-3 gap-8">
+                    {/* Column 1 - Periodic Maintenance */}
+                    <div>
+                      <div className="bg-red-600 text-white font-extrabold text-base px-4 py-3 mb-4 service-header tracking-wide">
+                        PERIODIC MAINTENANCE
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Snowflake className="h-4 w-4" />
+                          <span>Washing Packages</span>
                         </div>
-                        <p className="text-sm leading-tight text-muted-foreground">
-                          Comprehensive automotive care with 28+ years of excellence
-                        </p>
-                      </a>
-                    </NavigationMenuLink>
-                  </li>
-                  {services.map((service) => (
-                    <ListItem
-                      key={service.title}
-                      title={service.title}
-                      href={service.href}
-                      icon={service.icon}
-                    >
-                      {service.description}
-                    </ListItem>
-                  ))}
-                </ul>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Droplet className="h-4 w-4" />
+                          <span>Lube Services</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Sparkles className="h-4 w-4" />
+                          <span>Exterior & Interior Detailing</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Settings className="h-4 w-4" />
+                          <span>Engine Tune ups</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <FileText className="h-4 w-4" />
+                          <span>Inspection Reports</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Wand2 className="h-4 w-4" />
+                          <span>Waxing</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Wind className="h-4 w-4" />
+                          <span>Undercarriage Degreasing</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3">
+                          <Car className="h-4 w-4" />
+                          <span>Windscreean Treatments</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Column 2 - Nano Coating & Tyre Services */}
+                    <div>
+                      <div className="bg-red-600 text-white font-extrabold text-base px-4 py-3 mb-4 service-header tracking-wide">
+                        NANO COATING
+                      </div>
+                      <div className="space-y-3 mb-6">
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Car className="h-4 w-4" />
+                          <span>Packages</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3">
+                          <Droplet className="h-4 w-4" />
+                          <span>Treatments</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-red-600 text-white font-extrabold text-base px-4 py-3 mb-4 service-header tracking-wide mt-6">
+                        TYRE SERVICES
+                      </div>
+                      <div className="space-y-3 mb-6">
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Battery className="h-4 w-4" />
+                          <span>Battery Services</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3">
+                          <CircleDot className="h-4 w-4" />
+                          <span>Tyre Replacements</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-red-600 text-white font-extrabold text-base px-4 py-3 mb-4 service-header tracking-wide mt-6">
+                        MECHANICAL REPAIR
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Wrench className="h-4 w-4" />
+                          <span>Spare Parts Replacements</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3">
+                          <Zap className="h-4 w-4" />
+                          <span>Hybrid Services</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Column 3 - Collision Repairs */}
+                    <div>
+                      <div className="bg-red-600 text-white font-extrabold text-base px-4 py-3 mb-4 service-header tracking-wide">
+                        COLLISION REPAIRS
+                      </div>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Shield className="h-4 w-4" />
+                          <span>Insurance Claims</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <CircleDot className="h-4 w-4" />
+                          <span>Wheel Alignment</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3 border-b border-gray-200">
+                          <Paintbrush className="h-4 w-4" />
+                          <span>Full Paints</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-base font-medium hover:text-red-600 cursor-pointer pb-3">
+                          <Wrench className="h-4 w-4" />
+                          <span>Part Replacements</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="font-medium text-black hover:text-red-600">
-                BRANCHES
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                  {branches.map((branch) => (
-                    <ListItem
-                      key={branch.title}
-                      title={branch.title}
-                      href={branch.href}
-                      icon={branch.icon}
-                    >
-                      {branch.description}
-                    </ListItem>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <NavigationMenuTrigger className="font-medium text-black hover:text-red-600">
-                PACKAGES
-              </NavigationMenuTrigger>
-              <NavigationMenuContent>
-                <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                  {packages.map((pkg) => (
-                    <ListItem
-                      key={pkg.title}
-                      title={pkg.title}
-                      href={pkg.href}
-                      icon={pkg.icon}
-                    >
-                      {pkg.description}
-                    </ListItem>
-                  ))}
-                </ul>
-              </NavigationMenuContent>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
-              <Link href="/news" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
-                  NEWS
-                </NavigationMenuLink>
+              <Link href="/projects" className={linkClass("/projects")}>
+                PROJECTS
               </Link>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/contact" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
-                  CONTACT
-                </NavigationMenuLink>
+              <Link href="/packages" className={linkClass("/packages")}>
+                PACKAGES
+              </Link>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <Link href="/contact" className={linkClass("/contact")}>
+                CONTACT
               </Link>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
 
         {/* Book Now Button - Desktop */}
-        <div className="hidden md:flex flex-shrink-0">
+        <div className="hidden md:flex flex-shrink-0 min-w-[160px] justify-end">
           <Button 
-            className="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-2 transition-all duration-200 hover:scale-105"
+            className="bg-red-600 hover:bg-red-700 text-white font-teko uppercase tracking-[0.15em] rounded-md px-5 py-3 text-[16px] shadow-sm transition-all"
             size="lg"
           >
-            <Calendar className="mr-2 h-4 w-4" />
             BOOK NOW
           </Button>
         </div>
@@ -287,14 +284,11 @@ export function Navigation({ className }: NavigationProps) {
                 <Link href="/services" className="py-2 text-lg font-medium hover:text-red-600 transition-colors">
                   SERVICES
                 </Link>
-                <Link href="/branches" className="py-2 text-lg font-medium hover:text-red-600 transition-colors">
-                  BRANCHES
+                <Link href="/projects" className="py-2 text-lg font-medium hover:text-red-600 transition-colors">
+                  PROJECTS
                 </Link>
                 <Link href="/packages" className="py-2 text-lg font-medium hover:text-red-600 transition-colors">
                   PACKAGES
-                </Link>
-                <Link href="/news" className="py-2 text-lg font-medium hover:text-red-600 transition-colors">
-                  NEWS
                 </Link>
                 <Link href="/contact" className="py-2 text-lg font-medium hover:text-red-600 transition-colors">
                   CONTACT
