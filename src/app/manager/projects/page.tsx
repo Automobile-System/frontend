@@ -3,8 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import ProjectFormModal from "@/components/modals/ProjectFormModal";
+import SubTaskModal from "@/components/modals/SubTaskModal";
 
 interface Project {
+  id: string;
   title: string;
   customer: string;
   estimatedCost: string;
@@ -18,6 +20,7 @@ interface Project {
 
 const INITIAL_PROJECTS: Project[] = [
   {
+    id: "PRJ-001",
     title: "Custom Modification",
     customer: "John Smith",
     estimatedCost: "Rs. 150,000",
@@ -26,6 +29,7 @@ const INITIAL_PROJECTS: Project[] = [
     requirements: true
   },
   {
+    id: "PRJ-002",
     title: "Full Restoration",
     customer: "Sarah Johnson",
     estimatedCost: "Rs. 500,000",
@@ -34,6 +38,7 @@ const INITIAL_PROJECTS: Project[] = [
     requirements: true
   },
   {
+    id: "PRJ-003",
     title: "Engine Overhaul",
     customer: "Mike Davis",
     estimatedCost: "Rs. 250,000",
@@ -43,6 +48,7 @@ const INITIAL_PROJECTS: Project[] = [
     status: "In Progress"
   },
   {
+    id: "PRJ-004",
     title: "Custom Paint Job",
     customer: "Lisa Anderson",
     estimatedCost: "Rs. 120,000",
@@ -52,6 +58,7 @@ const INITIAL_PROJECTS: Project[] = [
     status: "In Progress"
   },
   {
+    id: "PRJ-005",
     title: "Suspension Upgrade",
     customer: "David Wilson",
     estimatedCost: "Rs. 180,000",
@@ -60,6 +67,7 @@ const INITIAL_PROJECTS: Project[] = [
     onHold: "2 days"
   },
   {
+    id: "PRJ-006",
     title: "AC System Replacement",
     customer: "Emma Brown",
     estimatedCost: "Rs. 95,000",
@@ -67,6 +75,7 @@ const INITIAL_PROJECTS: Project[] = [
     status: "Completed"
   },
   {
+    id: "PRJ-007",
     title: "Wheel Alignment",
     customer: "Tom Harris",
     estimatedCost: "Rs. 25,000",
@@ -77,10 +86,13 @@ const INITIAL_PROJECTS: Project[] = [
 
 export default function ProjectsManagement() {
   const [showProjectModal, setShowProjectModal] = useState(false);
+  const [showSubTaskModal, setShowSubTaskModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projects, setProjects] = useState(INITIAL_PROJECTS);
 
   const handleCreateProject = (formData: any) => {
     const newProject: Project = {
+      id: `PRJ-${String(projects.length + 1).padStart(3, '0')}`,
       title: formData.title,
       customer: formData.customer,
       estimatedCost: `Rs. ${formData.estimatedCost}`,
@@ -133,17 +145,17 @@ export default function ProjectsManagement() {
                   <div className="flex items-center gap-2">
                     <span>👤</span>
                     <span className="text-sm text-gray-600">Customer:</span>
-                    <span className="text-sm font-medium">{project.customer}</span>
+                    <span className="text-sm text-black font-medium">{project.customer}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>💰</span>
                     <span className="text-sm text-gray-600">Est. Cost:</span>
-                    <span className="text-sm font-medium">{project.estimatedCost}</span>
+                    <span className="text-sm text-black font-medium">{project.estimatedCost}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>📅</span>
                     <span className="text-sm text-gray-600">Started:</span>
-                    <span className="text-sm">{project.startDate}</span>
+                    <span className="text-sm text-black">{project.startDate}</span>
                   </div>
                   {project.requirements && (
                     <div className="flex items-center gap-2 text-emerald-600">
@@ -154,6 +166,10 @@ export default function ProjectsManagement() {
                   <Button 
                     className="w-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 mt-2"
                     size="sm"
+                    onClick={() => {
+                      setSelectedProject(project);
+                      setShowSubTaskModal(true);
+                    }}
                   >
                     📋 Create Sub-Tasks
                   </Button>
@@ -177,25 +193,25 @@ export default function ProjectsManagement() {
                   <div className="flex items-center gap-2">
                     <span>👤</span>
                     <span className="text-sm text-gray-600">Customer:</span>
-                    <span className="text-sm font-medium">{project.customer}</span>
+                    <span className="text-sm text-black  font-medium">{project.customer}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>💰</span>
                     <span className="text-sm text-gray-600">Est. Cost:</span>
-                    <span className="text-sm font-medium">{project.estimatedCost}</span>
+                    <span className="text-sm text-black font-medium">{project.estimatedCost}</span>
                   </div>
                   {project.team && (
                     <div className="flex items-center gap-2">
                       <span>👥</span>
                       <span className="text-sm text-gray-600">Team:</span>
-                      <span className="text-sm font-medium">{project.team.join(", ")}</span>
+                      <span className="text-sm text-black  font-medium">{project.team.join(", ")}</span>
                     </div>
                   )}
                   {project.timeline && (
                     <div className="flex items-center gap-2">
                       <span>⏱</span>
                       <span className="text-sm text-gray-600">Timeline:</span>
-                      <span className="text-sm">{project.timeline}</span>
+                      <span className="text-sm text-black ">{project.timeline}</span>
                     </div>
                   )}
                 </div>
@@ -218,24 +234,24 @@ export default function ProjectsManagement() {
                   <div className="flex items-center gap-2">
                     <span>👤</span>
                     <span className="text-sm text-gray-600">Customer:</span>
-                    <span className="text-sm font-medium">{project.customer}</span>
+                    <span className="text-sm text-black  font-medium">{project.customer}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>💰</span>
                     <span className="text-sm text-gray-600">Est. Cost:</span>
-                    <span className="text-sm font-medium">{project.estimatedCost}</span>
+                    <span className="text-sm text-black font-medium">{project.estimatedCost}</span>
                   </div>
                   {project.onHold && (
                     <div className="flex items-center gap-2">
                       <span>⏳</span>
                       <span className="text-sm text-gray-600">On Hold:</span>
-                      <span className="text-sm font-medium">{project.onHold}</span>
+                      <span className="text-sm text-black font-medium">{project.onHold}</span>
                     </div>
                   )}
                   <div className="flex items-center gap-2">
                     <span>📅</span>
                     <span className="text-sm text-gray-600">Started:</span>
-                    <span className="text-sm">{project.startDate}</span>
+                    <span className="text-sm text-black ">{project.startDate}</span>
                   </div>
                 </div>
               </div>
@@ -257,12 +273,12 @@ export default function ProjectsManagement() {
                   <div className="flex items-center gap-2">
                     <span>👤</span>
                     <span className="text-sm text-gray-600">Customer:</span>
-                    <span className="text-sm font-medium">{project.customer}</span>
+                    <span className="text-sm text-black font-medium">{project.customer}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>💰</span>
                     <span className="text-sm text-gray-600">Final Cost:</span>
-                    <span className="text-sm font-medium">{project.estimatedCost}</span>
+                    <span className="text-sm text-black font-medium">{project.estimatedCost}</span>
                   </div>
                   <div className="flex items-center gap-2 text-emerald-600">
                     <span>✓</span>
@@ -282,6 +298,38 @@ export default function ProjectsManagement() {
         onClose={() => setShowProjectModal(false)}
         onSubmit={handleCreateProject}
       />
+
+      {/* Sub-Task Modal */}
+      {selectedProject && (
+        <SubTaskModal
+          isOpen={showSubTaskModal}
+          onClose={() => {
+            setShowSubTaskModal(false);
+            setSelectedProject(null);
+          }}
+          project={{
+            id: selectedProject.id!,
+            title: selectedProject.title,
+            customer: selectedProject.customer,
+            requirements: selectedProject.requirements
+          }}
+          onFinalize={(subTasks) => {
+            const updatedProjects = projects.map(p => {
+              if (p.id === selectedProject.id) {
+                return {
+                  ...p,
+                  status: "In Progress" as const,
+                  team: [...new Set(subTasks.map(task => task.assignedTo))]
+                };
+              }
+              return p;
+            });
+            setProjects(updatedProjects);
+            setShowSubTaskModal(false);
+            setSelectedProject(null);
+          }}
+        />
+      )}
     </div>
   );
 }
