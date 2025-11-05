@@ -1,12 +1,28 @@
 import { LoginRequest ,LoginResponse, SignupRequest, SignupResponse, EmployeeSignupRequest, EmployeeSignupResponse } from "@/types/authTypes";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-
-if(!BASE_URL) throw new Error("BASE_URL not set");
+// Helper function to get BASE_URL with validation
+function getBaseUrl(): string {
+  const url = process.env.NEXT_PUBLIC_BASE_URL;
+  
+  // During build time (SSR), provide a placeholder to prevent build failures
+  if (typeof window === 'undefined') {
+    // Return the env var if set, otherwise return empty string for build time
+    // This allows the build to complete, but API calls will fail at runtime if not set
+    return url || '';
+  }
+  
+  // Client-side: use env var or fallback to current origin
+  if (!url) {
+    // Fallback to current origin if not set
+    return window.location.origin;
+  }
+  
+  return url;
+}
 
 export async function login(data:LoginRequest): Promise<LoginResponse> {
-
-    const res = await fetch(`${BASE_URL}/api/auth/login`, {
+    const baseUrl = getBaseUrl();
+    const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data),
@@ -23,7 +39,8 @@ export async function login(data:LoginRequest): Promise<LoginResponse> {
 }
 
 export async function signup(data: SignupRequest): Promise<SignupResponse> {
-    const res = await fetch(`${BASE_URL}/api/auth/signup`, {
+    const baseUrl = getBaseUrl();
+    const res = await fetch(`${baseUrl}/api/auth/signup`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data),
@@ -39,7 +56,8 @@ export async function signup(data: SignupRequest): Promise<SignupResponse> {
 }
 
 export async function employeeSignup(data: EmployeeSignupRequest): Promise<EmployeeSignupResponse> {
-    const res = await fetch(`${BASE_URL}/api/employee/auth/signup`, {
+    const baseUrl = getBaseUrl();
+    const res = await fetch(`${baseUrl}/api/employee/auth/signup`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data),
