@@ -54,7 +54,7 @@ export function Navigation({ className }: NavigationProps) {
 
   // Auto Miraj style: larger font, normal weight, bottom border on active
   const linkBase =
-    "relative bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent text-black hover:text-brand uppercase tracking-[0.15em] font-teko transition-colors text-[17px] md:text-[18px] lg:text-[19px] px-3 py-2"
+    "relative bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent text-[#020079] hover:text-brand uppercase tracking-[0.15em] font-teko transition-colors text-[17px] md:text-[18px] lg:text-[19px] px-3 py-2"
 
   const linkClass = (href: string) =>
     cn(
@@ -70,7 +70,7 @@ export function Navigation({ className }: NavigationProps) {
           <Link href="/" className="flex items-center">
             <div className="flex flex-col gap-1">
               <div className="text-[48px] font-extrabold tracking-wider leading-none">
-                <span className="text-black">NITRO</span>
+                <span className="text-[#00008B]">NITRO</span>
                 <span className="text-accent glow-accent">LINE</span>
               </div>
               <div className="w-[96px] h-[3px] bg-brand"></div>
@@ -222,6 +222,12 @@ export function Navigation({ className }: NavigationProps) {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
+              <Link href="/booking" className={linkClass("/booking")}>
+                BOOKING
+              </Link>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
               <Link href="/packages" className={linkClass("/packages")}>
                 PACKAGES
               </Link>
@@ -237,12 +243,14 @@ export function Navigation({ className }: NavigationProps) {
 
         {/* Book Now Button - Desktop */}
         <div className="hidden md:flex flex-shrink-0 min-w-[160px] justify-end">
-          <Button 
-            className="btn-accent text-black font-teko uppercase tracking-[0.15em] rounded-md px-5 py-3 text-[16px] shadow-accent-glow transition-all"
-            size="lg"
-          >
-            BOOK NOW
-          </Button>
+          <Link href="/booking">
+            <Button 
+              className="btn-accent text-black font-teko uppercase tracking-[0.15em] rounded-md px-5 py-3 text-[16px] shadow-accent-glow transition-all"
+              size="lg"
+            >
+              BOOK NOW
+            </Button>
+          </Link>
         </div>
 
         {/* Mobile Menu */}
@@ -275,32 +283,37 @@ export function Navigation({ className }: NavigationProps) {
             </SheetHeader>
             <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
               <div className="flex flex-col space-y-3">
-                <Link href="/" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   HOME
                 </Link>
-                <Link href="/about" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/about" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   ABOUT US
                 </Link>
-                <Link href="/services" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/services" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   SERVICES
                 </Link>
-                <Link href="/projects" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/projects" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   PROJECTS
                 </Link>
-                <Link href="/packages" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/booking" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
+                  BOOKING
+                </Link>
+                <Link href="/packages" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   PACKAGES
                 </Link>
-                <Link href="/contact" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/contact" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   CONTACT
                 </Link>
                 <div className="pt-4">
-                  <Button 
-                    className="w-full btn-accent text-black font-medium shadow-accent-glow"
-                    size="lg"
-                  >
-                    <Calendar className="mr-2 h-4 w-4" />
-                    BOOK NOW
-                  </Button>
+                  <Link href="/booking" className="block w-full">
+                    <Button 
+                      className="w-full btn-accent text-black font-medium shadow-accent-glow"
+                      size="lg"
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      BOOK NOW
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -82,22 +82,22 @@
 }
 
 @layer utilities {
-  /* Brand palette: dark blue (deeper, near-black) + gold */
-  .text-brand { color: #081225; }
-  .bg-brand { background-color: #081225; }
-  .border-brand { border-color: #081225; }
+  /* Brand palette: dark blue updated to #020079 + gold */
+  .text-brand { color: #020079; }
+  .bg-brand { background-color: #020079; }
+  .border-brand { border-color: #020079; }
 
   .text-accent { color: #FFD700; }
   .bg-accent { background-color: #FFD700; }
   .border-accent { border-color: #FFD700; }
 
   /* Subtle tints */
-  .bg-brand-soft { background-color: rgba(8, 18, 37, 0.12); }
+  .bg-brand-soft { background-color: rgba(2, 0, 121, 0.12); }
   .bg-accent-soft { background-color: rgba(255, 215, 0, 0.16); }
 
   /* Buttons */
-  .btn-brand { background-color: #0a2a66; color: #fff; }
-  .btn-brand:hover { background-color: #0c337d; }
+  .btn-brand { background-color: #020079; color: #fff; }
+  .btn-brand:hover { background-color: #03009b; }
 
   .btn-accent { background-color: #FFD700; color: #111827; }
   .btn-accent:hover { background-color: #e6c200; }
@@ -113,8 +113,8 @@
   .bg-brand-gradient-translucent {
     background: linear-gradient(
       135deg,
-      rgba(8, 18, 37, 0.78) 0%,
-      rgba(2, 10, 22, 0.64) 100%
+      rgba(2, 0, 121, 0.78) 0%,
+      rgba(1, 0, 90, 0.64) 100%
     );
   }
 
@@ -122,8 +122,8 @@
   .bg-brand-gradient {
     background: linear-gradient(
       135deg,
-      #081225 0%,
-      #020a16 100%
+      #020079 0%,
+      #01024D 100%
     );
   }
 
