@@ -1,210 +1,138 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { cn } from "@/lib/utils"
+import React from "react";
+import Link from "next/link";
+import { LucideIcon } from "lucide-react";
 import {
-  Car,
+  LayoutDashboard,
   Users,
-  FileText,
-  Settings,
-  BarChart3,
+  ClipboardList,
+  Briefcase,
   Calendar,
-  Wrench,
-  CreditCard,
-  Package,
-  UserCheck,
-  AlertTriangle,
-  ChevronDown,
-  ChevronRight,
-} from "lucide-react"
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+  BarChartHorizontal,
+  MessageSquare,
+} from "lucide-react";
+
+type PageType = 'dashboard' | 'employees' | 'assign' | 'projects' | 'scheduler' | 'reports' | 'communication';
 
 interface SidebarProps {
-  className?: string
+  activePage?: PageType;
+  className?: string;
 }
 
-interface NavItem {
-  title: string
-  href?: string
-  icon: React.ComponentType<{ className?: string }>
-  badge?: string
-  children?: NavItem[]
+interface NavLinkProps {
+  href: string;
+  icon: LucideIcon;
+  children: React.ReactNode;
+  active?: boolean;
 }
 
-const navigationItems: NavItem[] = [
-  {
-    title: "Dashboard",
-    href: "/",
-    icon: BarChart3,
-  },
-  {
-    title: "Vehicles",
-    icon: Car,
-    children: [
-      { title: "All Vehicles", href: "/vehicles", icon: Car },
-      { title: "Add Vehicle", href: "/vehicles/add", icon: Car },
-      { title: "Vehicle Types", href: "/vehicles/types", icon: Package },
-    ],
-  },
-  {
-    title: "Customers",
-    icon: Users,
-    children: [
-      { title: "All Customers", href: "/customers", icon: Users },
-      { title: "Add Customer", href: "/customers/add", icon: UserCheck },
-    ],
-  },
-  {
-    title: "Maintenance",
-    href: "/maintenance",
-    icon: Wrench,
-    badge: "3",
-  },
-  {
-    title: "Appointments",
-    href: "/appointments",
-    icon: Calendar,
-  },
-  {
-    title: "Invoices",
-    icon: CreditCard,
-    children: [
-      { title: "All Invoices", href: "/invoices", icon: FileText },
-      { title: "Pending", href: "/invoices/pending", icon: AlertTriangle, badge: "2" },
-      { title: "Paid", href: "/invoices/paid", icon: CreditCard },
-    ],
-  },
-  {
-    title: "Reports",
-    href: "/reports",
-    icon: FileText,
-  },
-]
-
-export default function Sidebar({ className }: SidebarProps) {
-  const pathname = usePathname()
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set())
-
-  const toggleExpand = (title: string) => {
-    const newExpanded = new Set(expandedItems)
-    if (newExpanded.has(title)) {
-      newExpanded.delete(title)
-    } else {
-      newExpanded.add(title)
-    }
-    setExpandedItems(newExpanded)
-  }
-
-  const isActive = (href: string) => {
-    return pathname === href || (href !== "/" && pathname.startsWith(href))
-  }
-
-  const renderNavItem = (item: NavItem, level = 0) => {
-    const isExpanded = expandedItems.has(item.title)
-    const hasChildren = item.children && item.children.length > 0
-    const isItemActive = item.href ? isActive(item.href) : false
-
-    if (hasChildren) {
-      return (
-        <div key={item.title}>
-          <Button
-            variant="ghost"
-            className={cn(
-              "w-full justify-start gap-2 h-9",
-              level > 0 && "ml-4 w-auto"
-            )}
-            onClick={() => toggleExpand(item.title)}
-          >
-            <item.icon className="h-4 w-4" />
-            <span className="flex-1 text-left">{item.title}</span>
-            {item.badge && (
-              <Badge variant="secondary" className="ml-auto">
-                {item.badge}
-              </Badge>
-            )}
-            {isExpanded ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
-          </Button>
-          {isExpanded && (
-            <div className="mt-1 space-y-1">
-              {item.children?.map((child) => renderNavItem(child, level + 1))}
-            </div>
-          )}
-        </div>
-      )
-    }
-
-    return (
-      <Button
-        key={item.title}
-        variant={isItemActive ? "secondary" : "ghost"}
-        className={cn(
-          "w-full justify-start gap-2 h-9",
-          level > 0 && "ml-4 w-auto",
-          isItemActive && "bg-secondary"
-        )}
-        asChild
+/**
+ * A helper component to create styled navigation links.
+ * It can show an 'active' state.
+ */
+function NavLink({ href, icon: Icon, children, active = false }: NavLinkProps): React.ReactElement {
+  return (
+    <li>
+      <Link
+        href={href}
+        className={`flex items-center gap-3 p-3 rounded-lg text-base font-medium transition-colors ${
+          active
+            ? "bg-emerald-800 text-white" // Style for the active link
+            : "text-emerald-100 hover:bg-emerald-600" // Style for inactive links
+        }`}
       >
-        <Link href={item.href || "#"}>
-          <item.icon className="h-4 w-4" />
-          <span className="flex-1 text-left">{item.title}</span>
-          {item.badge && (
-            <Badge variant="destructive" className="ml-auto">
-              {item.badge}
-            </Badge>
-          )}
-        </Link>
-      </Button>
-    )
-  }
+        <Icon className="w-5 h-5" />
+        {children}
+      </Link>
+    </li>
+  );
+}
+
+/**
+ * The Sidebar component, styled to match your target image.
+ */
+function Sidebar({ activePage = 'dashboard', className = '' }: SidebarProps) {
 
   return (
-    <div className={cn("flex h-full w-64 flex-col border-r bg-card", className)}>
-      {/* Logo */}
-      <div className="flex h-16 items-center border-b px-6">
-        <div className="flex items-center gap-2">
-          <Car className="h-6 w-6 text-primary" />
-          <span className="font-bold text-xl">Carveo</span>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <div className="flex-1 overflow-auto p-4">
-        <nav className="space-y-1">
-          {navigationItems.map((item) => renderNavItem(item))}
-        </nav>
-
-        <Separator className="my-4" />
-
-        {/* Settings section */}
-        <div className="space-y-1">
-          <Button
-            variant={pathname === "/settings" ? "secondary" : "ghost"}
-            className="w-full justify-start gap-2 h-9"
-            asChild
+    <aside className={`w-64 bg-emerald-700 text-white p-6 flex flex-col min-h-screen ${className}`}>
+      <h1 className="text-2xl font-bold mb-2 text-white">Navigation</h1>
+      <hr className="border-t border-emerald-600 mb-6" />
+      <nav>
+        <ul className="flex flex-col gap-y-3">
+          <NavLink
+            href="/manager/dashboard"
+            icon={LayoutDashboard}
+            active={activePage === 'dashboard'}
           >
-            <Link href="/settings">
-              <Settings className="h-4 w-4" />
-              Settings
-            </Link>
-          </Button>
-        </div>
-      </div>
+            Dashboard
+          </NavLink>
+          <NavLink
+            href="/manager/employees"
+            icon={Users}
+            active={activePage === 'employees'}
+          >
+            Manage Employees
+          </NavLink>
+          <NavLink
+            href="/manager/task-scheduler"
+            icon={ClipboardList}
+            active={activePage === 'assign'}
+          >
+            Assign Tasks
+          </NavLink>
+          <NavLink
+            href="/manager/projects"
+            icon={Briefcase}
+            active={activePage === 'projects'}
+          >
+            Projects
+          </NavLink>
+          <NavLink
+            href="/manager/scheduler"
+            icon={Calendar}
+            active={activePage === 'scheduler'}
+          >
+            Scheduler
+          </NavLink>
+          <NavLink
+            href="/manager/reports"
+            icon={BarChartHorizontal}
+            active={activePage === 'reports'}
+          >
+            Reports
+          </NavLink>
+          <NavLink
+            href="/manager/communication"
+            icon={MessageSquare}
+            active={activePage === 'communication'}
+          >
+            Communication
+          </NavLink>
+        </ul>
+      </nav>
+      {/* This div grows to fill the remaining vertical space,
+          keeping your nav items neatly at the top. */}
+      <div className="flex-1"></div>
+    </aside>
+  );
+}
 
-      {/* Footer */}
-      <div className="border-t p-4">
-        <div className="text-xs text-muted-foreground text-center">
-          <div>Carveo v1.0</div>
-          <div>© 2025 Team Nemmi</div>
-        </div>
-      </div>
+interface LayoutProps {
+  children: React.ReactNode;
+  activePage?: PageType;
+}
+
+/**
+ * The main Layout component that wraps your page content.
+ */
+export default function Layout({ children, activePage }: LayoutProps) {
+  return (
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar activePage={activePage} />
+      <main className="flex-1">
+        {children}
+      </main>
     </div>
-  )
+  );
 }
