@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Bell, User, LogOut, Settings } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { Bell, User, LogOut, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,47 +10,47 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { logoutUser, markNotificationAsRead } from "@/services/adminService"
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 
-// Handler functions using the API service
+// Handler functions
 const handleLogout = async () => {
-  await logoutUser()
-}
+  console.log('Logout employee');
+  window.location.href = '/logout';
+};
 
 const handleViewProfile = () => {
-  console.log('Navigate to profile')
-  window.location.href = '/admin/profile'
-}
-
+  console.log('Navigate to profile');
+  window.location.href = '/employee/profile';
+};
 
 const handleViewSettings = () => {
-  console.log('Navigate to settings')
-  window.location.href = '/admin/settings'
-}
+  console.log('Navigate to settings');
+  window.location.href = '/employee/settings';
+};
 
-export default function AdminHeader() {
-  const [notificationCount, setNotificationCount] = useState(3)
+export default function EmployeeHeader() {
+  const [notificationCount, setNotificationCount] = useState(4);
 
   const handleMarkAllAsRead = () => {
-    console.log('Mark all notifications as read')
-    setNotificationCount(0)
-  }
+    console.log('Mark all notifications as read');
+    setNotificationCount(0);
+  };
 
-  const handleNotificationClick = async (notificationId: string) => {
-    await markNotificationAsRead(notificationId)
-  }
+  const handleNotificationClick = (notificationId: string) => {
+    console.log('Notification clicked:', notificationId);
+    // Mark individual notification as read
+  };
+
   return (
-    <header className="bg-gradient-to-r from-[#1f3a93] to-[#2c4ba5] text-white shadow-lg">
+    <header className="bg-gradient-to-r from-[#8B0000] to-[#A52A2A] text-white shadow-lg">
       <div className="px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Left Side - Logo */}
           <div className="flex items-center gap-3">
             <div className="text-5xl font-bold flex items-center gap-2">
-              <h1>Admin Portal</h1> 
+              <h1>Employee Portal</h1>
             </div>
-          
           </div>
 
           {/* Right Side - Icons with Dropdowns */}
@@ -76,41 +76,52 @@ export default function AdminHeader() {
                   Notifications
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="flex flex-col items-start p-4 cursor-pointer hover:bg-gray-100"
                   onClick={() => handleNotificationClick('1')}
                 >
-                  <div className="font-semibold text-sm text-gray-900">System Alert</div>
+                  <div className="font-semibold text-sm text-gray-900">New Task Assigned</div>
                   <div className="text-xs text-gray-600 mt-1">
-                    Employee &quot;Kamal Perera&quot; at maximum workload capacity
+                    You have been assigned a new service task - Vehicle inspection
+                  </div>
+                  <div className="text-xs text-gray-400 mt-1">30 minutes ago</div>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="flex flex-col items-start p-4 cursor-pointer hover:bg-gray-100"
+                  onClick={() => handleNotificationClick('2')}
+                >
+                  <div className="font-semibold text-sm text-gray-900">Task Reminder</div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    Task &quot;Oil Change - Vehicle #A123&quot; due today at 3:00 PM
                   </div>
                   <div className="text-xs text-gray-400 mt-1">2 hours ago</div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="flex flex-col items-start p-4 cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleNotificationClick('2')}
+                  onClick={() => handleNotificationClick('3')}
                 >
-                  <div className="font-semibold text-sm text-gray-900">Security Alert</div>
+                  <div className="font-semibold text-sm text-gray-900">Task Completed</div>
                   <div className="text-xs text-gray-600 mt-1">
-                    Suspicious payment pattern detected - Review needed
+                    Your task &quot;Brake Service&quot; has been marked as completed
                   </div>
                   <div className="text-xs text-gray-400 mt-1">4 hours ago</div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="flex flex-col items-start p-4 cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleNotificationClick('3')}
+                  onClick={() => handleNotificationClick('4')}
                 >
-                  <div className="font-semibold text-sm text-gray-900">Pending Approval</div>
+                  <div className="font-semibold text-sm text-gray-900">Schedule Update</div>
                   <div className="text-xs text-gray-600 mt-1">
-                    2 managers pending large project budget approval
+                    Your shift schedule for next week has been updated
                   </div>
                   <div className="text-xs text-gray-400 mt-1">6 hours ago</div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  className="justify-center text-blue-600 font-semibold cursor-pointer hover:bg-gray-100"
+                <DropdownMenuItem
+                  className="justify-center text-red-700 font-semibold cursor-pointer hover:bg-gray-100"
                   onClick={handleMarkAllAsRead}
                 >
                   Mark All as Read
@@ -132,9 +143,9 @@ export default function AdminHeader() {
               <DropdownMenuContent align="end" className="w-56 bg-white">
                 <DropdownMenuLabel>
                   <div className="flex flex-col">
-                    <span className="font-semibold text-gray-900">Admin User</span>
+                    <span className="font-semibold text-gray-900">Employee User</span>
                     <span className="text-xs text-gray-500 font-normal">
-                      admin@center.com
+                      employee@center.com
                     </span>
                   </div>
                 </DropdownMenuLabel>
@@ -146,8 +157,7 @@ export default function AdminHeader() {
                   <User className="w-4 h-4 mr-2 text-gray-700" />
                   <span className="text-gray-900">Profile</span>
                 </DropdownMenuItem>
-                
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="cursor-pointer hover:bg-gray-100"
                   onClick={handleViewSettings}
                 >
@@ -155,7 +165,7 @@ export default function AdminHeader() {
                   <span className="text-gray-900">Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   className="cursor-pointer text-red-600 focus:text-red-600 hover:bg-red-50"
                   onClick={handleLogout}
                 >
@@ -168,5 +178,5 @@ export default function AdminHeader() {
         </div>
       </div>
     </header>
-  )
+  );
 }
