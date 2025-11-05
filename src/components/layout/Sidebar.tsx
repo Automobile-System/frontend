@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LucideIcon } from "lucide-react";
 import {
   LayoutDashboard,
@@ -52,7 +53,23 @@ function NavLink({ href, icon: Icon, children, active = false }: NavLinkProps): 
 /**
  * The Sidebar component, styled to match your target image.
  */
-function Sidebar({ activePage = 'dashboard', className = '' }: SidebarProps) {
+function Sidebar({ activePage, className = '' }: SidebarProps) {
+  const pathname = usePathname();
+  
+  // Automatically determine active page from pathname if not explicitly provided
+  const getActivePage = (): PageType => {
+    if (activePage) return activePage;
+    
+    if (pathname.includes('/employees')) return 'employees';
+    if (pathname.includes('/task-scheduler')) return 'assign';
+    if (pathname.includes('/projects')) return 'projects';
+    if (pathname.includes('/scheduler')) return 'scheduler';
+    if (pathname.includes('/reports')) return 'reports';
+    if (pathname.includes('/communication')) return 'communication';
+    return 'dashboard';
+  };
+
+  const currentActivePage = getActivePage();
 
   return (
     <aside className={`w-64 bg-emerald-700 text-white p-6 flex flex-col min-h-screen ${className}`}>
@@ -63,49 +80,49 @@ function Sidebar({ activePage = 'dashboard', className = '' }: SidebarProps) {
           <NavLink
             href="/manager/dashboard"
             icon={LayoutDashboard}
-            active={activePage === 'dashboard'}
+            active={currentActivePage === 'dashboard'}
           >
             Dashboard
           </NavLink>
           <NavLink
             href="/manager/employees"
             icon={Users}
-            active={activePage === 'employees'}
+            active={currentActivePage === 'employees'}
           >
             Manage Employees
           </NavLink>
           <NavLink
             href="/manager/task-scheduler"
             icon={ClipboardList}
-            active={activePage === 'assign'}
+            active={currentActivePage === 'assign'}
           >
             Assign Tasks
           </NavLink>
           <NavLink
             href="/manager/projects"
             icon={Briefcase}
-            active={activePage === 'projects'}
+            active={currentActivePage === 'projects'}
           >
             Projects
           </NavLink>
           <NavLink
             href="/manager/scheduler"
             icon={Calendar}
-            active={activePage === 'scheduler'}
+            active={currentActivePage === 'scheduler'}
           >
             Scheduler
           </NavLink>
           <NavLink
             href="/manager/reports"
             icon={BarChartHorizontal}
-            active={activePage === 'reports'}
+            active={currentActivePage === 'reports'}
           >
             Reports
           </NavLink>
           <NavLink
             href="/manager/communication"
             icon={MessageSquare}
-            active={activePage === 'communication'}
+            active={currentActivePage === 'communication'}
           >
             Communication
           </NavLink>
