@@ -82,13 +82,14 @@ function formatDate(value?: string, locale = "en-US") {
 export default function ProjectCard({ project, className, variant = "simple", flipOn = "hoverAndClick" }: ProjectCardProps) {
   const { id, name, description, image, cost, estimatedHours, status } = project
   const isSimple = variant === "simple"
-  const isDetailed = variant === "detailed"
   const isFlip = variant === "flip"
   const isTilt = variant === "tilt"
 
+  // Hook must not be called conditionally; define once at the top
+  const [flipped, setFlipped] = React.useState(false)
+
   if (isFlip) {
     // Flip card variant: hover flip on desktop, click to flip on mobile
-    const [flipped, setFlipped] = React.useState(false)
     const allowHover = flipOn === "hover" || flipOn === "hoverAndClick"
     const allowClick = flipOn === "click" || flipOn === "hoverAndClick"
 
