@@ -28,7 +28,7 @@ interface HeroSectionProps {
 const defaultSlides: HeroSlide[] = [
   {
     id: 1,
-    title: "AUTO MiRAJ KURUNEGALA",
+    title: "NITROLINE KURUNEGALA",
     subtitle: "NOW YOU CAN FIND US AT THE HISTORICAL CITY OF KURUNEGALA",
     description: "Learn more",
     backgroundImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop",
@@ -167,8 +167,8 @@ export function HeroSection({
                 </Badge>
                 
                 <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold font-roboto mb-4 leading-tight">
-                  <span className="text-white drop-shadow-2xl">AUTO</span>{" "}
-                  <span className="text-red-100 animate-pulse drop-shadow-2xl">MiRAJ</span>
+                  <span className="text-white drop-shadow-2xl">NITRO</span>{" "}
+                  <span className="text-red-100 animate-pulse drop-shadow-2xl">LINE</span>
                 </h1>
                 
                 <h2 className="text-xl md:text-2xl lg:text-4xl font-bold mb-4 text-red-100 font-inter drop-shadow-xl">
