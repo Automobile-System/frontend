@@ -128,18 +128,14 @@ export function Navigation({ className }: NavigationProps) {
         <NavigationMenu className="hidden md:flex flex-1 justify-center">
           <NavigationMenuList className="flex items-center space-x-1">
             <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
-                  HOME
-                </NavigationMenuLink>
+              <Link href="/" className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
+                HOME
               </Link>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/about" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
-                  ABOUT US
-                </NavigationMenuLink>
+              <Link href="/about" className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
+                ABOUT US
               </Link>
             </NavigationMenuItem>
 
@@ -220,18 +216,14 @@ export function Navigation({ className }: NavigationProps) {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/news" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
-                  NEWS
-                </NavigationMenuLink>
+              <Link href="/news" className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
+                NEWS
               </Link>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/contact" legacyBehavior passHref>
-                <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
-                  CONTACT
-                </NavigationMenuLink>
+              <Link href="/contact" className={cn(navigationMenuTriggerStyle(), "text-black hover:text-red-600 font-medium")}>
+                CONTACT
               </Link>
             </NavigationMenuItem>
           </NavigationMenuList>
