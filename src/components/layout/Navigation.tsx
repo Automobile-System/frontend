@@ -54,7 +54,7 @@ export function Navigation({ className }: NavigationProps) {
 
   // Auto Miraj style: larger font, normal weight, bottom border on active
   const linkBase =
-    "relative bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent text-black hover:text-brand uppercase tracking-[0.15em] font-teko transition-colors text-[17px] md:text-[18px] lg:text-[19px] px-3 py-2"
+    "relative bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent text-[#020079] hover:text-brand uppercase tracking-[0.15em] font-teko transition-colors text-[17px] md:text-[18px] lg:text-[19px] px-3 py-2"
 
   const linkClass = (href: string) =>
     cn(
@@ -275,22 +275,22 @@ export function Navigation({ className }: NavigationProps) {
             </SheetHeader>
             <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
               <div className="flex flex-col space-y-3">
-                <Link href="/" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   HOME
                 </Link>
-                <Link href="/about" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/about" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   ABOUT US
                 </Link>
-                <Link href="/services" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/services" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   SERVICES
                 </Link>
-                <Link href="/projects" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/projects" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   PROJECTS
                 </Link>
-                <Link href="/packages" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/packages" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   PACKAGES
                 </Link>
-                <Link href="/contact" className="py-2 text-lg font-medium hover:text-brand transition-colors">
+                <Link href="/contact" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   CONTACT
                 </Link>
                 <div className="pt-4">
