@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import EmployeeLayout from "@/components/layout/EmployeeLayout";
+import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,64 +13,65 @@ import {
   Phone,
   Calendar,
   BadgeCheck,
-  Star,
+  Shield,
   Edit2,
   Save,
   X,
   Camera,
   Award,
-  Clock,
+  Users,
   TrendingUp,
+  Building,
 } from "lucide-react";
 
 // Types
-interface EmployeeProfile {
+interface AdminProfile {
   id: string;
   name: string;
   jobTitle: string;
-  rating: number;
-  totalReviews: number;
-  employeeId: string;
+  adminLevel: string;
+  adminId: string;
   email: string;
   phone: string;
   joinedDate: string;
   avatar: string;
+  department: string;
 }
 
-interface PerformanceStats {
-  tasksCompleted: number;
-  hoursWorked: number;
-  customerSatisfaction: number;
+interface AdminStats {
+  totalEmployees: number;
+  activeProjects: number;
+  systemUptime: number;
 }
 
-export default function ProfilePage() {
+export default function AdminProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState<EmployeeProfile>({
+  const [profile, setProfile] = useState<AdminProfile>({
     id: "1",
-    name: "Ruwan Silva",
-    jobTitle: "Engine Specialist",
-    rating: 4.8,
-    totalReviews: 142,
-    employeeId: "EMP-12345",
-    email: "ruwan.silva@autoservice.com",
-    phone: "+94 77 123 4567",
-    joinedDate: "January 15, 2023",
+    name: "Nirmal Fernando",
+    jobTitle: "System Administrator",
+    adminLevel: "Super Admin",
+    adminId: "ADM-00001",
+    email: "nirmal.fernando@autoservice.com",
+    phone: "+94 77 987 6543",
+    joinedDate: "March 1, 2020",
     avatar: "",
+    department: "IT Operations",
   });
 
-  const [stats] = useState<PerformanceStats>({
-    tasksCompleted: 328,
-    hoursWorked: 1450,
-    customerSatisfaction: 96,
+  const [stats] = useState<AdminStats>({
+    totalEmployees: 156,
+    activeProjects: 24,
+    systemUptime: 99.8,
   });
 
-  const [editForm, setEditForm] = useState<EmployeeProfile>(profile);
+  const [editForm, setEditForm] = useState<AdminProfile>(profile);
 
   useEffect(() => {
     // Simulate data loading
     // TODO: Replace with actual API call
-    // fetch('/api/employee/profile')
+    // fetch('/api/admin/profile')
     //   .then(res => res.json())
     //   .then(data => {
     //     setProfile(data);
@@ -95,7 +96,7 @@ export default function ProfilePage() {
 
   const handleSaveProfile = () => {
     // TODO: Replace with actual API call
-    // fetch('/api/employee/profile', {
+    // fetch('/api/admin/profile', {
     //   method: 'PUT',
     //   headers: { 'Content-Type': 'application/json' },
     //   body: JSON.stringify(editForm)
@@ -110,7 +111,7 @@ export default function ProfilePage() {
     setIsEditing(false);
   };
 
-  const handleInputChange = (field: keyof EmployeeProfile, value: string) => {
+  const handleInputChange = (field: keyof AdminProfile, value: string) => {
     setEditForm((prev) => ({
       ...prev,
       [field]: value,
@@ -118,23 +119,23 @@ export default function ProfilePage() {
   };
 
   return (
-    <EmployeeLayout>
+    <AdminDashboardLayout>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/40 p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              My Profile
+              Admin Profile
             </h1>
             <p className="text-gray-600 flex items-center gap-2">
-              <User className="h-4 w-4" />
-              View and manage your personal information
+              <Shield className="h-4 w-4" />
+              View and manage your administrator information
             </p>
           </div>
           {!isEditing && (
             <Button
               onClick={handleEditClick}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 h-11 rounded-xl font-semibold shadow-lg"
+              className="bg-[#1f3a93] hover:bg-[#2c4ba5] text-white px-6 h-11 rounded-xl font-semibold shadow-lg"
             >
               <Edit2 className="h-4 w-4 mr-2" />
               Edit Profile
@@ -145,7 +146,7 @@ export default function ProfilePage() {
         {isLoading ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1f3a93] mx-auto mb-4"></div>
               <p className="text-gray-600 font-medium">Loading profile...</p>
             </div>
           </div>
@@ -157,11 +158,11 @@ export default function ProfilePage() {
               <div className="flex flex-col md:flex-row items-start md:items-center gap-6 pb-6 border-b border-gray-200">
                 {/* Avatar */}
                 <div className="relative">
-                  <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center shadow-lg border-4 border-white">
-                    <User className="h-16 w-16 text-gray-600" />
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[#1f3a93] to-[#2c4ba5] flex items-center justify-center shadow-lg border-4 border-white">
+                    <User className="h-16 w-16 text-white" />
                   </div>
                   {isEditing && (
-                    <button className="absolute bottom-0 right-0 p-3 bg-blue-600 rounded-full shadow-lg hover:bg-blue-700 transition-colors">
+                    <button className="absolute bottom-0 right-0 p-3 bg-[#1f3a93] rounded-full shadow-lg hover:bg-[#2c4ba5] transition-colors">
                       <Camera className="h-5 w-5 text-white" />
                     </button>
                   )}
@@ -175,9 +176,9 @@ export default function ProfilePage() {
                         <h2 className="text-3xl font-bold text-gray-900">
                           {profile.name}
                         </h2>
-                        <Badge className="bg-blue-600 text-white border-0">
-                          <BadgeCheck className="h-3 w-3 mr-1" />
-                          Verified
+                        <Badge className="bg-[#1f3a93] text-white border-0">
+                          <Shield className="h-3 w-3 mr-1" />
+                          {profile.adminLevel}
                         </Badge>
                       </div>
                       <p className="text-lg text-gray-600 mb-3">
@@ -185,15 +186,11 @@ export default function ProfilePage() {
                       </p>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-xl border border-gray-200">
-                          <Star className="h-5 w-5 text-orange-500 fill-orange-500" />
-                          <span className="text-lg font-bold text-gray-900">
-                            {profile.rating}
+                          <Building className="h-5 w-5 text-[#1f3a93]" />
+                          <span className="text-sm font-semibold text-gray-900">
+                            {profile.department}
                           </span>
-                          <span className="text-sm text-gray-600">/ 5.0</span>
                         </div>
-                        <span className="text-sm text-gray-600">
-                          {profile.totalReviews} reviews
-                        </span>
                       </div>
                     </>
                   ) : (
@@ -230,6 +227,22 @@ export default function ProfilePage() {
                           className="mt-1 text-gray-900 h-11"
                         />
                       </div>
+                      <div>
+                        <Label
+                          htmlFor="department"
+                          className="text-sm font-semibold text-gray-700"
+                        >
+                          Department
+                        </Label>
+                        <Input
+                          id="department"
+                          value={editForm.department}
+                          onChange={(e) =>
+                            handleInputChange("department", e.target.value)
+                          }
+                          className="mt-1 text-gray-900 h-11"
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -237,24 +250,24 @@ export default function ProfilePage() {
 
               {/* Profile Details Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-                {/* Employee ID */}
+                {/* Admin ID */}
                 <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                  <div className="p-3 bg-gray-700 rounded-xl">
+                  <div className="p-3 bg-[#1f3a93] rounded-xl">
                     <BadgeCheck className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex-1">
                     <p className="text-xs font-semibold text-gray-600 mb-1">
-                      Employee ID
+                      Administrator ID
                     </p>
                     <p className="text-lg font-bold text-gray-900">
-                      {profile.employeeId}
+                      {profile.adminId}
                     </p>
                   </div>
                 </div>
 
                 {/* Email */}
                 <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                  <div className="p-3 bg-gray-700 rounded-xl">
+                  <div className="p-3 bg-[#1f3a93] rounded-xl">
                     <Mail className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex-1">
@@ -280,7 +293,7 @@ export default function ProfilePage() {
 
                 {/* Phone */}
                 <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                  <div className="p-3 bg-gray-700 rounded-xl">
+                  <div className="p-3 bg-[#1f3a93] rounded-xl">
                     <Phone className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex-1">
@@ -306,7 +319,7 @@ export default function ProfilePage() {
 
                 {/* Joined Date */}
                 <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                  <div className="p-3 bg-gray-700 rounded-xl">
+                  <div className="p-3 bg-[#1f3a93] rounded-xl">
                     <Calendar className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex-1">
@@ -335,7 +348,7 @@ export default function ProfilePage() {
                     </Button>
                     <Button
                       onClick={handleSaveProfile}
-                      className="h-11 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg rounded-xl"
+                      className="h-11 px-6 bg-[#1f3a93] hover:bg-[#2c4ba5] text-white font-semibold shadow-lg rounded-xl"
                     >
                       <Save className="h-4 w-4 mr-2" />
                       Save Changes
@@ -345,62 +358,62 @@ export default function ProfilePage() {
               )}
             </Card>
 
-            {/* Performance Statistics */}
+            {/* Admin Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Tasks Completed */}
+              {/* Total Employees */}
               <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white hover:shadow-xl transition-shadow">
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 bg-blue-100 rounded-xl">
-                    <Award className="h-8 w-8 text-blue-600" />
+                    <Users className="h-8 w-8 text-[#1f3a93]" />
                   </div>
-                  <TrendingUp className="h-5 w-5 text-blue-600" />
+                  <TrendingUp className="h-5 w-5 text-[#1f3a93]" />
                 </div>
                 <p className="text-sm font-medium text-gray-600 mb-1">
-                  Tasks Completed
+                  Total Employees
                 </p>
                 <p className="text-4xl font-bold text-gray-900">
-                  {stats.tasksCompleted}
+                  {stats.totalEmployees}
                 </p>
-                <p className="text-xs text-gray-500 mt-2">Since joining</p>
+                <p className="text-xs text-gray-500 mt-2">Under management</p>
               </Card>
 
-              {/* Hours Worked */}
+              {/* Active Projects */}
               <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white hover:shadow-xl transition-shadow">
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 bg-gray-100 rounded-xl">
-                    <Clock className="h-8 w-8 text-gray-700" />
+                    <Award className="h-8 w-8 text-gray-700" />
                   </div>
                   <TrendingUp className="h-5 w-5 text-gray-700" />
                 </div>
                 <p className="text-sm font-medium text-gray-600 mb-1">
-                  Hours Worked
+                  Active Projects
                 </p>
                 <p className="text-4xl font-bold text-gray-900">
-                  {stats.hoursWorked}
+                  {stats.activeProjects}
                 </p>
-                <p className="text-xs text-gray-500 mt-2">Total logged hours</p>
+                <p className="text-xs text-gray-500 mt-2">Currently running</p>
               </Card>
 
-              {/* Customer Satisfaction */}
+              {/* System Uptime */}
               <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white hover:shadow-xl transition-shadow">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-blue-100 rounded-xl">
-                    <Star className="h-8 w-8 text-blue-600" />
+                  <div className="p-3 bg-green-100 rounded-xl">
+                    <Shield className="h-8 w-8 text-green-600" />
                   </div>
-                  <TrendingUp className="h-5 w-5 text-blue-600" />
+                  <TrendingUp className="h-5 w-5 text-green-600" />
                 </div>
                 <p className="text-sm font-medium text-gray-600 mb-1">
-                  Satisfaction Rate
+                  System Uptime
                 </p>
                 <p className="text-4xl font-bold text-gray-900">
-                  {stats.customerSatisfaction}%
+                  {stats.systemUptime}%
                 </p>
-                <p className="text-xs text-gray-500 mt-2">Customer approval</p>
+                <p className="text-xs text-gray-500 mt-2">Last 30 days</p>
               </Card>
             </div>
           </>
         )}
       </div>
-    </EmployeeLayout>
+    </AdminDashboardLayout>
   );
 }
