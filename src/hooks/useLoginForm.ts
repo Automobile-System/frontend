@@ -7,7 +7,7 @@ import { showToast } from "@/lib/toast"
 import { useRouter } from 'next/navigation'
 
 export function useLoginForm() {
-    const [formData, setFormData] = useState<LoginRequest>({ email: "", password: "" })
+    const [formData, setFormData] = useState<LoginRequest>({ email: "", password: "", rememberMe: false })
     const [loading, setLoading] = useState<boolean>(false)
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
     const router = useRouter()
@@ -22,6 +22,11 @@ export function useLoginForm() {
         }
     }
 
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, checked } = e.target
+        setFormData(prev => ({ ...prev, [name]: checked }))
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setFieldErrors({})
@@ -31,7 +36,7 @@ export function useLoginForm() {
             
             // Validate form data
             const validatedData = loginSchema.parse(formData)
-            
+            console.log("Validated Data:", validatedData)
             // Show loading toast
             const loginPromise = login(validatedData)
             
@@ -74,7 +79,8 @@ export function useLoginForm() {
         formData, 
         loading, 
         fieldErrors, 
-        handleChange, 
+        handleChange,
+        handleCheckboxChange, 
         handleSubmit 
     }
 }
