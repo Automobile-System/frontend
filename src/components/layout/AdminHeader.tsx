@@ -46,8 +46,8 @@ export default function AdminHeader() {
         <div className="flex items-center justify-between">
           {/* Left Side - Logo */}
           <div className="flex items-center gap-3">
-            <div className="text-2xl font-bold flex items-center gap-2">
-              Admin Portal
+            <div className="text-5xl font-bold flex items-center gap-2">
+              <h1>Admin Portal</h1> 
             </div>
           
           </div>
