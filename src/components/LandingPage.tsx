@@ -6,7 +6,7 @@ import Image from "next/image"
 import { Navigation } from "@/components/layout/Navigation"
 import { HeroSection } from "@/components/layout/HeroSection"
 import { ContactBar } from "@/components/layout/ContactBar" 
-import { ServicesOverview } from "@/components/layout/ServicesSection"
+import { ServicesGrid } from "@/components/layout/ServicesGrid"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -21,7 +21,6 @@ import {
   Building2,
   Zap,
   Heart,
-  CheckCircle,
   ArrowRight,
   Globe2
 } from "lucide-react"
@@ -240,7 +239,7 @@ const LandingPage = () => {
 
       {/* Services Section */}
       <div id="services">
-        <ServicesOverview />
+        <ServicesGrid />
       </div>
 
       {/* Projects Section */}

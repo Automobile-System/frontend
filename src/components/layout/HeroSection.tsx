@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ChevronLeft, ChevronRight, Play, ArrowRight, Zap, Award, Globe2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Play, Zap, Award, Globe2 } from "lucide-react"
 
 export interface HeroSlide {
   id: number
@@ -28,8 +28,8 @@ interface HeroSectionProps {
 const defaultSlides: HeroSlide[] = [
   {
     id: 1,
-    title: "NITROLINE KURUNEGALA",
-    subtitle: "NOW YOU CAN FIND US AT THE HISTORICAL CITY OF KURUNEGALA",
+    title: "NITROLINE COLOMBO",
+    subtitle: "NOW YOU CAN FIND US AT THE COMMERCIAL CAPITAL OF COLOMBO",
     description: "Learn more",
     backgroundImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop",
     stats: [
@@ -172,7 +172,7 @@ export function HeroSection({
                 </h1>
                 
                 <h2 className="text-xl md:text-2xl lg:text-4xl font-bold mb-4 text-red-100 font-inter drop-shadow-xl">
-                  KURUNEGALA
+                  COLOMBO
                 </h2>
                 
                 <p className="text-base md:text-lg lg:text-xl mb-8 max-w-2xl leading-relaxed font-inter opacity-90">
@@ -184,8 +184,7 @@ export function HeroSection({
                     size="lg"
                     className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
                   >
-                    {slide.description}
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    LOG IN
                   </Button>
                   
                   <Button 
@@ -193,8 +192,7 @@ export function HeroSection({
                     size="lg"
                     className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm px-8 py-4 text-lg font-medium transition-all duration-300"
                   >
-                    <Play className="mr-2 h-5 w-5" />
-                    Watch Video
+                    SIGN UP
                   </Button>
                 </div>
               </div>
