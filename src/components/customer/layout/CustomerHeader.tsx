@@ -6,6 +6,14 @@ import { Bell } from 'lucide-react';
 export default function CustomerHeader() {
   const router = useRouter();
 
+  const handleProfileClick = () => {
+    router.push('/customer/profile');
+  };
+
+  const handleNotificationsClick = () => {
+    router.push('/customer/messages');
+  };
+
   return (
     <header
       style={{
@@ -44,7 +52,7 @@ export default function CustomerHeader() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
         {/* Notification Button */}
         <button
-          onClick={() => router.push('/customer/messages')}
+          onClick={handleNotificationsClick}
           style={{
             position: 'relative',
             padding: '0.5rem',
@@ -53,9 +61,16 @@ export default function CustomerHeader() {
             border: 'none',
             cursor: 'pointer',
             transition: 'all 0.2s ease-in-out',
+            borderRadius: '0.5rem',
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = '#4b5563')}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = '#2563eb';
+            e.currentTarget.style.backgroundColor = '#f3f4f6';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = '#4b5563';
+            e.currentTarget.style.backgroundColor = 'transparent';
+          }}
         >
           <Bell size={22} strokeWidth={1.8} />
           {/* Notification Dot */}
@@ -73,12 +88,25 @@ export default function CustomerHeader() {
           ></span>
         </button>
 
-        {/* Profile Section */}
-        <div
+        {/* Profile Section - Clickable */}
+        <button
+          onClick={handleProfileClick}
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: '0.75rem',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '0.5rem',
+            borderRadius: '0.75rem',
+            transition: 'all 0.2s ease-in-out',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#f3f4f6';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
           }}
         >
           {/* Profile Circle */}
@@ -108,7 +136,7 @@ export default function CustomerHeader() {
           </div>
 
           {/* Profile Info */}
-          <div>
+          <div style={{ textAlign: 'left' }}>
             <p
               style={{
                 fontSize: '0.875rem',
@@ -129,7 +157,7 @@ export default function CustomerHeader() {
               Premium Member
             </p>
           </div>
-        </div>
+        </button>
       </div>
     </header>
   );

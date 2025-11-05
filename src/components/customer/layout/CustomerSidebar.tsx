@@ -1,10 +1,8 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { 
-  FiHome, FiSettings, FiMessageSquare, FiUser, FiBook, FiTruck, FiDollarSign, FiUsers
+  FiHome, FiSettings, FiMessageSquare, FiUser, FiBook, FiTruck, FiDollarSign, FiUsers, FiChevronLeft, FiChevronRight
 } from 'react-icons/fi';
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-
 
 export default function CustomerSidebar() {
   const router = useRouter();
@@ -21,7 +19,7 @@ export default function CustomerSidebar() {
   ];
 
   const sidebarStyle = {
-    backgroundColor: '#111827', // darker gray for modern look
+    backgroundColor: '#111827',
     color: 'white',
     width: isCollapsed ? '80px' : '250px',
     height: '100vh',
@@ -53,21 +51,20 @@ export default function CustomerSidebar() {
               <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>Customer Portal</p>
             </div>
           )}
-      <button 
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        style={{
-            padding: '0.4rem',
-            borderRadius: '50%',
-            background: '#1f2937',
-            border: '1px solid #374151',
-            color: '#9ca3af',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-        }}
-        >
-        {isCollapsed ? <FiChevronRight size={18} /> : <FiChevronLeft size={18} />}
-      </button>
-
+          <button 
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            style={{
+              padding: '0.4rem',
+              borderRadius: '50%',
+              background: '#1f2937',
+              border: '1px solid #374151',
+              color: '#9ca3af',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            {isCollapsed ? <FiChevronRight size={18} /> : <FiChevronLeft size={18} />}
+          </button>
         </div>
 
         {/* Navigation */}
@@ -106,13 +103,20 @@ export default function CustomerSidebar() {
       </div>
 
       {/* === Bottom Section (User Profile) === */}
-      <div style={{ 
-        paddingTop: '1rem', 
-        borderTop: '1px solid #1f2937', 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '0.75rem' 
-      }}>
+      <div 
+        onClick={() => router.push('/customer/profile')}
+        style={{ 
+          paddingTop: '1rem', 
+          borderTop: '1px solid #1f2937', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '0.75rem',
+          cursor: 'pointer',
+          transition: 'background 0.2s ease',
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.background = hoverBg}
+        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+      >
         <div style={{ 
           width: '2.2rem', 
           height: '2.2rem', 
@@ -134,4 +138,3 @@ export default function CustomerSidebar() {
     </div>
   );
 }
-
