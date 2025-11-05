@@ -82,17 +82,18 @@ export default function BookService() {
 
   return (
     <CustomerLayout>
-      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 1rem' }}>
+      <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+
         <div style={{ marginBottom: '2rem' }}>
           <h1 style={{ 
-            fontSize: '1.875rem', 
+            fontSize: '1.5rem', 
             fontWeight: 'bold', 
             color: '#111827', 
-            margin: '0 0 0.5rem 0' 
+            margin: 0 
           }}>
             Book Service / Project
           </h1>
-          <p style={{ color: '#6b7280', margin: 0 }}>
+          <p style={{ color: '#6b7280', margin: '0.25rem 0 0 0' }}>
             Schedule your vehicle service in 5 simple steps
           </p>
         </div>

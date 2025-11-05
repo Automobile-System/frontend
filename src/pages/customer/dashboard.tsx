@@ -30,13 +30,16 @@ export default function CustomerDashboard() {
               border: 'none',
               fontWeight: '500',
               cursor: 'pointer',
-              transition: 'background-color 0.2s'
+              transition: 'background-color 0.2s',
+              transform: 'scale(1)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#1d4ed8';
+              e.currentTarget.style.transform = 'scale(1.05)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = '#2563eb';
+              e.currentTarget.style.transform = 'scale(1)';
             }}
           >
             + Book Service / Project

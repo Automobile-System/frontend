@@ -97,16 +97,16 @@ export default function PaymentHistoryPage() {
         {/* Header */}
         <div style={{ marginBottom: '2rem' }}>
           <h1 style={{
-            fontSize: '2rem',
+            fontSize: '1.5rem',
             fontWeight: 'bold',
             color: '#1f2937',
-            marginBottom: '0.5rem'
+            margin: 0
           }}>
             Payment History
           </h1>
           <p style={{
             color: '#6b7280',
-            fontSize: '1.1rem'
+            margin: '0.25rem 0 0 0'
           }}>
             View and manage all your payment transactions
           </p>

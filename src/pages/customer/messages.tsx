@@ -120,34 +120,52 @@ export default function MessagesPage() {
 
   return (
     <CustomerLayout>
-      <div style={{ 
-        display: 'flex', 
-        height: 'calc(100vh - 120px)',
-        backgroundColor: 'white',
-        borderRadius: '0.75rem',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-        overflow: 'hidden'
-      }}>
-        {/* Conversation List */}
-        <div style={{
-          width: '400px',
-          borderRight: '1px solid #e5e7eb',
+      <div
+        style={{
           display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <div style={{
-            padding: '1.5rem',
-            borderBottom: '1px solid #e5e7eb',
-            backgroundColor: '#f9fafb'
-          }}>
-            <h1 style={{
-              fontSize: '1.5rem',
-              fontWeight: 'bold',
-              color: '#1f2937',
-              margin: 0
-            }}>
+          height: 'calc(100vh - 120px)',
+          backgroundColor: '#ffffff',
+          borderRadius: '0.75rem',
+          boxShadow: '0 4px 10px rgba(0,0,0,0.06)',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Conversation List */}
+        <div
+          style={{
+            width: '380px',
+            borderRight: '1px solid #e5e7eb',
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: '#f9fafb',
+          }}
+        >
+          <div
+            style={{
+              padding: '1.25rem 1.5rem',
+              borderBottom: '1px solid #e5e7eb',
+              backgroundColor: '#f3f4f6',
+            }}
+          >
+            <h1
+              style={{
+                fontSize: '1.25rem',
+                fontWeight: 600,
+                color: '#111827',
+                margin: 0,
+              }}
+            >
               Messages
             </h1>
+            <p
+              style={{
+                color: '#6b7280',
+                fontSize: '0.875rem',
+                margin: '0.25rem 0 0 0',
+              }}
+            >
+              Chat with employees and managers
+            </p>
           </div>
           <ConversationList
             conversations={mockConversations}
@@ -161,34 +179,56 @@ export default function MessagesPage() {
           {selectedConv ? (
             <ChatWindow conversation={selectedConv} />
           ) : (
-            <div style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: '#f9fafb'
-            }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{
-                  fontSize: '3rem',
-                  marginBottom: '1rem',
-                  opacity: 0.5
-                }}>
-                  💬
+            <div
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#f9fafb',
+              }}
+            >
+              <div style={{ textAlign: 'center', maxWidth: '400px' }}>
+                <div
+                  style={{
+                    fontSize: '3rem',
+                    marginBottom: '1rem',
+                    opacity: 0.3,
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    style={{ width: '3rem', height: '3rem', color: '#9ca3af' }}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M7.5 8.25h9m-9 3.75h5.25M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
                 </div>
-                <h3 style={{
-                  fontSize: '1.25rem',
-                  fontWeight: '600',
-                  color: '#6b7280',
-                  margin: '0 0 0.5rem 0'
-                }}>
+                <h3
+                  style={{
+                    fontSize: '1.25rem',
+                    fontWeight: 600,
+                    color: '#4b5563',
+                    margin: '0 0 0.5rem 0',
+                  }}
+                >
                   Select a conversation
                 </h3>
-                <p style={{
-                  color: '#9ca3af',
-                  margin: 0
-                }}>
-                  Choose a conversation from the list to start messaging
+                <p
+                  style={{
+                    color: '#9ca3af',
+                    margin: 0,
+                    fontSize: '0.9rem',
+                  }}
+                >
+                  Choose a chat from the list to start messaging.
                 </p>
               </div>
             </div>

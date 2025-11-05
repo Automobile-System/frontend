@@ -11,14 +11,14 @@ export default function ServicesPage() {
       <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
         <div style={{ marginBottom: '30px' }}>
           <h1 style={{ 
-            fontSize: '28px', 
+            fontSize: '1.5rem', 
             fontWeight: 'bold', 
-            color: '#1f2937',
-            marginBottom: '8px'
+            color: '#111827',
+            margin: 0
           }}>
             My Services / Projects
           </h1>
-          <p style={{ color: '#6b7280', fontSize: '16px' }}>
+          <p style={{ color: '#6b7280',     margin: '0.25rem 0 0 0' }}>
             Track and manage all your vehicle services
           </p>
         </div>

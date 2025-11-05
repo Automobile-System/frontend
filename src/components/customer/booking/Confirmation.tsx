@@ -16,11 +16,11 @@ export default function Confirmation({ data, onBack, onConfirm }: ConfirmationPr
 
   const getServiceName = (): string => {
     const services: Record<number, string> = {
-      1: 'Oil Change - $49.99',
-      2: 'Brake Service - $129.99',
-      3: 'Engine Diagnosis - $89.99',
-      4: 'Battery Check - $29.99',
-      5: 'Tire Rotation - $39.99',
+      1: 'Oil Change - Rs. 4,999',
+      2: 'Brake Service - Rs. 12,999',
+      3: 'Engine Diagnosis - Rs. 8,999',
+      4: 'Battery Check - Rs. 2,999',
+      5: 'Tire Rotation - Rs. 3,999',
       6: 'Custom Project - Custom Quote'
     };
     return services[data.serviceTypeId as number] || 'Unknown Service';
