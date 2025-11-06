@@ -212,9 +212,12 @@ export default function AssignedTasks() {
   };
 
   useEffect(() => {
+    const timers = timersRef.current;
+    const approvalTimeouts = approvalTimeoutsRef.current;
+    
     return () => {
-      Object.values(timersRef.current).forEach((id) => id && clearInterval(id));
-      Object.values(approvalTimeoutsRef.current).forEach(
+      Object.values(timers).forEach((id) => id && clearInterval(id));
+      Object.values(approvalTimeouts).forEach(
         (id) => id && clearTimeout(id)
       );
     };

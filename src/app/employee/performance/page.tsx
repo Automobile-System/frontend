@@ -42,9 +42,9 @@ interface ServiceTypeData {
 
 export default function PerformancePage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedMonth, setSelectedMonth] = useState("November 2025");
+  const [selectedMonth] = useState("November 2025");
 
-  const [earnings, setEarnings] = useState<EarningsBreakdown>({
+  const [earnings] = useState<EarningsBreakdown>({
     baseSalary: 75000,
     performanceBonus: 12500,
     demandBonus: 8200,
@@ -53,7 +53,7 @@ export default function PerformancePage() {
     totalEarnings: 101100,
   });
 
-  const [demandPercentage, setDemandPercentage] = useState(78);
+  const [demandPercentage] = useState(78);
 
   // Mock data for charts
   const monthlyTaskData: MonthlyData[] = [

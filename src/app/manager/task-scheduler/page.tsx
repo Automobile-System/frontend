@@ -165,13 +165,24 @@ export default function TaskSchedulerPage() {
     setShowAddTaskModal(true);
   };
 
-  const handleProjectSubmit = (formData: any) => {
+  const handleProjectSubmit = (formData: {
+    customerName: string;
+    contactNumber: string;
+    vehicleRegistration: string;
+    vehicleModel: string;
+    projectTitle: string;
+    projectDescription: string;
+    startDate: string;
+    estimatedCompletionDate: string;
+    totalCost: string;
+    subTasks: Array<{ name: string; hours: number }>;
+  }) => {
     console.log('New Project Data:', formData);
     // TODO: Implement API call to save the project
     setShowProjectModal(false);
   };
 
-  const handleTaskSubmit = (formData: any) => {
+  const handleTaskSubmit = (formData: Record<string, string>) => {
     // Create a new pending task from the form data
     const newTask: PendingTask = {
       id: `#${Math.floor(1000 + Math.random() * 9000)}`, // Generate a random 4-digit ID
@@ -193,7 +204,7 @@ export default function TaskSchedulerPage() {
     setShowEmployeeModal(true);
   };
 
-  const handleEmployeeAssigned = (employeeId: string) => {
+  const handleEmployeeAssigned = () => {
     if (selectedTask) {
       // Remove the task from pending tasks after assignment
       setTasks(tasks.filter(task => task.id !== selectedTask.id));

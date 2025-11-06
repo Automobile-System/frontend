@@ -105,7 +105,7 @@ export default function EmployeesPage() {
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [selectedEmployeeForTask, setSelectedEmployeeForTask] = useState<typeof EMPLOYEES[0] | null>(null);
 
-  const handleTaskAssignment = (formData: any) => {
+  const handleTaskAssignment = (formData: Record<string, string>) => {
     // Here you would typically send this data to your backend
     console.log('Task Assignment Data:', formData);
     // TODO: Implement the API call to save the task
@@ -153,7 +153,7 @@ export default function EmployeesPage() {
               </tr>
             </thead>
             <tbody>
-              {EMPLOYEES.map((emp, idx) => (
+              {EMPLOYEES.map((emp) => (
                 <tr key={emp.name}>
                   <td className="px-4 py-3 font-semibold text-gray-800 bg-white shadow-sm rounded-l-lg">
                     {emp.name}

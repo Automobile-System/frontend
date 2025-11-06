@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 import {
-    FiHome, FiSettings, FiMessageSquare, FiUser, FiBook, FiTruck, FiDollarSign, FiUsers, FiChevronLeft, FiChevronRight
+    FiHome, FiSettings, FiMessageSquare, FiBook, FiTruck, FiDollarSign, FiUsers, FiChevronLeft, FiChevronRight
 } from 'react-icons/fi';
 
 export default function CustomerSidebar() {

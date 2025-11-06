@@ -14,7 +14,7 @@ export type Employee = {
 export function useEmployees() {
   const [data, setData] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -23,7 +23,7 @@ export function useEmployees() {
       const res = await getEmployees();
       setData(res);
     } catch (err) {
-      setError(err);
+      setError(err instanceof Error ? err : new Error(String(err)));
     } finally {
       setLoading(false);
     }

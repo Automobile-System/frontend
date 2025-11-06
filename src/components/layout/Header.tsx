@@ -19,7 +19,6 @@ import {
   Moon, 
   Sun, 
   Monitor,
-  Car,
   Menu
 } from "lucide-react"
 import { useTheme } from "next-themes"

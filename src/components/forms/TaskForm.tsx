@@ -8,14 +8,40 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getServiceTypes, getAvailableEmployees, postTask } from "@/services/api";
 import { showToast } from "@/lib/toast";
 
+interface ServiceType {
+  id: string;
+  name: string;
+}
+
+interface Employee {
+  id: string;
+  name: string;
+}
+
+interface TaskFormData {
+  customerName?: string;
+  contactNumber?: string;
+  vehicleRegistration?: string;
+  vehicleModel?: string;
+  serviceType?: string;
+  serviceNote?: string;
+  assignedEmployee?: string;
+  estimatedTime?: string;
+  estimatedDurationHours?: string;
+  estimatedPrice?: string;
+  preferredDate?: string;
+  preferredTime?: string;
+  assignEmployeeId?: string;
+}
+
 type Props = {
-  onCreated?: (task: any) => void;
-  initial?: Partial<any>;
+  onCreated?: (task: TaskFormData) => void;
+  initial?: Partial<TaskFormData>;
 };
 
 export default function TaskForm({ onCreated, initial = {} }: Props) {
-  const [serviceTypes, setServiceTypes] = useState<any[]>([]);
-  const [employees, setEmployees] = useState<any[]>([]);
+  const [serviceTypes, setServiceTypes] = useState<ServiceType[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     customerName: initial.customerName ?? "",
@@ -36,7 +62,7 @@ export default function TaskForm({ onCreated, initial = {} }: Props) {
     getAvailableEmployees().then(setEmployees).catch(() => setEmployees([]));
   }, []);
 
-  function setField<K extends keyof typeof form>(k: K, v: any) {
+  function setField<K extends keyof typeof form>(k: K, v: string | number) {
     setForm((s) => ({ ...s, [k]: v }));
   }
 
@@ -62,8 +88,9 @@ export default function TaskForm({ onCreated, initial = {} }: Props) {
       const task = await postTask(payload);
       showToast.success("Task created");
       onCreated?.(task);
-    } catch (err: any) {
-      showToast.error("Could not create task", (err?.message ?? String(err)) as string);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      showToast.error("Could not create task", message);
     } finally {
       setLoading(false);
     }
@@ -100,14 +127,14 @@ export default function TaskForm({ onCreated, initial = {} }: Props) {
               <Label>Service Type</Label>
               <select value={form.serviceType} onChange={(e) => setField("serviceType", e.target.value)} className="w-full rounded-md border p-2">
                 <option value="">Select service type</option>
-                {serviceTypes.map((s: any) => <option key={s.id ?? s} value={s.id ?? s}>{s.name ?? s}</option>)}
+                {serviceTypes.map((s) => <option key={s.id ?? s} value={s.id ?? s}>{s.name ?? s}</option>)}
               </select>
             </div>
             <div>
               <Label>Assign Employee</Label>
               <select value={form.assignEmployeeId} onChange={(e) => setField("assignEmployeeId", e.target.value)} className="w-full rounded-md border p-2">
-                <option value="">(Optional) Select employee</option>
-                {employees.map((emp: any) => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
+                <option value="">Select employee</option>
+                {employees.map((emp) => <option key={emp.id} value={emp.id}>{emp.name}</option>)}
               </select>
             </div>
           </div>

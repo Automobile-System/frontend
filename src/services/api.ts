@@ -40,10 +40,10 @@ export const getEmployeeHistory = (id: string) =>
   apiFetch(`/api/employees/${id}/history`);
 
 /* Services / Tasks / Projects */
-export const postTask = (payload: any) =>
+export const postTask = (payload: Record<string, unknown>) =>
   apiFetch("/api/tasks", { method: "POST", body: JSON.stringify(payload) });
 
-export const postProject = (payload: any) =>
+export const postProject = (payload: Record<string, unknown>) =>
   apiFetch("/api/projects", { method: "POST", body: JSON.stringify(payload) });
 
 export const getProjects = () => apiFetch("/api/projects");
@@ -56,7 +56,7 @@ export const getAvailableEmployees = () => apiFetch("/api/employees/available");
 export const getSchedule = (fromIso?: string, toIso?: string) =>
   apiFetch(`/api/schedule${fromIso && toIso ? `?from=${fromIso}&to=${toIso}` : ""}`);
 
-export const putScheduleTask = (id: string, payload: any) =>
+export const putScheduleTask = (id: string, payload: Record<string, unknown>) =>
   apiFetch(`/api/schedule/task/${id}`, { method: "PUT", body: JSON.stringify(payload) });
 
 export const postAutoBalance = () =>

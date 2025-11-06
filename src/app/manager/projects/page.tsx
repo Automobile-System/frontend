@@ -90,12 +90,23 @@ export default function ProjectsManagement() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projects, setProjects] = useState(INITIAL_PROJECTS);
 
-  const handleCreateProject = (formData: any) => {
+  const handleCreateProject = (formData: {
+    customerName: string;
+    contactNumber: string;
+    vehicleRegistration: string;
+    vehicleModel: string;
+    projectTitle: string;
+    projectDescription: string;
+    startDate: string;
+    estimatedCompletionDate: string;
+    totalCost: string;
+    subTasks: Array<{ name: string; hours: number }>;
+  }) => {
     const newProject: Project = {
       id: `PRJ-${String(projects.length + 1).padStart(3, '0')}`,
-      title: formData.title,
-      customer: formData.customer,
-      estimatedCost: `Rs. ${formData.estimatedCost}`,
+      title: formData.projectTitle,
+      customer: formData.customerName,
+      estimatedCost: `Rs. ${formData.totalCost}`,
       startDate: new Date().toLocaleDateString('en-US', { 
         month: 'short', 
         day: 'numeric', 

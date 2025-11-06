@@ -23,7 +23,7 @@ interface SidebarProps {
 /**
  * The Sidebar component, styled to match AdminSidebar.
  */
-function Sidebar({ activePage, className = '' }: SidebarProps) {
+export function Sidebar({ activePage, className = '' }: SidebarProps) {
   const pathname = usePathname();
   
   // Automatically determine active page from pathname if not explicitly provided

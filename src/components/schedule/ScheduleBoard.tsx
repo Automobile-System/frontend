@@ -1,8 +1,7 @@
 import { useSchedule, ScheduleTask } from "@/hooks/useSchedule";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export function ScheduleBoard() {
   const [dateRange, setDateRange] = useState(() => {
@@ -15,7 +14,7 @@ export function ScheduleBoard() {
     };
   });
 
-  const { data: tasks, loading, error, updateTask, autoBalance } = useSchedule(
+  const { data: tasks, loading, error, autoBalance } = useSchedule(
     dateRange.from,
     dateRange.to
   );
@@ -28,22 +27,6 @@ export function ScheduleBoard() {
     }
     tasksByEmployee[task.employeeId].push(task);
   });
-
-  const handleDrop = async (taskId: string, newEmployeeId: string) => {
-    const task = tasks?.find(t => t.id === taskId);
-    if (!task) return;
-
-    try {
-      await updateTask(taskId, {
-        startTime: task.startTime,
-        endTime: task.endTime,
-        employeeId: newEmployeeId
-      });
-      toast.success('Task reassigned');
-    } catch (error) {
-      toast.error('Failed to reassign task');
-    }
-  };
 
   if (loading) return <div>Loading schedule...</div>;
   if (error) return <div>Error loading schedule</div>;

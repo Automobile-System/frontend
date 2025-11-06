@@ -154,7 +154,7 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-2">Task Not Found</h2>
             <p className="text-gray-600 mb-4">
-              The task you're looking for doesn't exist.
+              The task you&apos;re looking for doesn&apos;t exist.
             </p>
             <Button onClick={() => router.push("/employee/tasks")}>
               <ArrowLeft className="h-4 w-4 mr-2" />

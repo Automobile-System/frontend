@@ -226,7 +226,7 @@ export default function SubTaskModal({
               onClick={handleFinalize}
               disabled={subTasks.length === 0}
             >
-              ✓ Finalize & Move Project to "In Progress"
+              ✓ Finalize & Move Project to &quot;In Progress&quot;
             </Button>
           </div>
         </div>

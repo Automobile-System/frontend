@@ -85,7 +85,7 @@ export default function ServiceChart() {
                     paddingBottom: '0.5rem'
                 }}>
 
-                    {serviceData.map((data, index) => {
+                    {serviceData.map((data) => {
                         const barHeight = `${(data.services / maxServices) * 100}%`;
                         const isCurrentMonth = data.month === 'Nov';
 
