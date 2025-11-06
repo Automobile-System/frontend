@@ -82,8 +82,8 @@ export default function SettingsPage() {
 
         {/* Roles & Permissions */}
         <Card className="border-[#020079]/20">
-          <CardHeader className="bg-[#020079] border-b border-[#020079]">
-            <CardTitle className="font-bebas text-xl text-white">
+          <CardHeader className="border-b border-[#020079]/20">
+            <CardTitle className="font-bebas text-xl text-[#020079]">
               Manage Roles & Permissions
             </CardTitle>
           </CardHeader>
@@ -134,8 +134,8 @@ export default function SettingsPage() {
 
         {/* Services & Pricing */}
         <Card className="border-[#020079]/20">
-          <CardHeader className="bg-[#020079] border-b border-[#020079]">
-            <CardTitle className="font-bebas text-xl text-white">
+          <CardHeader className="border-b border-[#020079]/20">
+            <CardTitle className="font-bebas text-xl text-[#020079]">
               Manage Services & Pricing
             </CardTitle>
           </CardHeader>
@@ -203,8 +203,8 @@ export default function SettingsPage() {
         {/* Employee Task Limits */}
         {taskLimits && (
           <Card className="border-[#020079]/20">
-            <CardHeader className="bg-[#020079] border-b border-[#020079]">
-              <CardTitle className="font-bebas text-xl text-white">
+            <CardHeader className="border-b border-[#020079]/20">
+              <CardTitle className="font-bebas text-xl text-[#020079]">
                 Employee Task Limits
               </CardTitle>
             </CardHeader>
@@ -238,8 +238,8 @@ export default function SettingsPage() {
         {/* Compensation Rules */}
         {compensation && (
           <Card className="border-[#020079]/20">
-            <CardHeader className="bg-[#020079] border-b border-[#020079]">
-              <CardTitle className="font-bebas text-xl text-white">
+            <CardHeader className="border-b border-[#020079]/20">
+              <CardTitle className="font-bebas text-xl text-[#020079]">
                 Compensation Rules
               </CardTitle>
             </CardHeader>

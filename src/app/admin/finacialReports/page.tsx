@@ -231,8 +231,8 @@ export default function FinancialReportsPage() {
 
         {/* Financial Breakdown Table */}
         <Card className="mb-10 border border-[#020079]/20 bg-white">
-          <CardHeader className="bg-gradient-to-r from-[#020079] to-[#01024D] py-6">
-            <CardTitle className="text-2xl font-bebas text-white">
+          <CardHeader className="border-b border-[#020079]/20">
+            <CardTitle className="text-xl font-bebas text-[#020079]">
               Service Type Financial Breakdown
             </CardTitle>
           </CardHeader>

@@ -258,8 +258,8 @@ export default function WorkforceOverviewPage() {
 
         {/* Top Employee Rankings */}
         <Card className="mb-8 bg-white border-[#020079]/20">
-          <CardHeader className="bg-[#020079] border-b border-[#020079]">
-            <CardTitle className="text-xl font-bebas text-white">
+          <CardHeader className="border-b border-[#020079]/20">
+            <CardTitle className="text-xl font-bebas text-[#020079]">
               Top Employee Rankings by Rating
             </CardTitle>
           </CardHeader>
@@ -298,7 +298,7 @@ export default function WorkforceOverviewPage() {
 
         {/* AI Reward Suggestions */}
         <Card className="mb-8 bg-white border-[#FFD700]/40">
-          <CardHeader className="bg-[#FFD700] border-b border-[#FFD700]">
+          <CardHeader className="border-b border-[#020079]/20">
             <CardTitle className="text-xl font-bebas text-[#020079]">
               AI Reward Suggestions
             </CardTitle>
@@ -339,8 +339,8 @@ export default function WorkforceOverviewPage() {
 
         {/* Manager Performance Summary */}
         <Card className="mb-8 bg-white border-[#020079]/20">
-          <CardHeader className="bg-[#020079] border-b border-[#020079]">
-            <CardTitle className="text-xl font-bebas text-white">
+          <CardHeader className="border-b border-[#020079]/20">
+            <CardTitle className="text-xl font-bebas text-[#020079]">
               Manager Performance Summary
             </CardTitle>
           </CardHeader>
@@ -348,23 +348,23 @@ export default function WorkforceOverviewPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-[#020079] border-b-2 border-[#020079]">
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                  <tr className="border-b-2 border-[#020079]/20">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Manager Name
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Tasks Assigned
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Completion Rate
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Avg Employee Rating
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Actions
                     </th>
                   </tr>
@@ -433,9 +433,9 @@ export default function WorkforceOverviewPage() {
 
         {/* Manage All Managers */}
         <Card className="mb-8 bg-white border-[#020079]/20">
-          <CardHeader className="bg-[#020079] border-b border-[#020079]">
+          <CardHeader className="border-b border-[#020079]/20">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-bebas text-white">
+              <CardTitle className="text-xl font-bebas text-[#020079]">
                 Manage All Managers
               </CardTitle>
               <Button
@@ -458,26 +458,26 @@ export default function WorkforceOverviewPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-[#020079] border-b-2 border-[#020079]">
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                  <tr className="border-b-2 border-[#020079]/20">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Manager ID
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Name
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Email
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Phone
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Join Date
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Actions
                     </th>
                   </tr>
@@ -535,9 +535,9 @@ export default function WorkforceOverviewPage() {
 
         {/* Manage All Employees */}
         <Card className="mb-8 bg-white border-[#020079]/20">
-          <CardHeader className="bg-[#020079] border-b border-[#020079]">
+          <CardHeader className="border-b border-[#020079]/20">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-bebas text-white">
+              <CardTitle className="text-xl font-bebas text-[#020079]">
                 Manage All Employees
               </CardTitle>
               <Button
@@ -561,29 +561,29 @@ export default function WorkforceOverviewPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="bg-[#020079] border-b-2 border-[#020079]">
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                  <tr className="border-b-2 border-[#020079]/20">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Employee ID
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Name
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Specialization
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Email
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Phone
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Rating
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-white">
+                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
                       Actions
                     </th>
                   </tr>

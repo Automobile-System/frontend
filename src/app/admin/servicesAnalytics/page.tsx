@@ -232,8 +232,8 @@ export default function ServicesAnalyticsPage() {
 
         {/* Service Performance Table */}
         <Card className="bg-white border-[#020079]/20">
-          <CardHeader className="bg-[#020079] border-b border-[#020079]">
-            <CardTitle className="text-xl font-bebas text-white">Service Performance Breakdown</CardTitle>
+          <CardHeader className="border-b border-[#020079]/20">
+            <CardTitle className="text-xl font-bebas text-[#020079]">Service Performance Breakdown</CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
             {performanceData && performanceData.length > 0 ? (

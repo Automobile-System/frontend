@@ -99,8 +99,8 @@ export default function AIInsightsPage() {
         {/* Demand Forecast Section */}
         {demandForecast && (
           <Card className="mb-6 bg-white border-[#020079]/20">
-            <CardHeader className="bg-[#020079] border-b border-[#020079]">
-              <CardTitle className="text-xl font-bebas text-white">
+            <CardHeader className="border-b border-[#020079]/20">
+              <CardTitle className="text-xl font-bebas text-[#020079]">
                 Next Month Demand Forecast
               </CardTitle>
             </CardHeader>
@@ -154,8 +154,8 @@ export default function AIInsightsPage() {
         {/* Profit Projection Section */}
         {profitProjection && (
           <Card className="mb-6 bg-white border-[#020079]/20">
-            <CardHeader className="bg-[#020079] border-b border-[#020079]">
-              <CardTitle className="text-xl font-bebas text-white">
+            <CardHeader className="border-b border-[#020079]/20">
+              <CardTitle className="text-xl font-bebas text-[#020079]">
                 Profit Projection Curve (Q4 2025)
               </CardTitle>
             </CardHeader>
@@ -198,8 +198,8 @@ export default function AIInsightsPage() {
         {/* Underperforming Departments Section */}
         {underperformingDepts.length > 0 && (
           <Card className="mb-6 bg-white border-[#020079]/20">
-            <CardHeader className="bg-[#020079] border-b border-[#020079]">
-              <CardTitle className="text-xl font-bebas text-white">
+            <CardHeader className="border-b border-[#020079]/20">
+              <CardTitle className="text-xl font-bebas text-[#020079]">
                 Underperforming Department Warnings
               </CardTitle>
             </CardHeader>
@@ -239,8 +239,8 @@ export default function AIInsightsPage() {
         {/* Skill Shortage Predictions Section */}
         {skillShortages.length > 0 && (
           <Card className="mb-6 bg-white border-[#020079]/20">
-            <CardHeader className="bg-[#020079] border-b border-[#020079]">
-              <CardTitle className="text-xl font-bebas text-white">
+            <CardHeader className="border-b border-[#020079]/20">
+              <CardTitle className="text-xl font-bebas text-[#020079]">
                 Skill Shortage Predictions
               </CardTitle>
             </CardHeader>
