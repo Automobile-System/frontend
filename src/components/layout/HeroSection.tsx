@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ChevronLeft, ChevronRight, Play, Zap, Award, Globe2 } from "lucide-react"
@@ -115,6 +116,7 @@ export function HeroSection({
   autoPlayInterval = 7000,
   className = ""
 }: HeroSectionProps) {
+  const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
 
@@ -192,6 +194,7 @@ export function HeroSection({
                 <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-600">
                   <Button 
                     size="lg"
+                    onClick={() => router.push('/login')}
                     className="btn-accent text-black px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-accent-glow group"
                   >
                     LOG IN
@@ -200,6 +203,7 @@ export function HeroSection({
                   <Button 
                     variant="outline"
                     size="lg"
+                    onClick={() => router.push('/signup')}
                     className="btn-accent-outline backdrop-blur-sm px-8 py-4 text-lg font-medium transition-all duration-300"
                   >
                     SIGN UP
