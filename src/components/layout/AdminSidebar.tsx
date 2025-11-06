@@ -48,7 +48,7 @@ export default function AdminSidebar() {
   const isActive = (href: string) => pathname === href
 
   return (
-    <aside className="w-[270px] bg-white border-r border-[#020079]/10 min-h-screen">
+    <aside className="w-[270px] bg-[#020079]/5 border-r border-[#020079]/20 min-h-screen">
       <div className="p-6">
         <nav className="space-y-2">
           {navigationItems.map((item) => (
@@ -58,7 +58,7 @@ export default function AdminSidebar() {
               className={`block px-4 py-3 rounded-lg text-sm font-roboto transition-all duration-200 ${
                 isActive(item.href)
                   ? "bg-[#020079] text-white font-semibold"
-                  : "text-[#020079] hover:bg-[#020079]/5"
+                  : "text-[#020079] hover:bg-[#020079]/10 bg-white"
               }`}
             >
               {item.label}
