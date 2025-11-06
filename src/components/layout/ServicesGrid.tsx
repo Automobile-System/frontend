@@ -34,7 +34,7 @@ interface ServiceCategory {
 const servicesData: ServiceCategory[] = [
   {
     title: "PERIODIC MAINTENANCE",
-    color: "bg-red-600",
+    color: "bg-brand",
     items: [
       { icon: <Snowflake className="h-5 w-5" />, label: "Washing Packages" },
       { icon: <Droplet className="h-5 w-5" />, label: "Lube Services" },
@@ -48,7 +48,7 @@ const servicesData: ServiceCategory[] = [
   },
   {
     title: "NANO COATING",
-    color: "bg-red-600",
+    color: "bg-brand",
     items: [
       { icon: <Car className="h-5 w-5" />, label: "Packages" },
       { icon: <CarFront className="h-5 w-5" />, label: "Treatments" }
@@ -56,7 +56,7 @@ const servicesData: ServiceCategory[] = [
   },
   {
     title: "COLLISION REPAIRS",
-    color: "bg-red-600",
+    color: "bg-brand",
     items: [
       { icon: <ShieldCheck className="h-5 w-5" />, label: "Insurance Claims" },
       { icon: <CircleDot className="h-5 w-5" />, label: "Wheel Alignment" },
@@ -66,7 +66,7 @@ const servicesData: ServiceCategory[] = [
   },
   {
     title: "TYRE SERVICES",
-    color: "bg-red-600",
+    color: "bg-brand",
     items: [
       { icon: <Battery className="h-5 w-5" />, label: "Battery Services" },
       { icon: <CircleDot className="h-5 w-5" />, label: "Tyre Replacements" }
@@ -74,7 +74,7 @@ const servicesData: ServiceCategory[] = [
   },
   {
     title: "MECHANICAL REPAIR",
-    color: "bg-red-600",
+    color: "bg-brand",
     items: [
       { icon: <Wrench className="h-5 w-5" />, label: "Spare Parts Replacements" },
       { icon: <Zap className="h-5 w-5" />, label: "Hybrid Services" }

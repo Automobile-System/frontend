@@ -7,6 +7,9 @@ import { Navigation } from "@/components/layout/Navigation"
 import { HeroSection } from "@/components/layout/HeroSection"
 import { ContactBar } from "@/components/layout/ContactBar" 
 import { ServicesGrid } from "@/components/layout/ServicesGrid"
+import { AboutSection } from "@/components/layout/AboutSection"
+import { ProjectsSection } from "@/components/layout/ProjectsSection"
+import { EmergencyServicesSection } from "@/components/layout/EmergencyServicesSection"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -35,33 +38,43 @@ const LandingPage = () => {
       <HeroSection />
 
       {/* Contact Bar */}
-  <ContactBar />
+      <ContactBar />
 
-  {/* About Us Section */}
-  <section id="about" className="py-20 bg-white">
-        <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      {/* About Us Section */}
+      <AboutSection />
+
+      {/* Services Section */}
+      <ServicesGrid />
+
+      {/* Projects Section */}
+      <ProjectsSection />
+
+      {/* Emergency Services Section */}
+      <EmergencyServicesSection />
+
+      {/* Partners Section */}
+      <section className="py-12 bg-gradient-to-r from-black via-gray-900 to-black border-y border-red-600/20">
             {/* Left Content */}
             <div className="space-y-8">
               <div>
-                <Badge className="bg-accent-soft text-accent border-accent mb-4 font-inter">
+                <Badge className="bg-red-100 text-red-600 border-red-200 mb-4 font-inter">
                   <Award className="mr-1 h-4 w-4" />
                   Our Story
                 </Badge>
-                <h2 className="text-4xl md:text-5xl font-bold text-brand mb-4 font-roboto">ABOUT US</h2>
+                <h2 className="text-4xl md:text-5xl font-bold text-red-600 mb-4 font-roboto">ABOUT US</h2>
                 <h3 className="text-2xl md:text-3xl font-bold text-black mb-6 font-roboto leading-tight">
-                  Over <span className="text-accent">28 Years</span> of Excellence in the automotive service industry
+                  Over <span className="text-red-600">28 Years</span> of Excellence in the automotive service industry
                 </h3>
                 <p className="text-gray-600 mb-8 leading-relaxed font-inter text-lg">
                   NitroLine is a premium automotive services and solutions provider. We deliver end‑to‑end maintenance, repairs, and detailing with a focus on quality and customer trust.
-                  <strong className="text-accent"> Our culture is built on three pillars: Promptness, Respect & Oneness.</strong>
+                  <strong className="text-red-600"> Our culture is built on three pillars: Promptness, Respect & Oneness.</strong>
                 </p>
               </div>
 
               {/* Values */}
               <div className="space-y-6">
                 <div className="flex items-center space-x-6 group">
-                  <div className="w-44 h-28 bg-brand text-white flex items-center justify-center text-lg font-bold transform -skew-x-12 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                  <div className="w-44 h-28 bg-gradient-to-r from-red-600 to-red-700 text-white flex items-center justify-center text-lg font-bold transform -skew-x-12 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                     <Zap className="mr-2 h-5 w-5" />
                     PROMPTNESS
                   </div>
@@ -81,7 +94,7 @@ const LandingPage = () => {
                 </div>
                 
                 <div className="flex items-center space-x-6 group">
-                  <div className="w-44 h-28 bg-brand text-white flex items-center justify-center text-lg font-bold transform -skew-x-12 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                  <div className="w-44 h-28 bg-gradient-to-r from-red-600 to-red-700 text-white flex items-center justify-center text-lg font-bold transform -skew-x-12 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                     <Users className="mr-2 h-5 w-5" />
                     ONENESS
                   </div>
@@ -99,7 +112,7 @@ const LandingPage = () => {
                   <Globe2 className="mr-1 h-4 w-4" />
                   Our Projects
                 </Badge>
-                <h2 className="text-4xl md:text-5xl font-bold text-brand mb-4 font-roboto">PROJECTS</h2>
+                <h2 className="text-4xl md:text-5xl font-bold text-red-600 mb-4 font-roboto">PROJECTS</h2>
                 <h3 className="text-2xl md:text-3xl font-bold text-black mb-8 font-roboto leading-tight">
                   Featured client work and case studies
                 </h3>
@@ -111,15 +124,15 @@ const LandingPage = () => {
               {/* Projects list */}
               <div className="space-y-4">
                 {[
-                  { name: "Fleet Maintenance Platform", desc: "Digital service scheduling and reporting for enterprise fleets." },
-                  { name: "Express Detailing Kiosks", desc: "High‑throughput detailing with standardized quality." },
-                  { name: "EV Readiness Program", desc: "Diagnostics and training for hybrid/EV service bays." },
-                  { name: "4x4 Custom Builds", desc: "Specialized off‑road kits and performance tuning." },
-                  { name: "Service Management Suite", desc: "Unified intake to delivery with customer messaging." },
-                  { name: "Supply Chain Portal", desc: "Parts tracking and vendor coordination for workshops." }
+                  { name: "Fleet Maintenance Platform", desc: "Digital service scheduling and reporting for enterprise fleets.", bg: "bg-black" },
+                  { name: "Express Detailing Kiosks", desc: "High‑throughput detailing with standardized quality.", bg: "bg-gray-800" },
+                  { name: "EV Readiness Program", desc: "Diagnostics and training for hybrid/EV service bays.", bg: "bg-red-600" },
+                  { name: "4x4 Custom Builds", desc: "Specialized off‑road kits and performance tuning.", bg: "bg-black" },
+                  { name: "Service Management Suite", desc: "Unified intake to delivery with customer messaging.", bg: "bg-red-600" },
+                  { name: "Supply Chain Portal", desc: "Parts tracking and vendor coordination for workshops.", bg: "bg-gray-800" }
                 ].map((proj, index) => (
                   <div key={index} className="flex items-center space-x-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 group">
-                    <div className={`bg-brand-gradient text-white px-4 py-3 font-bold rounded font-roboto text-sm flex items-center group-hover:scale-105 transition-transform border border-white/20`}>
+                    <div className={`${proj.bg} text-white px-4 py-3 font-bold rounded font-roboto text-sm flex items-center group-hover:scale-105 transition-transform`}>
                       <Building2 className="mr-2 h-4 w-4" />
                       {proj.name}
                     </div>
@@ -129,7 +142,7 @@ const LandingPage = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <Button asChild className="btn-accent text-black px-8 py-3 font-roboto font-medium transition-all duration-300 hover:scale-105 group">
+                <Button asChild className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 font-roboto font-medium transition-all duration-300 hover:scale-105 group">
                   <Link href="#about">
                     About us
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -148,7 +161,7 @@ const LandingPage = () => {
       </section>
 
       {/* Roadside Assistance Section */}
-  <section id="roadside" className="py-20 bg-gradient-to-br from-brand via-[#0c337d] to-black text-white relative overflow-hidden">
+      <section id="roadside" className="py-20 bg-gradient-to-br from-red-600 via-red-700 to-black text-white relative overflow-hidden">
         <div className="absolute inset-0">
           <div className="w-full h-full bg-black/20 opacity-20"></div>
         </div>
@@ -164,10 +177,10 @@ const LandingPage = () => {
                 </Badge>
                 
                 <div className="space-y-4 mb-8">
-                  <div className="text-4xl md:text-6xl font-bold transform -skew-x-6 inline-block bg-white text-brand px-6 py-3 rounded font-roboto shadow-2xl">
+                  <div className="text-4xl md:text-6xl font-bold transform -skew-x-6 inline-block bg-white text-red-600 px-6 py-3 rounded font-roboto shadow-2xl">
                     ROADSIDE
                   </div>
-                  <div className="text-4xl md:text-6xl font-bold transform -skew-x-6 inline-block bg-white text-brand px-6 py-3 rounded font-roboto shadow-2xl ml-4">
+                  <div className="text-4xl md:text-6xl font-bold transform -skew-x-6 inline-block bg-white text-red-600 px-6 py-3 rounded font-roboto shadow-2xl ml-4">
                     ASSISTANCE
                   </div>
                 </div>
@@ -191,14 +204,14 @@ const LandingPage = () => {
                   { icon: Car, text: "Towing Services" }
                 ].map((service, index) => (
                   <div key={index} className="flex items-center space-x-3 bg-white/10 backdrop-blur-sm rounded-lg p-4 hover:bg-white/20 transition-all duration-300 group">
-                    <service.icon className="h-6 w-6 text-accent group-hover:text-white group-hover:scale-110 transition-all duration-300" />
+                    <service.icon className="h-6 w-6 text-red-300 group-hover:text-white group-hover:scale-110 transition-all duration-300" />
                     <span className="text-lg font-inter group-hover:text-white transition-colors">{service.text}</span>
                   </div>
                 ))}
               </div>
 
               <div className="pt-6">
-                <Button asChild size="lg" className="bg-white text-brand hover:bg-gray-100 font-roboto font-bold px-8 py-4 text-lg transition-all duration-300 hover:scale-105 group">
+                <Button asChild size="lg" className="bg-white text-red-600 hover:bg-gray-100 font-roboto font-bold px-8 py-4 text-lg transition-all duration-300 hover:scale-105 group">
                   <a href="tel:0755004004">
                     <Shield className="mr-2 h-5 w-5" />
                     Request Emergency Service
@@ -268,20 +281,20 @@ const LandingPage = () => {
                   <Image src={p.img} alt={p.title} fill className="object-cover" />
                 </div>
                 <CardContent className="p-4">
-                  <h4 className="font-bold text-brand font-roboto">{p.title}</h4>
+                  <h4 className="font-bold text-red-600 font-roboto">{p.title}</h4>
                 </CardContent>
               </Card>
             ))}
           </div>
 
           <div className="text-center mt-10">
-            <Button className="btn-accent text-black font-roboto font-medium px-8">View All Projects</Button>
+            <Button className="bg-red-600 hover:bg-red-700 text-white font-roboto font-medium px-8">View All Projects</Button>
           </div>
         </div>
       </section>
 
       {/* Partners Section */}
-  <section className="py-12 bg-gradient-to-r from-black via-gray-900 to-black border-y border-brand">
+      <section className="py-12 bg-gradient-to-r from-black via-gray-900 to-black border-y border-red-600/20">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center justify-between space-y-6 lg:space-y-0">
             <div className="text-white">
@@ -290,7 +303,7 @@ const LandingPage = () => {
             <div className="flex items-center space-x-8 overflow-x-auto">
               {["LUKOIL", "3M", "CASTROL", "CAUSEWAY PAINTS", "DEBEER", "GYEON", "Mobil 1"].map((brand, index) => (
                 <div key={index} className={`font-bold whitespace-nowrap transition-all duration-300 hover:scale-110 ${
-                  ["3M", "Mobil 1"].includes(brand) ? "text-accent" : 
+                  ["3M", "Mobil 1"].includes(brand) ? "text-red-400" : 
                   brand === "CAUSEWAY PAINTS" ? "text-blue-400" : "text-white"
                 }`}>
                   {brand}
@@ -302,7 +315,7 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-  <footer className="bg-brand text-white py-16">
+      <footer className="bg-black text-white py-16">
         <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* City Network */}
