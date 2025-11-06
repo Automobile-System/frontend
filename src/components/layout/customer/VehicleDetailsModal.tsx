@@ -1,18 +1,7 @@
-interface Vehicle {
-  id: string;
-  make: string;
-  model: string;
-  year: number;
-  licensePlate: string;
-  lastService: string;
-  nextService: string;
-  mileage?: number;
-  color?: string;
-  vin?: string;
-}
+import { CustomerVehicle } from '@/types/authTypes';
 
 interface VehicleDetailsModalProps {
-  vehicle: Vehicle;
+  vehicle: CustomerVehicle;
   onClose: () => void;
 }
 
@@ -21,6 +10,7 @@ export default function VehicleDetailsModal({
   onClose,
 }: VehicleDetailsModalProps) {
   const formatDate = (dateString: string) => {
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "long",
       day: "numeric",
@@ -28,7 +18,14 @@ export default function VehicleDetailsModal({
     });
   };
 
+  // Map CustomerVehicle fields to display format
+  // Since CustomerVehicle doesn't have service dates, we'll use placeholders
+  const nextService = 'N/A'; // TODO: Add service date from backend
+  const lastService = 'N/A'; // TODO: Add last service date from backend
+
   const getServiceStatus = (nextService: string) => {
+    if (nextService === 'N/A') return { status: "No Schedule", color: "#6b7280" };
+    
     const today = new Date();
     const nextServiceDate = new Date(nextService);
     const diffTime = nextServiceDate.getTime() - today.getTime();
@@ -41,7 +38,7 @@ export default function VehicleDetailsModal({
     return { status: "Scheduled", color: "#10b981" };
   };
 
-  const serviceStatus = getServiceStatus(vehicle.nextService);
+  const serviceStatus = getServiceStatus(nextService);
 
   return (
     <div
@@ -89,7 +86,7 @@ export default function VehicleDetailsModal({
                 margin: "0 0 0.5rem 0",
               }}
             >
-              {vehicle.year} {vehicle.make} {vehicle.model}
+              {vehicle.brandName} {vehicle.model}
             </h2>
             <div
               style={{
@@ -109,22 +106,8 @@ export default function VehicleDetailsModal({
                   fontWeight: "500",
                 }}
               >
-                {vehicle.licensePlate}
+                {vehicle.registrationNo}
               </span>
-              {vehicle.color && (
-                <span
-                  style={{
-                    padding: "0.25rem 0.75rem",
-                    backgroundColor: "#f3f4f6",
-                    color: "#374151",
-                    borderRadius: "1rem",
-                    fontSize: "0.75rem",
-                    fontWeight: "500",
-                  }}
-                >
-                  {vehicle.color}
-                </span>
-              )}
             </div>
           </div>
           <button
@@ -163,46 +146,18 @@ export default function VehicleDetailsModal({
                 Make & Model
               </span>
               <span style={{ color: "#111827", fontWeight: "500" }}>
-                {vehicle.make} {vehicle.model}
+                {vehicle.brandName} {vehicle.model}
               </span>
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                Year
+                Capacity
               </span>
               <span style={{ color: "#111827", fontWeight: "500" }}>
-                {vehicle.year}
+                {vehicle.capacity} passengers
               </span>
             </div>
-
-            {vehicle.vin && (
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                  VIN
-                </span>
-                <span
-                  style={{
-                    color: "#111827",
-                    fontWeight: "500",
-                    fontSize: "0.75rem",
-                  }}
-                >
-                  {vehicle.vin}
-                </span>
-              </div>
-            )}
-
-            {vehicle.mileage && (
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                  Mileage
-                </span>
-                <span style={{ color: "#111827", fontWeight: "500" }}>
-                  {vehicle.mileage.toLocaleString()} miles
-                </span>
-              </div>
-            )}
           </div>
         </div>
 
@@ -233,7 +188,7 @@ export default function VehicleDetailsModal({
                 Last Service
               </span>
               <span style={{ color: "#111827", fontWeight: "500" }}>
-                {formatDate(vehicle.lastService)}
+                {formatDate(lastService)}
               </span>
             </div>
 
@@ -251,7 +206,7 @@ export default function VehicleDetailsModal({
                 style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
               >
                 <span style={{ color: "#111827", fontWeight: "500" }}>
-                  {formatDate(vehicle.nextService)}
+                  {formatDate(nextService)}
                 </span>
                 <span
                   style={{
@@ -298,7 +253,7 @@ export default function VehicleDetailsModal({
           <button
             onClick={() => {
               // Handle book service logic
-              console.log("Book service for:", vehicle.id);
+              console.log("Book service for:", vehicle.vehicleId);
               onClose();
             }}
             style={{

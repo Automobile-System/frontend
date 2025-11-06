@@ -21,6 +21,8 @@ export function Sidebar({ activePage, className = '' }: SidebarProps) {
   const getActivePage = (): PageType => {
     if (activePage) return activePage;
     
+    if (!pathname) return 'dashboard';
+    
     if (pathname.includes('/employees')) return 'employees';
     if (pathname.includes('/task-scheduler')) return 'assign';
     if (pathname.includes('/projects')) return 'projects';

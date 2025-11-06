@@ -2,12 +2,24 @@
 
 import { Activity, CheckCircle2, CalendarDays, Hammer } from 'lucide-react';
 
-export default function StatsCards() {
+interface DashboardOverview {
+    activeServices: number;
+    completedServices: number;
+    upcomingAppointments: number;
+    activeProjects: number;
+    completedProjects: number;
+}
+
+interface StatsCardsProps {
+    data: DashboardOverview | null;
+}
+
+export default function StatsCards({ data }: StatsCardsProps) {
     const stats = [
-        { title: 'Active Services', value: '3', status: 'Ongoing', color: '#3b82f6', icon: <Activity size={22} /> },
-        { title: 'Completed Services', value: '12', status: 'Total', color: '#10b981', icon: <CheckCircle2 size={22} /> },
-        { title: 'Upcoming Appointments', value: '2', status: 'Scheduled', color: '#f59e0b', icon: <CalendarDays size={22} /> },
-        { title: 'Active Projects', value: '1', status: 'Custom project', color: '#8b5cf6', icon: <Hammer size={22} /> }
+        { title: 'Active Services', value: data?.activeServices?.toString() || '0', status: 'Ongoing', color: '#3b82f6', icon: <Activity size={22} /> },
+        { title: 'Completed Services', value: data?.completedServices?.toString() || '0', status: 'Total', color: '#10b981', icon: <CheckCircle2 size={22} /> },
+        { title: 'Upcoming Appointments', value: data?.upcomingAppointments?.toString() || '0', status: 'Scheduled', color: '#f59e0b', icon: <CalendarDays size={22} /> },
+        { title: 'Active Projects', value: data?.activeProjects?.toString() || '0', status: 'Custom project', color: '#8b5cf6', icon: <Hammer size={22} /> }
     ];
 
     return (

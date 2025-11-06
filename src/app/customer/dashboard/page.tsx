@@ -10,11 +10,26 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { getCustomerProfile } from "@/services/api";
 import { CustomerProfile } from "@/types/authTypes";
 
+interface DashboardOverview {
+  activeServices: number;
+  completedServices: number;
+  upcomingAppointments: number;
+  activeProjects: number;
+  completedProjects: number;
+}
+
+interface ServiceFrequency {
+  month: string;
+  jobs: number;
+}
+
 export default function CustomerDashboard() {
   const router = useRouter();
   const [customerData, setCustomerData] = useState<CustomerProfile | null>(
     null
   );
+  const [dashboardData, setDashboardData] = useState<DashboardOverview | null>(null);
+  const [serviceFrequency, setServiceFrequency] = useState<ServiceFrequency[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -22,6 +37,18 @@ export default function CustomerDashboard() {
       try {
         const data = await getCustomerProfile();
         setCustomerData(data);
+        
+        // TODO: Fetch dashboard data from API
+        // For now, use default/mock data
+        setDashboardData({
+          activeServices: 3,
+          completedServices: 12,
+          upcomingAppointments: 2,
+          activeProjects: 1,
+          completedProjects: 8
+        });
+        
+        setServiceFrequency([]);
       } catch (error) {
         console.error("Failed to fetch customer data:", error);
       } finally {
@@ -124,7 +151,7 @@ export default function CustomerDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <StatsCards />
+        <StatsCards data={dashboardData} />
 
         {/* Charts and Recommendations */}
         <div
@@ -134,7 +161,7 @@ export default function CustomerDashboard() {
             gap: "1.5rem",
           }}
         >
-          <ServiceChart />
+          <ServiceChart data={serviceFrequency} />
           <Recommendations />
         </div>
       </div>
