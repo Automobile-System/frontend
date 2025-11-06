@@ -1,42 +1,26 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useState } from "react";
-import {
-  FiHome,
-  FiSettings,
-  FiMessageSquare,
-  FiBook,
-  FiTruck,
-  FiDollarSign,
-  FiUsers,
-  FiChevronLeft,
-  FiChevronRight,
-} from "react-icons/fi";
 
 export default function CustomerSidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const menuItems = [
-    { name: "Dashboard", icon: <FiHome />, path: "/customer/dashboard" },
-    { name: "My Vehicles", icon: <FiTruck />, path: "/customer/vehicles" },
+    { name: "Dashboard", path: "/customer/dashboard" },
+    { name: "My Vehicles", path: "/customer/vehicles" },
     {
       name: "Book Service / Project",
-      icon: <FiBook />,
       path: "/customer/book-service",
     },
-    { name: "My Services", icon: <FiSettings />, path: "/customer/services" },
+    { name: "My Services", path: "/customer/services" },
     {
       name: "Preferred Employees",
-      icon: <FiUsers />,
       path: "/customer/preferred-employees",
     },
-    { name: "Messages", icon: <FiMessageSquare />, path: "/customer/messages" },
+    { name: "Messages", path: "/customer/messages" },
     {
       name: "Payment History",
-      icon: <FiDollarSign />,
       path: "/customer/payments",
     },
   ];
@@ -44,14 +28,14 @@ export default function CustomerSidebar() {
   const sidebarStyle = {
     backgroundColor: "rgba(2, 0, 121, 0.05)", // #020079 with 5% opacity - matching admin sidebar
     color: "#020079", // Matching admin sidebar text color
-    width: isCollapsed ? "80px" : "250px",
-    height: "100vh",
+    width: "270px",
+    height: "100%",
     display: "flex",
     flexDirection: "column" as const,
     justifyContent: "space-between",
-    padding: "1rem",
-    transition: "width 0.3s ease",
+    padding: "1.5rem",
     borderRight: "1px solid rgba(2, 0, 121, 0.2)", // Matching admin sidebar border
+    overflow: "auto",
   };
 
   // Using admin sidebar color scheme
@@ -63,71 +47,11 @@ export default function CustomerSidebar() {
   return (
     <div style={sidebarStyle}>
       {/* === Top Section === */}
-      <div>
-        {/* Header */}
-        <div
-          style={{
-            paddingBottom: "1rem",
-            borderBottom: "1px solid rgba(2, 0, 121, 0.2)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          {!isCollapsed && (
-            <div>
-              <h1
-                style={{
-                  fontSize: "1.25rem",
-                  fontWeight: "700",
-                  margin: 0,
-                  color: "#020079",
-                  fontFamily: "var(--font-bebas, sans-serif)",
-                }}
-              >
-                AutoService
-              </h1>
-              <p
-                style={{
-                  fontSize: "0.875rem",
-                  color: "#6b7280",
-                  margin: "0.25rem 0 0 0",
-                  fontFamily: "var(--font-roboto, sans-serif)",
-                  fontWeight: "400",
-                }}
-              >
-                Customer Portal
-              </p>
-            </div>
-          )}
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            style={{
-              padding: "0.4rem",
-              borderRadius: "50%",
-              background: "white",
-              border: "1px solid rgba(2, 0, 121, 0.2)",
-              color: "#020079",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "rgba(2, 0, 121, 0.1)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "white";
-            }}
-          >
-            {isCollapsed ? (
-              <FiChevronRight size={18} />
-            ) : (
-              <FiChevronLeft size={18} />
-            )}
-          </button>
-        </div>
-
+      <div style={{ flex: 1 }}>
         {/* Navigation */}
-        <nav style={{ marginTop: "1rem" }}>
+        <nav
+          style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+        >
           {menuItems.map((item) => (
             <button
               key={item.name}
@@ -139,13 +63,12 @@ export default function CustomerSidebar() {
                 borderRadius: "0.5rem",
                 display: "flex",
                 alignItems: "center",
-                gap: isCollapsed ? "0" : "0.75rem",
+                justifyContent: "flex-start",
                 background: pathname === item.path ? activeColor : "white",
                 color:
                   pathname === item.path ? activeTextColor : inactiveTextColor,
                 border: "none",
                 cursor: "pointer",
-                marginBottom: "0.5rem",
                 transition: "all 0.2s ease",
                 fontSize: "0.875rem",
                 fontFamily: "var(--font-roboto, sans-serif)",
@@ -170,8 +93,7 @@ export default function CustomerSidebar() {
                 }
               }}
             >
-              <span style={{ fontSize: "1.25rem" }}>{item.icon}</span>
-              {!isCollapsed && <span>{item.name}</span>}
+              <span>{item.name}</span>
             </button>
           ))}
         </nav>
@@ -218,32 +140,30 @@ export default function CustomerSidebar() {
             KP
           </span>
         </div>
-        {!isCollapsed && (
-          <div>
-            <p
-              style={{
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                margin: 0,
-                color: "#020079",
-                fontFamily: "var(--font-roboto, sans-serif)",
-              }}
-            >
-              Kethmi Pujani
-            </p>
-            <p
-              style={{
-                fontSize: "0.75rem",
-                color: "#6b7280",
-                margin: 0,
-                fontFamily: "var(--font-roboto, sans-serif)",
-                fontWeight: "400",
-              }}
-            >
-              Customer
-            </p>
-          </div>
-        )}
+        <div>
+          <p
+            style={{
+              fontSize: "0.875rem",
+              fontWeight: "500",
+              margin: 0,
+              color: "#020079",
+              fontFamily: "var(--font-roboto, sans-serif)",
+            }}
+          >
+            Kethmi Pujani
+          </p>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "#6b7280",
+              margin: 0,
+              fontFamily: "var(--font-roboto, sans-serif)",
+              fontWeight: "400",
+            }}
+          >
+            Customer
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 interface AddVehicleModalProps {
@@ -38,8 +40,10 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        zIndex: 50,
+        zIndex: 1000,
+        padding: "1rem",
       }}
+      onClick={onClose}
     >
       <div
         style={{
@@ -50,7 +54,9 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
           maxWidth: "500px",
           maxHeight: "90vh",
           overflowY: "auto",
+          boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div style={{ marginBottom: "1.5rem" }}>
@@ -94,10 +100,20 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
               }
               style={{
                 width: "100%",
-                padding: "0.5rem 0.75rem",
+                padding: "0.75rem",
                 border: "1px solid #d1d5db",
-                borderRadius: "0.375rem",
+                borderRadius: "0.5rem",
                 fontSize: "0.875rem",
+                outline: "none",
+                transition: "border-color 0.2s",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = "#03009B";
+                e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#d1d5db";
+                e.target.style.boxShadow = "none";
               }}
             />
           </div>
@@ -125,10 +141,20 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
               }
               style={{
                 width: "100%",
-                padding: "0.5rem 0.75rem",
+                padding: "0.75rem",
                 border: "1px solid #d1d5db",
-                borderRadius: "0.375rem",
+                borderRadius: "0.5rem",
                 fontSize: "0.875rem",
+                outline: "none",
+                transition: "border-color 0.2s",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = "#03009B";
+                e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#d1d5db";
+                e.target.style.boxShadow = "none";
               }}
             />
           </div>
@@ -158,10 +184,20 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
               }
               style={{
                 width: "100%",
-                padding: "0.5rem 0.75rem",
+                padding: "0.75rem",
                 border: "1px solid #d1d5db",
-                borderRadius: "0.375rem",
+                borderRadius: "0.5rem",
                 fontSize: "0.875rem",
+                outline: "none",
+                transition: "border-color 0.2s",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = "#03009B";
+                e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#d1d5db";
+                e.target.style.boxShadow = "none";
               }}
             />
           </div>
@@ -192,10 +228,20 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
               }
               style={{
                 width: "100%",
-                padding: "0.5rem 0.75rem",
+                padding: "0.75rem",
                 border: "1px solid #d1d5db",
-                borderRadius: "0.375rem",
+                borderRadius: "0.5rem",
                 fontSize: "0.875rem",
+                outline: "none",
+                transition: "border-color 0.2s",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = "#03009B";
+                e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#d1d5db";
+                e.target.style.boxShadow = "none";
               }}
             />
           </div>
@@ -213,24 +259,87 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
             >
               Vehicle Photo (Optional)
             </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
+            <div
               style={{
-                width: "100%",
-                fontSize: "0.875rem",
+                border: "2px dashed #d1d5db",
+                borderRadius: "0.5rem",
+                padding: "1.5rem",
+                textAlign: "center" as const,
+                backgroundColor: "#f9fafb",
+                transition: "all 0.2s ease",
+                cursor: "pointer",
+                position: "relative",
               }}
-            />
-            <p
-              style={{
-                fontSize: "0.75rem",
-                color: "#6b7280",
-                margin: "0.5rem 0 0 0",
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "#03009B";
+                e.currentTarget.style.backgroundColor = "rgba(3, 0, 155, 0.05)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#d1d5db";
+                e.currentTarget.style.backgroundColor = "#f9fafb";
               }}
             >
-              {formData.photo ? formData.photo.name : "No file chosen"}
-            </p>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  opacity: 0,
+                  cursor: "pointer",
+                  zIndex: 1,
+                }}
+              />
+              {formData.photo ? (
+                <div style={{ zIndex: 0, position: "relative" }}>
+                  <p
+                    style={{
+                      fontSize: "0.875rem",
+                      color: "#03009B",
+                      margin: "0 0 0.5rem 0",
+                      fontWeight: "600",
+                    }}
+                  >
+                    ✓ {formData.photo.name}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "#6b7280",
+                      margin: 0,
+                    }}
+                  >
+                    Click to change file
+                  </p>
+                </div>
+              ) : (
+                <div style={{ zIndex: 0, position: "relative" }}>
+                  <p
+                    style={{
+                      fontSize: "0.875rem",
+                      color: "#374151",
+                      margin: "0 0 0.5rem 0",
+                      fontWeight: "500",
+                    }}
+                  >
+                    📷 Upload Photo
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "#6b7280",
+                      margin: 0,
+                    }}
+                  >
+                    Click to browse or drag and drop
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Buttons */}
@@ -241,26 +350,11 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
               type="button"
               onClick={onClose}
               style={{
-                padding: "0.5rem 1rem",
+                padding: "0.75rem 1.5rem",
                 border: "1px solid #d1d5db",
                 background: "white",
                 color: "#374151",
-                borderRadius: "0.375rem",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              style={{
-                padding: "0.5rem 1rem",
-                background: "var(--color-primary)",
-                color: "white",
-                border: "none",
-                borderRadius: "0.375rem",
+                borderRadius: "0.5rem",
                 cursor: "pointer",
                 fontSize: "0.875rem",
                 fontWeight: "500",
@@ -268,18 +362,56 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
                 outline: "none",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "var(--color-primary-hover)";
+                e.currentTarget.style.backgroundColor = "#f9fafb";
+                e.currentTarget.style.borderColor = "#9ca3af";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "var(--color-primary)";
+                e.currentTarget.style.backgroundColor = "white";
+                e.currentTarget.style.borderColor = "#d1d5db";
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              style={{
+                padding: "0.75rem 1.5rem",
+                background: "#03009B",
+                color: "white",
+                border: "none",
+                borderRadius: "0.5rem",
+                cursor: "pointer",
+                fontSize: "0.875rem",
+                fontWeight: "600",
+                transition: "all 0.2s ease",
+                outline: "none",
+                boxShadow: "0 2px 8px rgba(3, 0, 155, 0.2)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#020079";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(3, 0, 155, 0.3)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "#03009B";
+                e.currentTarget.style.boxShadow =
+                  "0 2px 8px rgba(3, 0, 155, 0.2)";
               }}
               onMouseDown={(e) => {
-                e.currentTarget.style.background = "var(--color-primary)";
+                e.currentTarget.style.background = "#01024D";
                 e.currentTarget.style.transform = "scale(0.98)";
               }}
               onMouseUp={(e) => {
-                e.currentTarget.style.background = "var(--color-primary-hover)";
+                e.currentTarget.style.background = "#020079";
                 e.currentTarget.style.transform = "scale(1)";
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.boxShadow =
+                  "0 0 0 3px rgba(3, 0, 155, 0.3)";
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.boxShadow =
+                  "0 2px 8px rgba(3, 0, 155, 0.2)";
               }}
             >
               Add Vehicle

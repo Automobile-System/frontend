@@ -31,8 +31,9 @@ export default function CustomerDashboard() {
             display: "flex",
             alignItems: "flex-start",
             justifyContent: "space-between",
-            marginBottom: "1rem",
-            paddingBottom: "1.5rem",
+            marginBottom: "1.5rem",
+            paddingTop: "0.5rem",
+            paddingBottom: "1rem",
             borderBottom: "2px solid rgba(2, 0, 121, 0.1)",
           }}
         >
@@ -78,6 +79,7 @@ export default function CustomerDashboard() {
               alignItems: "center",
               gap: "0.5rem",
               boxShadow: "0 2px 8px rgba(3, 0, 155, 0.2)",
+              marginTop: "0.75rem",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = "#020079";

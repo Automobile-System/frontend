@@ -1,3 +1,7 @@
+"use client";
+
+import { User } from "lucide-react";
+
 interface Customer {
     id: string;
     name: string;
@@ -32,11 +36,9 @@ export default function ProfileHeader({ customer, onEditProfile }: ProfileHeader
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: 'white',
-                    fontSize: '2rem',
-                    fontWeight: 'bold',
                     flexShrink: 0
                 }}>
-                    {customer.name.split(' ').map(n => n[0]).join('')}
+                    <User size={40} strokeWidth={2} />
                 </div>
 
                 {/* Customer Info */}

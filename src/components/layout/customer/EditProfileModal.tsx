@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 interface Address {
@@ -64,6 +66,7 @@ export default function EditProfileModal({
         zIndex: 1000,
         padding: "1rem",
       }}
+      onClick={onClose}
     >
       <div
         style={{
@@ -76,6 +79,7 @@ export default function EditProfileModal({
           overflowY: "auto",
           boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
         }}
+        onClick={(e) => e.stopPropagation()}
       >
         <div
           style={{
@@ -104,6 +108,21 @@ export default function EditProfileModal({
               color: "#6b7280",
               cursor: "pointer",
               padding: "0.25rem",
+              borderRadius: "0.25rem",
+              transition: "all 0.2s ease",
+              width: "2rem",
+              height: "2rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f3f4f6";
+              e.currentTarget.style.color = "#020079";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#6b7280";
             }}
           >
             ×
@@ -140,10 +159,12 @@ export default function EditProfileModal({
                   transition: "border-color 0.2s",
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = "var(--color-primary)";
+                  e.target.style.borderColor = "#03009B";
+                  e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "none";
                 }}
               />
             </div>
@@ -174,10 +195,12 @@ export default function EditProfileModal({
                   transition: "border-color 0.2s",
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = "var(--color-primary)";
+                  e.target.style.borderColor = "#03009B";
+                  e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "none";
                 }}
               />
             </div>
@@ -208,10 +231,12 @@ export default function EditProfileModal({
                   transition: "border-color 0.2s",
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = "var(--color-primary)";
+                  e.target.style.borderColor = "#03009B";
+                  e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
                 }}
                 onBlur={(e) => {
                   e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "none";
                 }}
               />
             </div>
@@ -250,6 +275,14 @@ export default function EditProfileModal({
                     outline: "none",
                     transition: "border-color 0.2s",
                   }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#03009B";
+                    e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "none";
+                  }}
                 />
                 <div style={{ display: "flex", gap: "1rem" }}>
                   <input
@@ -266,6 +299,16 @@ export default function EditProfileModal({
                       borderRadius: "0.5rem",
                       fontSize: "0.875rem",
                       outline: "none",
+                      transition: "border-color 0.2s",
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#03009B";
+                      e.target.style.boxShadow =
+                        "0 0 0 3px rgba(3, 0, 155, 0.1)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#d1d5db";
+                      e.target.style.boxShadow = "none";
                     }}
                   />
                   <input
@@ -282,6 +325,16 @@ export default function EditProfileModal({
                       borderRadius: "0.5rem",
                       fontSize: "0.875rem",
                       outline: "none",
+                      transition: "border-color 0.2s",
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#03009B";
+                      e.target.style.boxShadow =
+                        "0 0 0 3px rgba(3, 0, 155, 0.1)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#d1d5db";
+                      e.target.style.boxShadow = "none";
                     }}
                   />
                 </div>
@@ -299,6 +352,15 @@ export default function EditProfileModal({
                     borderRadius: "0.5rem",
                     fontSize: "0.875rem",
                     outline: "none",
+                    transition: "border-color 0.2s",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#03009B";
+                    e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "none";
                   }}
                 />
               </div>
@@ -327,6 +389,16 @@ export default function EditProfileModal({
                 fontSize: "0.875rem",
                 fontWeight: "500",
                 cursor: "pointer",
+                transition: "all 0.2s ease",
+                outline: "none",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#f9fafb";
+                e.currentTarget.style.borderColor = "#9ca3af";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "white";
+                e.currentTarget.style.borderColor = "#d1d5db";
               }}
             >
               Cancel
@@ -335,13 +407,41 @@ export default function EditProfileModal({
               type="submit"
               style={{
                 padding: "0.75rem 1.5rem",
-                border: "1px solid var(--color-primary)",
+                border: "1px solid #03009B",
                 borderRadius: "0.5rem",
-                backgroundColor: "var(--color-primary)",
+                backgroundColor: "#03009B",
                 color: "white",
                 fontSize: "0.875rem",
                 fontWeight: "500",
                 cursor: "pointer",
+                transition: "all 0.2s ease",
+                outline: "none",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#020079";
+                e.currentTarget.style.borderColor = "#020079";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 12px rgba(3, 0, 155, 0.3)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#03009B";
+                e.currentTarget.style.borderColor = "#03009B";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+              onMouseDown={(e) => {
+                e.currentTarget.style.backgroundColor = "#01024D";
+                e.currentTarget.style.transform = "scale(0.98)";
+              }}
+              onMouseUp={(e) => {
+                e.currentTarget.style.backgroundColor = "#020079";
+                e.currentTarget.style.transform = "scale(1)";
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.boxShadow =
+                  "0 0 0 3px rgba(3, 0, 155, 0.3)";
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.boxShadow = "none";
               }}
             >
               Save Changes
