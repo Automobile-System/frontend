@@ -9,14 +9,17 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-[#020079] to-[#01024D]">
       {/* Navigation Header */}
       <Navigation />
       
-      <div className="container mx-auto px-4 py-10 max-w-6xl">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Get in touch</h1>
-        <p className="text-muted-foreground mt-2">We’d love to hear from you. Reach out with any questions.</p>
+      <div className="container mx-auto px-4 py-12 max-w-6xl">
+      <div className="mb-10 text-center">
+        <div className="inline-block bg-[#FFD70029] px-4 py-1.5 rounded-full mb-4">
+          <span className="text-[#FFD700] font-semibold text-sm tracking-wide">GET IN TOUCH</span>
+        </div>
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-3">Contact Us</h1>
+        <p className="text-gray-200 mt-2 text-lg">We'd love to hear from you. Reach out with any questions.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -25,48 +28,50 @@ export default function ContactPage() {
         </div>
 
         <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Contact information</CardTitle>
+          <Card className="bg-white/95 backdrop-blur border-[#0200791F] shadow-xl">
+            <CardHeader className="bg-[#0200791F]">
+              <CardTitle className="text-[#020079] text-xl">Contact Information</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 text-sm">
-              <div className="flex items-start gap-3">
-                <Mail className="h-5 w-5 text-red-600 mt-0.5" />
+            <CardContent className="space-y-5 text-sm pt-6">
+              <div className="flex items-start gap-3 group hover:bg-[#FFD70029] p-3 rounded-lg transition-colors">
+                <Mail className="h-5 w-5 text-[#FFD700] mt-0.5 group-hover:scale-110 transition-transform" />
                 <div>
-                  <p className="font-medium">Email</p>
-                  <p className="text-muted-foreground">support@carveo.example</p>
+                  <p className="font-semibold text-[#020079]">Email</p>
+                  <p className="text-gray-600">support@carveo.example</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <Phone className="h-5 w-5 text-red-600 mt-0.5" />
+              <div className="flex items-start gap-3 group hover:bg-[#FFD70029] p-3 rounded-lg transition-colors">
+                <Phone className="h-5 w-5 text-[#FFD700] mt-0.5 group-hover:scale-110 transition-transform" />
                 <div>
-                  <p className="font-medium">Phone</p>
-                  <p className="text-muted-foreground">+94 11 234 5678</p>
+                  <p className="font-semibold text-[#020079]">Phone</p>
+                  <p className="text-gray-600">+94 11 234 5678</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-red-600 mt-0.5" />
+              <div className="flex items-start gap-3 group hover:bg-[#FFD70029] p-3 rounded-lg transition-colors">
+                <MapPin className="h-5 w-5 text-[#FFD700] mt-0.5 group-hover:scale-110 transition-transform" />
                 <div>
-                  <p className="font-medium">Address</p>
-                  <p className="text-muted-foreground">123 Service Ave, Colombo</p>
+                  <p className="font-semibold text-[#020079]">Address</p>
+                  <p className="text-gray-600">123 Service Ave, Colombo</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3">
-                <Clock className="h-5 w-5 text-red-600 mt-0.5" />
+              <div className="flex items-start gap-3 group hover:bg-[#FFD70029] p-3 rounded-lg transition-colors">
+                <Clock className="h-5 w-5 text-[#FFD700] mt-0.5 group-hover:scale-110 transition-transform" />
                 <div>
-                  <p className="font-medium">Hours</p>
-                  <p className="text-muted-foreground">Mon–Sat: 9:00–18:00</p>
+                  <p className="font-semibold text-[#020079]">Hours</p>
+                  <p className="text-gray-600">Mon–Sat: 9:00–18:00</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Find us</CardTitle>
+          <Card className="bg-white/95 backdrop-blur border-[#0200791F] shadow-xl">
+            <CardHeader className="bg-[#0200791F]">
+              <CardTitle className="text-[#020079] text-xl">Find Us</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="aspect-video w-full overflow-hidden rounded-xl border bg-muted" />
-              <p className="text-xs text-muted-foreground mt-2">Map placeholder</p>
+            <CardContent className="pt-6">
+              <div className="aspect-video w-full overflow-hidden rounded-xl border-2 border-[#FFD700]/30 bg-gradient-to-br from-[#0200791F] to-[#FFD70029] flex items-center justify-center">
+                <MapPin className="h-12 w-12 text-[#FFD700]/50" />
+              </div>
+              <p className="text-xs text-gray-500 mt-3 text-center">Map integration coming soon</p>
             </CardContent>
           </Card>
         </div>
