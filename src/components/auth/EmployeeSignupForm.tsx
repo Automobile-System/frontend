@@ -228,6 +228,7 @@ export default function EmployeeSignupForm() {
                                         <select
                                             id="employeeType"
                                             name="employeeType"
+                                            title="Employee Type"
                                             value={formData.employeeType}
                                             onChange={handleChange}
                                             disabled={loading}
