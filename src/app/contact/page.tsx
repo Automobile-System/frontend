@@ -1,5 +1,6 @@
 import ContactForm from "@/components/forms/ContactForm"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Navigation } from "@/components/layout/Navigation"
 import { Mail, Phone, MapPin, Clock } from "lucide-react"
 
 export const metadata = {
@@ -8,7 +9,11 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="container mx-auto px-4 py-10 max-w-6xl">
+    <div className="min-h-screen bg-gray-50">
+      {/* Navigation Header */}
+      <Navigation />
+      
+      <div className="container mx-auto px-4 py-10 max-w-6xl">
       <div className="mb-8 text-center">
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Get in touch</h1>
         <p className="text-muted-foreground mt-2">We’d love to hear from you. Reach out with any questions.</p>
@@ -65,6 +70,7 @@ export default function ContactPage() {
             </CardContent>
           </Card>
         </div>
+      </div>
       </div>
     </div>
   )
