@@ -69,18 +69,20 @@ export default function ContactForm() {
   }
 
   return (
-    <Card className="shadow-2xl bg-white/95 backdrop-blur border-[#0200791F]">
-      <CardHeader className="bg-gradient-to-r from-[#0200791F] to-[#FFD70029]">
-        <CardTitle className="text-2xl text-[#020079] font-bold">Send Us a Message</CardTitle>
-        <CardDescription className="text-gray-600">We'll respond promptly to your inquiry.</CardDescription>
+    <Card className="shadow-lg bg-white border-gray-200 hover:shadow-xl transition-all duration-300 h-full">
+      <CardHeader className="border-b border-gray-100 pb-6 bg-gradient-to-r from-[#020079]/5 to-[#FFD700]/5">
+        <CardTitle className="text-3xl text-[#020079] font-bold">Send Us a Message</CardTitle>
+        <CardDescription className="text-gray-600 text-base mt-2">
+          Fill out the form below and we&apos;ll get back to you within 24 hours.
+        </CardDescription>
       </CardHeader>
-      <CardContent className="pt-6">
-        <form onSubmit={onSubmit} className="space-y-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <CardContent className="pt-8">
+        <form onSubmit={onSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm font-semibold text-[#020079]">Full Name</Label>
+              <Label htmlFor="name" className="text-sm font-semibold text-[#020079]">Full Name *</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#FFD700]" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#020079]" />
                 <Input
                   id="name"
                   name="name"
@@ -88,17 +90,17 @@ export default function ContactForm() {
                   onChange={onChange}
                   placeholder="John Doe"
                   disabled={loading}
-                  className={`pl-11 h-12 border-[#0200791F] ${errors.name ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "focus:border-[#020079] focus:ring-[#020079]"}`}
+                  className={`pl-11 h-12 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-gray-50 ${errors.name ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "focus:border-[#020079] focus:ring-[#020079]"}`}
                   required
                 />
               </div>
-              {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
+              {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-semibold text-[#020079]">Email</Label>
+              <Label htmlFor="email" className="text-sm font-semibold text-[#020079]">Email Address *</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#FFD700]" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#020079]" />
                 <Input
                   id="email"
                   name="email"
@@ -107,19 +109,19 @@ export default function ContactForm() {
                   onChange={onChange}
                   placeholder="you@example.com"
                   disabled={loading}
-                  className={`pl-11 h-12 border-[#0200791F] ${errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "focus:border-[#020079] focus:ring-[#020079]"}`}
+                  className={`pl-11 h-12 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-gray-50 ${errors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "focus:border-[#020079] focus:ring-[#020079]"}`}
                   required
                 />
               </div>
-              {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm font-semibold text-[#020079]">Phone (optional)</Label>
+              <Label htmlFor="phone" className="text-sm font-semibold text-[#020079]">Phone Number</Label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#FFD700]" />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[#020079]" />
                 <Input
                   id="phone"
                   name="phone"
@@ -127,13 +129,13 @@ export default function ContactForm() {
                   onChange={onChange}
                   placeholder="+94 71 234 5678"
                   disabled={loading}
-                  className="pl-11 h-12 border-[#0200791F] focus:border-[#020079] focus:ring-[#020079]"
+                  className="pl-11 h-12 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-gray-50 focus:border-[#020079] focus:ring-[#020079]"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="subject" className="text-sm font-semibold text-[#020079]">Subject (optional)</Label>
+              <Label htmlFor="subject" className="text-sm font-semibold text-[#020079]">Subject</Label>
               <Input
                 id="subject"
                 name="subject"
@@ -141,32 +143,32 @@ export default function ContactForm() {
                 onChange={onChange}
                 placeholder="How can we help?"
                 disabled={loading}
-                className="h-12 border-[#0200791F] focus:border-[#020079] focus:ring-[#020079]"
+                className="h-12 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-gray-50 focus:border-[#020079] focus:ring-[#020079]"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="message" className="text-sm font-semibold text-[#020079]">Message</Label>
+            <Label htmlFor="message" className="text-sm font-semibold text-[#020079]">Your Message *</Label>
             <div className="relative">
-              <MessageSquare className="absolute left-3 top-3 h-5 w-5 text-[#FFD700]" />
+              <MessageSquare className="absolute left-3 top-3 h-5 w-5 text-[#020079]" />
               <Textarea
                 id="message"
                 name="message"
                 value={values.message}
                 onChange={onChange}
-                placeholder="Write your message here..."
+                placeholder="Tell us about your inquiry..."
                 disabled={loading}
-                className={`pl-11 min-h-36 border-[#0200791F] ${errors.message ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "focus:border-[#020079] focus:ring-[#020079]"}`}
+                className={`pl-11 min-h-40 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-gray-50 ${errors.message ? "border-red-500 focus:border-red-500 focus:ring-red-500" : "focus:border-[#020079] focus:ring-[#020079]"}`}
                 required
               />
             </div>
-            {errors.message && <p className="text-sm text-red-600">{errors.message}</p>}
+            {errors.message && <p className="text-sm text-red-500">{errors.message}</p>}
           </div>
 
           <Button
             type="submit"
-            className="w-full h-12 bg-gradient-to-r from-[#020079] to-[#03009B] hover:from-[#03009B] hover:to-[#01024D] text-white font-bold text-base shadow-lg hover:shadow-xl transition-all duration-200"
+            className="w-full h-14 bg-gradient-to-r from-[#020079] to-[#03009B] hover:from-[#03009B] hover:to-[#01024D] text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
             disabled={loading}
           >
             {loading ? "Sending…" : "Send Message"}
