@@ -18,15 +18,15 @@ export function ContactBar({ hotline = "011 2 640 640", className = "" }: Contac
   ]
 
   return (
-    <div className={`bg-black text-white py-4 border-t border-red-600/20 ${className}`}>
+    <div className={`bg-black text-white py-4 border-t border-brand ${className}`}>
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           {/* Left Side - Hotline */}
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 bg-red-600/20 px-4 py-2 rounded-lg border border-red-600/30">
-              <Phone className="h-5 w-5 text-red-400 animate-pulse" />
+            <div className="flex items-center space-x-2 bg-brand-soft px-4 py-2 rounded-lg border border-brand">
+              <Phone className="h-5 w-5 text-accent animate-pulse" />
               <span className="font-bold font-roboto text-lg">
-                HOTLINE: <span className="text-red-400">{hotline}</span>
+                HOTLINE: <span className="text-accent">{hotline}</span>
               </span>
             </div>
             
@@ -49,7 +49,7 @@ export function ContactBar({ hotline = "011 2 640 640", className = "" }: Contac
                     key={index}
                     variant="ghost"
                     size="sm"
-                    className="h-10 w-10 rounded-full bg-white/5 hover:bg-red-600 text-white hover:text-white transition-all duration-300 hover:scale-110 border border-white/10 hover:border-red-600"
+                    className="h-10 w-10 rounded-full bg-white/5 hover:bg-accent text-white hover:text-black transition-all duration-300 hover:scale-110 border border-white/10 hover:border-accent"
                     asChild
                   >
                     <a href={social.href} target="_blank" rel="noopener noreferrer" aria-label={social.label}>

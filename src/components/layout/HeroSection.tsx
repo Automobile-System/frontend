@@ -1,9 +1,10 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ChevronLeft, ChevronRight, Play, ArrowRight, Zap, Award, Globe2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Play, Zap, Award, Globe2 } from "lucide-react"
 
 export interface HeroSlide {
   id: number
@@ -28,10 +29,10 @@ interface HeroSectionProps {
 const defaultSlides: HeroSlide[] = [
   {
     id: 1,
-    title: "AUTO MiRAJ KURUNEGALA",
-    subtitle: "NOW YOU CAN FIND US AT THE HISTORICAL CITY OF KURUNEGALA",
+    title: "NITROLINE COLOMBO",
+    subtitle: "NOW YOU CAN FIND US AT THE COMMERCIAL CAPITAL OF COLOMBO",
     description: "Learn more",
-    backgroundImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=800&fit=crop",
+    backgroundImage: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2000&auto=format&fit=crop",
     stats: [
       { 
         label: "GUARANTEED", 
@@ -58,7 +59,7 @@ const defaultSlides: HeroSlide[] = [
     title: "PREMIUM AUTO CARE",
     subtitle: "EXCELLENCE IN AUTOMOTIVE SERVICE INDUSTRY",
     description: "Discover more",
-    backgroundImage: "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1200&h=800&fit=crop",
+    backgroundImage: "https://images.unsplash.com/photo-1542362567-b07e54358753?q=80&w=2000&auto=format&fit=crop",
     stats: [
       { 
         label: "CERTIFIED", 
@@ -85,12 +86,12 @@ const defaultSlides: HeroSlide[] = [
     title: "ROADSIDE ASSISTANCE",
     subtitle: "EMERGENCY AUTOMOTIVE SERVICES AVAILABLE 24/7",
     description: "Contact us",
-    backgroundImage: "https://images.unsplash.com/photo-1609521263047-f8f205293f24?w=1200&h=800&fit=crop",
+    backgroundImage: "https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?q=80&w=2000&auto=format&fit=crop",
     stats: [
       { 
         label: "HOTLINE", 
-        value: "0755", 
-        sublabel: "004004",
+        value: "0755004004", 
+        sublabel: "CALL NOW",
         icon: <Award className="h-6 w-6" />
       },
       { 
@@ -111,7 +112,7 @@ const defaultSlides: HeroSlide[] = [
 
 export function HeroSection({ 
   slides = defaultSlides, 
-  autoPlayInterval = 5000,
+  autoPlayInterval = 7000,
   className = ""
 }: HeroSectionProps) {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -149,74 +150,81 @@ export function HeroSection({
       {slides.map((slide, index) => (
         <div
           key={slide.id}
-          className={`absolute inset-0 transition-all duration-1000 ${
-            index === currentSlide ? "opacity-100 scale-100" : "opacity-0 scale-105"
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            index === currentSlide ? "opacity-100" : "opacity-0"
           }`}
-          style={{
-            background: `linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('${slide.backgroundImage}')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
         >
+          {/* Background image */}
+          <Image
+            src={slide.backgroundImage}
+            alt=""
+            fill
+            priority={index === 0}
+            sizes="100vw"
+            className={`object-cover animate-kenburns ${
+              index === currentSlide ? "opacity-100" : "opacity-90"
+            }`}
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-black/40" />
+
           <div className="relative h-full flex items-center">
             <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center w-full">
               {/* Left Content */}
-              <div className="text-white max-w-3xl animate-in slide-in-from-left duration-1000">
-                <Badge className="bg-red-600/20 text-red-200 border-red-400/30 mb-4 font-roboto">
+              <div className="text-white max-w-3xl">
+                <Badge className="bg-brand-soft text-accent border-accent mb-4 font-roboto animate-fade-up delay-0">
                   Premium Automotive Services
                 </Badge>
                 
-                <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold font-roboto mb-4 leading-tight">
-                  <span className="text-white drop-shadow-2xl">AUTO</span>{" "}
-                  <span className="text-red-100 animate-pulse drop-shadow-2xl">MiRAJ</span>
+                <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold font-roboto mb-4 leading-tight animate-fade-up delay-150">
+                  <span className="text-white drop-shadow-2xl">NITRO</span>{" "}
+                  <span className="text-accent glow-accent drop-shadow-2xl">LINE</span>
                 </h1>
                 
-                <h2 className="text-xl md:text-2xl lg:text-4xl font-bold mb-4 text-red-100 font-inter drop-shadow-xl">
-                  KURUNEGALA
+                <h2 className="text-xl md:text-2xl lg:text-4xl font-bold mb-4 text-accent font-inter drop-shadow-xl animate-fade-up delay-300">
+                  COLOMBO
                 </h2>
                 
-                <p className="text-base md:text-lg lg:text-xl mb-8 max-w-2xl leading-relaxed font-inter opacity-90">
+                <p className="text-base md:text-lg lg:text-xl mb-8 max-w-2xl leading-relaxed font-inter opacity-90 animate-fade-up delay-450">
                   {slide.subtitle}
                 </p>
                 
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-600">
                   <Button 
                     size="lg"
-                    className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-2xl group"
+                    className="btn-accent text-black px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-accent-glow group"
                   >
-                    {slide.description}
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    LOG IN
                   </Button>
                   
                   <Button 
                     variant="outline"
                     size="lg"
-                    className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm px-8 py-4 text-lg font-medium transition-all duration-300"
+                    className="btn-accent-outline backdrop-blur-sm px-8 py-4 text-lg font-medium transition-all duration-300"
                   >
-                    <Play className="mr-2 h-5 w-5" />
-                    Watch Video
+                    SIGN UP
                   </Button>
                 </div>
               </div>
 
               {/* Right Stats */}
-              <div className="hidden lg:block space-y-8 animate-in slide-in-from-right duration-1000">
+              <div className="hidden lg:block space-y-8 animate-fade-right delay-600">
                 {slide.stats.map((stat, idx) => (
                   <div 
                     key={idx} 
-                    className="text-white text-right bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/30 hover:bg-white/20 transition-all duration-300 group shadow-lg"
+                    className="text-white text-right bg-brand-gradient rounded-lg p-6 border border-white/20 hover:brightness-110 transition-all duration-300 group shadow-lg"
                   >
                     <div className="flex items-center justify-end mb-2">
-                      <span className="text-sm text-red-200 mr-2 font-inter font-medium">
+                      <span className="text-sm text-accent mr-2 font-inter font-medium">
                         {stat.label}
                       </span>
                       {stat.icon && (
-                        <div className="text-red-200 group-hover:scale-110 transition-transform">
+                        <div className="text-accent group-hover:scale-110 transition-transform">
                           {stat.icon}
                         </div>
                       )}
                     </div>
-                    <div className="text-4xl lg:text-5xl font-bold text-red-100 mb-1 font-roboto drop-shadow-lg">
+                    <div className="text-4xl lg:text-5xl font-bold text-accent mb-1 font-roboto drop-shadow-lg">
                       {stat.value}
                     </div>
                     <div className="text-sm text-white/90 font-inter">
@@ -236,9 +244,9 @@ export function HeroSection({
           {slides[currentSlide].stats.map((stat, idx) => (
             <div 
               key={idx} 
-              className="text-center bg-white/15 backdrop-blur-sm rounded-lg p-3 border border-white/30 shadow-lg"
+              className="text-center bg-brand-gradient rounded-lg p-3 border border-white/20 shadow-lg"
             >
-              <div className="text-lg font-bold text-red-100 font-roboto drop-shadow">
+              <div className="text-lg font-bold text-accent font-roboto drop-shadow">
                 {stat.value}
               </div>
               <div className="text-xs text-white/90 font-inter">
@@ -255,7 +263,7 @@ export function HeroSection({
           variant="ghost"
           size="sm"
           onClick={togglePlayPause}
-          className="text-white hover:text-red-400 transition-colors"
+          className="text-white hover:text-accent transition-colors"
         >
           <Play className={`h-4 w-4 ${isPlaying ? 'animate-pulse' : ''}`} />
         </Button>
@@ -267,7 +275,7 @@ export function HeroSection({
               onClick={() => goToSlide(index)}
               className={`w-3 h-3 rounded-full transition-all duration-300 ${
                 index === currentSlide 
-                  ? "bg-red-600 scale-125" 
+                  ? "bg-accent scale-125" 
                   : "bg-white/50 hover:bg-white/80"
               }`}
               aria-label={`Go to slide ${index + 1}`}
@@ -281,7 +289,7 @@ export function HeroSection({
         variant="ghost"
         size="lg"
         onClick={prevSlide}
-        className="absolute left-4 md:left-8 top-1/2 transform -translate-y-1/2 text-white hover:text-red-400 hover:bg-black/20 transition-all duration-300 backdrop-blur-sm"
+        className="absolute left-4 md:left-8 top-1/2 transform -translate-y-1/2 text-white hover:text-accent hover:bg-black/20 transition-all duration-300 backdrop-blur-sm"
       >
         <ChevronLeft className="h-8 w-8 md:h-12 md:w-12" />
       </Button>
@@ -290,19 +298,21 @@ export function HeroSection({
         variant="ghost"
         size="lg"
         onClick={nextSlide}
-        className="absolute right-4 md:right-8 top-1/2 transform -translate-y-1/2 text-white hover:text-red-400 hover:bg-black/20 transition-all duration-300 backdrop-blur-sm"
+        className="absolute right-4 md:right-8 top-1/2 transform -translate-y-1/2 text-white hover:text-accent hover:bg-black/20 transition-all duration-300 backdrop-blur-sm"
       >
         <ChevronRight className="h-8 w-8 md:h-12 md:w-12" />
       </Button>
 
-      {/* Progress Bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-black/20">
-        <div 
-          className="h-full bg-red-600 transition-all duration-300"
-          style={{ 
-            width: `${((currentSlide + 1) / slides.length) * 100}%` 
-          }}
-        />
+      {/* Segmented Progress Bar (no inline styles) */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-black/20 flex gap-1 px-1">
+        {slides.map((_, i) => (
+          <div
+            key={i}
+            className={`h-full flex-1 rounded-sm transition-colors ${
+              i <= currentSlide ? "bg-accent" : "bg-white/30"
+            }`}
+          />
+        ))}
       </div>
     </section>
   )
