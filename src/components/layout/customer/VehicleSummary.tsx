@@ -107,10 +107,10 @@ export default function VehicleSummary({ vehicles }: VehicleSummaryProps) {
                                 onClick={() => handleViewDetails(vehicle)}
                                 style={{
                                     padding: '0.5rem 1rem',
-                                    border: '1px solid #3b82f6',
+                                    border: '1px solid var(--color-primary)',
                                     borderRadius: '0.5rem',
                                     backgroundColor: 'transparent',
-                                    color: '#3b82f6',
+                                    color: 'var(--color-primary)',
                                     fontSize: '0.75rem',
                                     fontWeight: '500',
                                     cursor: 'pointer',
@@ -118,12 +118,12 @@ export default function VehicleSummary({ vehicles }: VehicleSummaryProps) {
                                     transition: 'all 0.2s'
                                 }}
                                 onMouseEnter={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#3b82f6';
+                                    e.currentTarget.style.backgroundColor = 'var(--color-primary)';
                                     e.currentTarget.style.color = 'white';
                                 }}
                                 onMouseLeave={(e) => {
                                     e.currentTarget.style.backgroundColor = 'transparent';
-                                    e.currentTarget.style.color = '#3b82f6';
+                                    e.currentTarget.style.color = 'var(--color-primary)';
                                 }}
                             >
                                 View Details

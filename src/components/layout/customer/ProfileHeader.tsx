@@ -27,7 +27,7 @@ export default function ProfileHeader({ customer, onEditProfile }: ProfileHeader
                     width: '5rem',
                     height: '5rem',
                     borderRadius: '50%',
-                    backgroundColor: '#3b82f6',
+                    backgroundColor: '#03009B',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',

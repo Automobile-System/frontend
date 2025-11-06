@@ -84,32 +84,64 @@ export default function BookService() {
 
     return (
         <CustomerLayout>
-            <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-
-                <div style={{ marginBottom: '2rem' }}>
-                    <h1 style={{
-                        fontSize: '1.5rem',
-                        fontWeight: 'bold',
-                        color: '#111827',
-                        margin: 0
-                    }}>
-                        Book Service / Project
-                    </h1>
-                    <p style={{ color: '#6b7280', margin: '0.25rem 0 0 0' }}>
-                        Schedule your vehicle service in 5 simple steps
-                    </p>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "2rem",
+                    maxWidth: "1400px",
+                    margin: "0 auto",
+                    width: "100%",
+                }}
+            >
+                {/* Header */}
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: "space-between",
+                        marginBottom: "1rem",
+                        paddingBottom: "1.5rem",
+                        borderBottom: "2px solid rgba(2, 0, 121, 0.1)",
+                    }}
+                >
+                    <div>
+                        <h1
+                            style={{
+                                fontSize: "2.5rem",
+                                fontWeight: "700",
+                                color: "#020079",
+                                margin: "0 0 0.5rem 0",
+                                fontFamily: "var(--font-bebas, sans-serif)",
+                                letterSpacing: "0.5px",
+                            }}
+                        >
+                            Book Service / Project
+                        </h1>
+                        <p
+                            style={{
+                                color: "#6b7280",
+                                margin: 0,
+                                fontSize: "1rem",
+                                fontFamily: "var(--font-roboto, sans-serif)",
+                            }}
+                        >
+                            Schedule your vehicle service in 5 simple steps
+                        </p>
+                    </div>
                 </div>
 
                 <BookingStepper currentStep={currentStep} />
 
-                <div style={{
-                    background: 'white',
-                    borderRadius: '0.75rem',
-                    border: '1px solid #e5e7eb',
-                    padding: '2rem',
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                    marginTop: '2rem'
-                }}>
+                <div
+                    style={{
+                        background: "white",
+                        borderRadius: "1rem",
+                        border: "1px solid #e5e7eb",
+                        padding: "2rem",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                    }}
+                >
                     {renderStep()}
                 </div>
             </div>
