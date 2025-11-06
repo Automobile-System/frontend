@@ -67,3 +67,12 @@ export const getEmployeeEfficiency = () => apiFetch("/api/reports/employee-effic
 export const getMostRequestedEmployees = () => apiFetch("/api/reports/most-requested-employees");
 export const getPartsDelayAnalytics = () => apiFetch("/api/reports/parts-delay-analytics");
 export const getCompletedProjectsByType = () => apiFetch("/api/reports/completed-projects-by-type");
+
+/* Contact */
+export const postContactMessage = (payload: {
+  name: string
+  email: string
+  phone?: string
+  subject?: string
+  message: string
+}) => apiFetch("/api/contact", { method: "POST", body: JSON.stringify(payload) });
