@@ -2,6 +2,7 @@
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Send, User, Minimize2, Maximize2, X, MessageCircle, Phone, Video, MoreVertical, Paperclip, Smile } from 'lucide-react';
+import Image from 'next/image';
 import { Card } from '../ui/card';
 import { ScrollArea } from '../ui/scroll-area';
 import { useState, useEffect, useRef } from 'react';
@@ -158,10 +159,12 @@ export function ChatWindow({
           <div className="flex items-center gap-3 relative z-10">
             <div className="relative">
               {employeeAvatar ? (
-                <img 
+                <Image 
                   src={employeeAvatar} 
-                  alt={employeeName}
-                  className="w-10 h-10 rounded-full bg-white flex items-center justify-center font-semibold text-sm shadow-lg"
+                  alt={employeeName || "Employee Avatar"}
+                  width={40}
+                  height={40}
+                  className="rounded-full bg-white flex items-center justify-center font-semibold text-sm shadow-lg"
                 />
               ) : (
                 <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center font-semibold text-sm shadow-lg text-gray-900">
