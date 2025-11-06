@@ -1,8 +1,12 @@
 import { LoginRequest ,LoginResponse, SignupRequest, SignupResponse, EmployeeSignupRequest, EmployeeSignupResponse } from "@/types/authTypes";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-
-if(!BASE_URL) throw new Error("BASE_URL not set");
+// Prefer explicit env base URLs but fall back to relative paths during build/prerender
+// to avoid crashing when env vars are not defined at import time.
+// This lets client-side calls work with relative /api routes in dev.
+const BASE_URL =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    process.env.NEXT_PUBLIC_API_BASE ||
+    ""; // empty => use relative URLs like /api/...
 
 export async function login(data:LoginRequest): Promise<LoginResponse> {
 
