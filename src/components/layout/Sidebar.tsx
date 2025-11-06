@@ -3,15 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Users,
-  ClipboardList,
-  Briefcase,
-  Calendar,
-  BarChartHorizontal,
-  MessageSquare,
-} from "lucide-react";
 
 type PageType = 'dashboard' | 'employees' | 'assign' | 'projects' | 'scheduler' | 'reports' | 'communication';
 

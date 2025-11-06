@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
 import {
   ResponsiveContainer,
   PieChart,
@@ -65,7 +63,6 @@ const MOCK_DATA = {
 // );
 
 export default function ManagerDashboardPage() {
-  const [showProjectForm, setShowProjectForm] = useState(false);
 
   return (
     <div className="p-8 bg-white min-h-screen">
@@ -193,7 +190,7 @@ export default function ManagerDashboardPage() {
       </div>
 
       {/* Project Form Modal */}
-      {/* {showProjectForm && (
+      {/* {false && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
           <div className="bg-white p-4 rounded-lg">
             <MockProjectForm onSuccess={() => setShowProjectForm(false)} />
