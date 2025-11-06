@@ -15,35 +15,35 @@ import { Badge } from "@/components/ui/badge";
 
 // Handler functions
 const handleLogout = async () => {
-  console.log('Logout employee');
-  window.location.href = '/logout';
+  console.log("Logout employee");
+  window.location.href = "/logout";
 };
 
 const handleViewProfile = () => {
-  console.log('Navigate to profile');
-  window.location.href = '/employee/profile';
+  console.log("Navigate to profile");
+  window.location.href = "/employee/profile";
 };
 
 const handleViewSettings = () => {
-  console.log('Navigate to settings');
-  window.location.href = '/employee/settings';
+  console.log("Navigate to settings");
+  window.location.href = "/employee/settings";
 };
 
 export default function EmployeeHeader() {
   const [notificationCount, setNotificationCount] = useState(4);
 
   const handleMarkAllAsRead = () => {
-    console.log('Mark all notifications as read');
+    console.log("Mark all notifications as read");
     setNotificationCount(0);
   };
 
   const handleNotificationClick = (notificationId: string) => {
-    console.log('Notification clicked:', notificationId);
+    console.log("Notification clicked:", notificationId);
     // Mark individual notification as read
   };
 
   return (
-    <header className="bg-gradient-to-r from-[#8B0000] to-[#A52A2A] text-white shadow-lg">
+    <header className="bg-gradient-to-r from-[#020079] to-[#01024D] text-white shadow-lg">
       <div className="px-8 py-4">
         <div className="flex items-center justify-between">
           {/* Left Side - Logo */}
@@ -65,7 +65,7 @@ export default function EmployeeHeader() {
                 >
                   <Bell className="w-6 h-6" />
                   {notificationCount > 0 && (
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-red-500 text-white text-xs">
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-[#E6C200] text-[#020079] text-xs font-bold">
                       {notificationCount}
                     </Badge>
                   )}
@@ -78,42 +78,55 @@ export default function EmployeeHeader() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="flex flex-col items-start p-4 cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleNotificationClick('1')}
+                  onClick={() => handleNotificationClick("1")}
                 >
-                  <div className="font-semibold text-sm text-gray-900">New Task Assigned</div>
-                  <div className="text-xs text-gray-600 mt-1">
-                    You have been assigned a new service task - Vehicle inspection
+                  <div className="font-semibold text-sm text-gray-900">
+                    New Task Assigned
                   </div>
-                  <div className="text-xs text-gray-400 mt-1">30 minutes ago</div>
+                  <div className="text-xs text-gray-600 mt-1">
+                    You have been assigned a new service task - Vehicle
+                    inspection
+                  </div>
+                  <div className="text-xs text-gray-400 mt-1">
+                    30 minutes ago
+                  </div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="flex flex-col items-start p-4 cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleNotificationClick('2')}
+                  onClick={() => handleNotificationClick("2")}
                 >
-                  <div className="font-semibold text-sm text-gray-900">Task Reminder</div>
+                  <div className="font-semibold text-sm text-gray-900">
+                    Task Reminder
+                  </div>
                   <div className="text-xs text-gray-600 mt-1">
-                    Task &quot;Oil Change - Vehicle #A123&quot; due today at 3:00 PM
+                    Task &quot;Oil Change - Vehicle #A123&quot; due today at
+                    3:00 PM
                   </div>
                   <div className="text-xs text-gray-400 mt-1">2 hours ago</div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="flex flex-col items-start p-4 cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleNotificationClick('3')}
+                  onClick={() => handleNotificationClick("3")}
                 >
-                  <div className="font-semibold text-sm text-gray-900">Task Completed</div>
+                  <div className="font-semibold text-sm text-gray-900">
+                    Task Completed
+                  </div>
                   <div className="text-xs text-gray-600 mt-1">
-                    Your task &quot;Brake Service&quot; has been marked as completed
+                    Your task &quot;Brake Service&quot; has been marked as
+                    completed
                   </div>
                   <div className="text-xs text-gray-400 mt-1">4 hours ago</div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="flex flex-col items-start p-4 cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleNotificationClick('4')}
+                  onClick={() => handleNotificationClick("4")}
                 >
-                  <div className="font-semibold text-sm text-gray-900">Schedule Update</div>
+                  <div className="font-semibold text-sm text-gray-900">
+                    Schedule Update
+                  </div>
                   <div className="text-xs text-gray-600 mt-1">
                     Your shift schedule for next week has been updated
                   </div>
@@ -143,7 +156,9 @@ export default function EmployeeHeader() {
               <DropdownMenuContent align="end" className="w-56 bg-white">
                 <DropdownMenuLabel>
                   <div className="flex flex-col">
-                    <span className="font-semibold text-gray-900">Employee User</span>
+                    <span className="font-semibold text-gray-900">
+                      Employee User
+                    </span>
                     <span className="text-xs text-gray-500 font-normal">
                       employee@center.com
                     </span>
