@@ -7,13 +7,13 @@ import { showToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 
 export function useLoginForm() {
-  const [formData, setFormData] = useState<LoginRequest>({
+  const [formData, setFormData] = useState< LoginRequest >({
     email: "",
     password: "",
     rememberMe: false,
   });
-  const [loading, setLoading] = useState<boolean>(false);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState< boolean >(false);
+  const [fieldErrors, setFieldErrors] = useState< Record < string , string >>({});
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
