@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${bebas.variable} ${teko.variable} antialiased font-bebas`}
+        className={`${bebas.variable} ${teko.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"

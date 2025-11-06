@@ -1,202 +1,288 @@
 "use client"
 
-import AppLayout from "@/components/layout/AdminAppLayout"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { 
-  Car, 
-  Users, 
-  Wrench, 
-  CreditCard, 
-  TrendingUp, 
+import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout"
+import {
   AlertTriangle,
-  Calendar,
-  DollarSign
+  TrendingUp,
+  DollarSign,
+  Users,
+  Activity,
+  BarChart3,
+  Briefcase,
+  UserCheck,
 } from "lucide-react"
+import {
+  fetchDashboardStats,
+  fetchAIInsights,
+  type DashboardStats,
+  type AIInsight,
+} from "@/services/adminService"
 
 export default function AdminDashboardPage() {
-  const stats = [
-    {
-      title: "Total Vehicles",
-      value: "1,247",
-      change: "+12%",
-      trend: "up",
-      icon: Car,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50 dark:bg-blue-950",
-    },
-    {
-      title: "Active Customers",
-      value: "892",
-      change: "+8%",
-      trend: "up", 
-      icon: Users,
-      color: "text-green-600",
-      bgColor: "bg-green-50 dark:bg-green-950",
-    },
-    {
-      title: "Pending Maintenance",
-      value: "23",
-      change: "-5%",
-      trend: "down",
-      icon: Wrench,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50 dark:bg-orange-950",
-    },
-    {
-      title: "Revenue This Month",
-      value: "$54,239",
-      change: "+18%",
-      trend: "up",
-      icon: DollarSign,
-      color: "text-emerald-600",
-      bgColor: "bg-emerald-50 dark:bg-emerald-950",
-    },
-  ]
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [insights, setInsights] = useState<AIInsight[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const recentActivities = [
-    {
-      type: "maintenance",
-      message: "Honda Civic (ABC-123) completed oil change",
-      time: "2 hours ago",
-      status: "completed",
-    },
-    {
-      type: "customer",
-      message: "New customer John Smith registered",
-      time: "4 hours ago", 
-      status: "new",
-    },
-    {
-      type: "appointment",
-      message: "Appointment scheduled for Toyota Camry (XYZ-456)",
-      time: "6 hours ago",
-      status: "scheduled",
-    },
-    {
-      type: "alert",
-      message: "Vehicle inspection due for BMW X5 (DEF-789)",
-      time: "8 hours ago",
-      status: "warning",
-    },
-  ]
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        setLoading(true)
+        const [statsData, insightsData] = await Promise.all([
+          fetchDashboardStats(),
+          fetchAIInsights()
+        ])
+        setStats(statsData)
+        setInsights(insightsData)
+      } catch (error) {
+        console.error('Error loading dashboard data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadDashboardData()
+  }, [])
+
+  if (loading || !stats) {
+    return (
+      <AdminDashboardLayout>
+        <div className="flex items-center justify-center h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading dashboard...</p>
+          </div>
+        </div>
+      </AdminDashboardLayout>
+    )
+  }
 
   return (
-    <AppLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Welcome back! Here&apos;s what&apos;s happening with your automobile business.
-          </p>
+    <AdminDashboardLayout>
+      <div className="p-8 bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+        {/* Page Title */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-800 mb-2">
+            Dashboard Overview
+          </h1>
+          <p className="text-slate-600">Monitor your business performance and insights</p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat) => (
-            <Card key={stat.title}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {stat.title}
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card className="border-l-4 border-l-emerald-500 hover:shadow-lg transition-all duration-300 bg-white">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-slate-600">
+                  Profit This Month
                 </CardTitle>
-                <div className={`rounded-md p-2 ${stat.bgColor}`}>
-                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
+                <div className="p-2 bg-emerald-50 rounded-lg">
+                  <DollarSign className="w-5 h-5 text-emerald-600" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <div className="flex items-center text-xs text-muted-foreground">
-                  <TrendingUp className={`mr-1 h-3 w-3 ${
-                    stat.trend === 'up' ? 'text-green-500' : 'text-red-500'
-                  }`} />
-                  {stat.change} from last month
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid gap-4 md:grid-cols-7">
-          {/* Recent Activities */}
-          <Card className="col-span-4">
-            <CardHeader>
-              <CardTitle>Recent Activities</CardTitle>
-              <CardDescription>
-                Latest updates from your automobile management system
-              </CardDescription>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {recentActivities.map((activity, index) => (
-                  <div key={index} className="flex items-center space-x-4">
-                    <div className="flex-shrink-0">
-                      {activity.type === 'maintenance' && <Wrench className="h-4 w-4 text-orange-500" />}
-                      {activity.type === 'customer' && <Users className="h-4 w-4 text-green-500" />}
-                      {activity.type === 'appointment' && <Calendar className="h-4 w-4 text-blue-500" />}
-                      {activity.type === 'alert' && <AlertTriangle className="h-4 w-4 text-red-500" />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                        {activity.message}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {activity.time}
-                      </p>
-                    </div>
-                    <div>
-                      <Badge 
-                        variant={
-                          activity.status === 'completed' ? 'default' :
-                          activity.status === 'new' ? 'secondary' :
-                          activity.status === 'scheduled' ? 'outline' :
-                          'destructive'
-                        }
-                      >
-                        {activity.status}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
+              <div className="text-3xl font-bold text-slate-900 mb-2">
+                {stats.profitThisMonth.value}
+              </div>
+              <div className="flex items-center gap-1 text-sm">
+                <TrendingUp className="w-4 h-4 text-emerald-600" />
+                <span className="font-medium text-emerald-600">
+                  {stats.profitThisMonth.change}
+                </span>
               </div>
             </CardContent>
           </Card>
 
-          {/* Quick Actions */}
-          <Card className="col-span-3">
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>
-                Frequently used actions for faster workflow
-              </CardDescription>
+          <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-all duration-300 bg-white">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-slate-600">
+                  Active Customers
+                </CardTitle>
+                <div className="p-2 bg-blue-50 rounded-lg">
+                  <Users className="w-5 h-5 text-blue-600" />
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="grid gap-2">
-              <Button className="w-full justify-start" variant="outline">
-                <Car className="mr-2 h-4 w-4" />
-                Add New Vehicle
-              </Button>
-              <Button className="w-full justify-start" variant="outline">
-                <Users className="mr-2 h-4 w-4" />
-                Register Customer
-              </Button>
-              <Button className="w-full justify-start" variant="outline">
-                <Calendar className="mr-2 h-4 w-4" />
-                Schedule Appointment
-              </Button>
-              <Button className="w-full justify-start" variant="outline">
-                <Wrench className="mr-2 h-4 w-4" />
-                Create Service Record
-              </Button>
-              <Button className="w-full justify-start" variant="outline">
-                <CreditCard className="mr-2 h-4 w-4" />
-                Generate Invoice
-              </Button>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900 mb-2">
+                {stats.activeCustomers.value}
+              </div>
+              <p className="text-sm text-slate-600">
+                +{stats.activeCustomers.newThisMonth} new this month
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-l-4 border-l-purple-500 hover:shadow-lg transition-all duration-300 bg-white">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-slate-600">
+                  Ongoing Services
+                </CardTitle>
+                <div className="p-2 bg-purple-50 rounded-lg">
+                  <Briefcase className="w-5 h-5 text-purple-600" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900 mb-2">
+                {stats.ongoingServices.value}
+              </div>
+              <p className="text-sm text-slate-600">{stats.ongoingServices.status}</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-l-4 border-l-indigo-500 hover:shadow-lg transition-all duration-300 bg-white">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-medium text-slate-600">
+                  Active Employees
+                </CardTitle>
+                <div className="p-2 bg-indigo-50 rounded-lg">
+                  <UserCheck className="w-5 h-5 text-indigo-600" />
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-slate-900 mb-2">
+                {stats.activeEmployees.value}
+              </div>
+              <p className="text-sm text-slate-600">
+                {stats.activeEmployees.onLeave} on leave, {stats.activeEmployees.frozen} frozen
+              </p>
             </CardContent>
           </Card>
         </div>
+
+        {/* AI-Powered Insights Section */}
+        <Card className="mb-8 bg-gradient-to-br from-violet-50 via-purple-50 to-indigo-50 border-2 border-violet-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+          <CardHeader className="bg-gradient-to-r from-violet-100 to-indigo-100 border-b border-violet-200">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white rounded-lg shadow-sm">
+                <Activity className="w-6 h-6 text-violet-600" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold text-slate-800">
+                  AI-Powered Business Insights
+                </CardTitle>
+                <p className="text-sm text-slate-600 mt-1">
+                  Based on machine learning analysis of 6 months of operational data
+                </p>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {insights.map((insight) => (
+                <div
+                  key={insight.id}
+                  className="bg-white border border-violet-200 p-5 rounded-lg hover:shadow-md transition-all duration-200 hover:border-violet-300"
+                >
+                  <div className="flex items-start gap-3 mb-3">
+                    {insight.category === 'forecast' && (
+                      <div className="p-2 bg-blue-50 rounded-lg">
+                        <TrendingUp className="w-5 h-5 text-blue-600" />
+                      </div>
+                    )}
+                    {insight.category === 'projection' && (
+                      <div className="p-2 bg-emerald-50 rounded-lg">
+                        <DollarSign className="w-5 h-5 text-emerald-600" />
+                      </div>
+                    )}
+                    {insight.category === 'warning' && (
+                      <div className="p-2 bg-amber-50 rounded-lg">
+                        <AlertTriangle className="w-5 h-5 text-amber-600" />
+                      </div>
+                    )}
+                    {insight.category === 'recommendation' && (
+                      <div className="p-2 bg-purple-50 rounded-lg">
+                        <Users className="w-5 h-5 text-purple-600" />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <p className="font-semibold text-slate-800 text-base mb-1">
+                        {insight.title}
+                      </p>
+                      <Badge
+                        variant="outline"
+                        className="text-xs capitalize mb-2 border-violet-200 text-violet-700"
+                      >
+                        {insight.category}
+                      </Badge>
+                    </div>
+                  </div>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    {insight.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Card className="border-emerald-200 hover:shadow-lg transition-all duration-300 bg-white">
+            <CardHeader className="border-b bg-gradient-to-r from-emerald-50 to-green-50">
+              <CardTitle className="text-base font-semibold text-slate-800 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-emerald-600" />
+                Profit Trends
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="h-64 flex items-center justify-center border-2 border-dashed border-emerald-200 rounded-lg bg-gradient-to-br from-emerald-50 to-white">
+                <div className="text-center">
+                  <BarChart3 className="w-12 h-12 text-emerald-300 mx-auto mb-2" />
+                  <p className="text-slate-500 text-sm font-medium">Monthly Profit Chart</p>
+                  <p className="text-slate-400 text-xs mt-1">Connect to display data</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-blue-200 hover:shadow-lg transition-all duration-300 bg-white">
+            <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-cyan-50">
+              <CardTitle className="text-base font-semibold text-slate-800 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-blue-600" />
+                Service Growth
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="h-64 flex items-center justify-center border-2 border-dashed border-blue-200 rounded-lg bg-gradient-to-br from-blue-50 to-white">
+                <div className="text-center">
+                  <BarChart3 className="w-12 h-12 text-blue-300 mx-auto mb-2" />
+                  <p className="text-slate-500 text-sm font-medium">Service Analytics Chart</p>
+                  <p className="text-slate-400 text-xs mt-1">Connect to display data</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-purple-200 hover:shadow-lg transition-all duration-300 bg-white">
+            <CardHeader className="border-b bg-gradient-to-r from-purple-50 to-pink-50">
+              <CardTitle className="text-base font-semibold text-slate-800 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-purple-600" />
+                Employee Demand
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="h-64 flex items-center justify-center border-2 border-dashed border-purple-200 rounded-lg bg-gradient-to-br from-purple-50 to-white">
+                <div className="text-center">
+                  <BarChart3 className="w-12 h-12 text-purple-300 mx-auto mb-2" />
+                  <p className="text-slate-500 text-sm font-medium">Workforce Analytics Chart</p>
+                  <p className="text-slate-400 text-xs mt-1">Connect to display data</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+     
       </div>
-    </AppLayout>
+    </AdminDashboardLayout>
   )
 }
