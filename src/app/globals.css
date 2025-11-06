@@ -2,12 +2,25 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --background: #f8f9fa;
+  --foreground: #1f2937;
+  --card: #ffffff;
+  --card-foreground: #1f2937;
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+
+  /* Brand Colors */
+  --primary: #ff6b6b;
+  --primary-dark: #ff4f4f;
+  --secondary: #10b981;
+
+  /* Text Colors */
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+
+  /* Font */
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
@@ -78,14 +91,118 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+  }
+  
+  /* Apply Bebas Neue only to main headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.02em;
   }
 }
 
 @layer utilities {
+  /* Brand palette: dark blue updated to #020079 + gold */
+  .text-brand { color: #020079; }
+  .bg-brand { background-color: #020079; }
+  .border-brand { border-color: #020079; }
+
+  .text-accent { color: #FFD700; }
+  .bg-accent { background-color: #FFD700; }
+  .border-accent { border-color: #FFD700; }
+
+  /* Subtle tints */
+  .bg-brand-soft { background-color: rgba(2, 0, 121, 0.12); }
+  .bg-accent-soft { background-color: rgba(255, 215, 0, 0.16); }
+
+  /* Buttons */
+  .btn-brand { background-color: #020079; color: #fff; }
+  .btn-brand:hover { background-color: #03009b; }
+
+  .btn-accent { background-color: #FFD700; color: #111827; }
+  .btn-accent:hover { background-color: #e6c200; }
+
+  .btn-accent-outline { border: 2px solid #FFD700; color: #FFD700; background: transparent; }
+  .btn-accent-outline:hover { background-color: rgba(255, 215, 0, 0.12); }
+
+  /* Glow helpers */
+  .shadow-accent-glow { box-shadow: 0 0 28px rgba(255, 215, 0, 0.45); }
+  .glow-accent { text-shadow: 0 0 12px rgba(255, 215, 0, 0.7); }
+
+  /* Translucent dark blue gradient for glassy cards */
+  .bg-brand-gradient-translucent {
+    background: linear-gradient(
+      135deg,
+      rgba(2, 0, 121, 0.78) 0%,
+      rgba(1, 0, 90, 0.64) 100%
+    );
+  }
+
+  /* Solid dark blue gradient (no transparency) */
+  .bg-brand-gradient {
+    background: linear-gradient(
+      135deg,
+      #020079 0%,
+      #01024D 100%
+    );
+  }
+
+  /* Modern hero animations */
+  @keyframes kenburns-zoom {
+    0% { transform: scale(1.08) translate3d(-1.5%, -1.5%, 0); }
+    50% { transform: scale(1.12) translate3d(1%, 1%, 0); }
+    100% { transform: scale(1.08) translate3d(-1.5%, -1.5%, 0); }
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translate3d(0, 16px, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  @keyframes fade-right {
+    from { opacity: 0; transform: translate3d(-16px, 0, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+
+  .animate-kenburns {
+    animation: kenburns-zoom 7s ease-in-out forwards;
+    will-change: transform;
+  }
+
+  .animate-fade-up { animation: fade-up 700ms ease-out both; }
+  .animate-fade-right { animation: fade-right 700ms ease-out both; }
+
+  /* Simple delay helpers (ms) */
+  .delay-0 { animation-delay: 0ms; }
+  .delay-150 { animation-delay: 150ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-450 { animation-delay: 450ms; }
+  .delay-600 { animation-delay: 600ms; }
+  .delay-750 { animation-delay: 750ms; }
+
+  /* Global font utilities mapped to Bebas Neue */
+  .font-bebas {
+    font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.02em;
+  }
+  /* Teko for navbar - similar to Ethnocentric */
+  .font-teko {
+    font-family: var(--font-teko), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+  }
+  /* Remap existing utilities to Bebas for backwards compatibility */
   .font-inter {
-    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.02em;
   }
   .font-roboto {
-    font-family: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0.02em;
+  }
+
+  /* Service header angled shape */
+  .service-header {
+    clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
   }
 }

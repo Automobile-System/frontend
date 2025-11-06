@@ -104,7 +104,7 @@ export function ServiceCard({ service, className = "" }: ServiceCardProps) {
             className="object-cover group-hover:scale-110 transition-transform duration-500" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          <Badge className="absolute top-4 left-4 bg-red-600 hover:bg-red-700 text-white border-none">
+          <Badge className="absolute top-4 left-4 bg-accent text-black border-none">
             <span className="mr-1">{service.icon}</span>
             Premium Service
           </Badge>
@@ -112,8 +112,8 @@ export function ServiceCard({ service, className = "" }: ServiceCardProps) {
       </CardHeader>
       
       <CardContent className="p-6">
-        <CardTitle className="text-2xl font-bold text-red-600 mb-3 font-roboto flex items-center">
-          <span className="mr-3 p-2 bg-red-100 rounded-lg text-red-600">
+        <CardTitle className="text-2xl font-bold text-brand mb-3 font-roboto flex items-center">
+          <span className="mr-3 p-2 bg-accent-soft rounded-lg text-accent">
             {service.icon}
           </span>
           {service.title}
@@ -128,14 +128,14 @@ export function ServiceCard({ service, className = "" }: ServiceCardProps) {
             <div key={index} className="flex items-center space-x-3 group/item">
               <div className="flex-shrink-0">
                 {service.highlighted?.includes(item) ? (
-                  <Zap className="h-4 w-4 text-red-600" />
+                  <Zap className="h-4 w-4 text-accent" />
                 ) : (
                   <CheckCircle className="h-4 w-4 text-green-600" />
                 )}
               </div>
-              <span className={`font-inter transition-colors group-hover/item:text-red-600 ${
+              <span className={`font-inter transition-colors group-hover/item:text-brand ${
                 service.highlighted?.includes(item) 
-                  ? "font-semibold text-red-600" 
+                  ? "font-semibold text-accent" 
                   : "text-gray-700"
               }`}>
                 {item}
@@ -146,7 +146,7 @@ export function ServiceCard({ service, className = "" }: ServiceCardProps) {
 
         <div className="mt-6 pt-6 border-t border-gray-100">
           <Button 
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-medium transition-all duration-300 group/btn"
+            className="w-full btn-accent text-black font-medium transition-all duration-300 group/btn"
             size="lg"
           >
             Learn More
@@ -164,23 +164,23 @@ export function ServicesOverview({ services = defaultServices, className = "" }:
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <Badge className="bg-red-100 text-red-600 border-red-200 mb-4 font-inter">
+          <Badge className="bg-accent-soft text-accent border-accent mb-4 font-inter">
             <Shield className="mr-1 h-4 w-4" />
             Our Expertise
           </Badge>
           
-          <h2 className="text-4xl md:text-5xl font-bold text-red-600 mb-6 font-roboto">
+          <h2 className="text-4xl md:text-5xl font-bold text-brand mb-6 font-roboto">
             OUR SERVICES
           </h2>
           
           <p className="text-xl md:text-2xl text-gray-800 max-w-3xl mx-auto font-inter leading-relaxed">
             Committed to provide{" "}
-            <span className="text-red-600 font-semibold">the best care</span>{" "}
+            <span className="text-accent font-semibold">the best care</span>{" "}
             with supervision and trust.
           </p>
           
           <div className="mt-8 flex justify-center">
-            <div className="w-24 h-1 bg-gradient-to-r from-red-600 to-red-400 rounded-full"></div>
+            <div className="w-24 h-1 bg-brand rounded-full"></div>
           </div>
         </div>
 
@@ -210,7 +210,7 @@ export function ServicesOverview({ services = defaultServices, className = "" }:
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg" 
-                className="bg-red-600 hover:bg-red-700 text-white font-medium px-8 transition-all duration-300 hover:scale-105"
+                className="btn-accent text-black font-medium px-8 transition-all duration-300 hover:scale-105"
               >
                 <Car className="mr-2 h-5 w-5" />
                 Book Consultation
