@@ -1,18 +1,7 @@
-interface Vehicle {
-  id: string;
-  make: string;
-  model: string;
-  year: number;
-  licensePlate: string;
-  lastService: string;
-  nextService: string;
-  mileage?: number;
-  color?: string;
-  vin?: string;
-}
+import { CustomerVehicle } from '@/types/authTypes';
 
 interface VehicleDetailsModalProps {
-  vehicle: Vehicle;
+  vehicle: CustomerVehicle;
   onClose: () => void;
 }
 
@@ -20,28 +9,6 @@ export default function VehicleDetailsModal({
   vehicle,
   onClose,
 }: VehicleDetailsModalProps) {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
-
-  const getServiceStatus = (nextService: string) => {
-    const today = new Date();
-    const nextServiceDate = new Date(nextService);
-    const diffTime = nextServiceDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays < 0) return { status: "Overdue", color: "#ef4444" };
-    if (diffDays <= 7) return { status: "Due Soon", color: "#f59e0b" };
-    if (diffDays <= 30)
-      return { status: "Upcoming", color: "var(--color-primary)" };
-    return { status: "Scheduled", color: "#10b981" };
-  };
-
-  const serviceStatus = getServiceStatus(vehicle.nextService);
 
   return (
     <div
@@ -89,7 +56,7 @@ export default function VehicleDetailsModal({
                 margin: "0 0 0.5rem 0",
               }}
             >
-              {vehicle.year} {vehicle.make} {vehicle.model}
+              {vehicle.brandName} {vehicle.model}
             </h2>
             <div
               style={{
@@ -109,22 +76,8 @@ export default function VehicleDetailsModal({
                   fontWeight: "500",
                 }}
               >
-                {vehicle.licensePlate}
+                {vehicle.registrationNo}
               </span>
-              {vehicle.color && (
-                <span
-                  style={{
-                    padding: "0.25rem 0.75rem",
-                    backgroundColor: "#f3f4f6",
-                    color: "#374151",
-                    borderRadius: "1rem",
-                    fontSize: "0.75rem",
-                    fontWeight: "500",
-                  }}
-                >
-                  {vehicle.color}
-                </span>
-              )}
             </div>
           </div>
           <button
@@ -160,53 +113,49 @@ export default function VehicleDetailsModal({
           >
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                Make & Model
+                Brand & Model
               </span>
               <span style={{ color: "#111827", fontWeight: "500" }}>
-                {vehicle.make} {vehicle.model}
+                {vehicle.brandName} {vehicle.model}
               </span>
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                Year
+                Registration Number
               </span>
               <span style={{ color: "#111827", fontWeight: "500" }}>
-                {vehicle.year}
+                {vehicle.registrationNo}
               </span>
             </div>
 
-            {vehicle.vin && (
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                  VIN
-                </span>
-                <span
-                  style={{
-                    color: "#111827",
-                    fontWeight: "500",
-                    fontSize: "0.75rem",
-                  }}
-                >
-                  {vehicle.vin}
-                </span>
-              </div>
-            )}
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+                Engine Capacity
+              </span>
+              <span style={{ color: "#111827", fontWeight: "500" }}>
+                {vehicle.capacity} CC
+              </span>
+            </div>
 
-            {vehicle.mileage && (
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                  Mileage
-                </span>
-                <span style={{ color: "#111827", fontWeight: "500" }}>
-                  {vehicle.mileage.toLocaleString()} miles
-                </span>
-              </div>
-            )}
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+                Vehicle ID
+              </span>
+              <span
+                style={{
+                  color: "#111827",
+                  fontWeight: "500",
+                  fontSize: "0.75rem",
+                }}
+              >
+                {vehicle.vehicleId}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Service Information */}
+        {/* Service Information Placeholder */}
         <div style={{ marginBottom: "2rem" }}>
           <h3
             style={{
@@ -216,57 +165,21 @@ export default function VehicleDetailsModal({
               margin: "0 0 1rem 0",
             }}
           >
-            Service Information
+            Service History
           </h3>
 
           <div
-            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+            style={{
+              padding: "1.5rem",
+              backgroundColor: "#f9fafb",
+              borderRadius: "0.5rem",
+              textAlign: "center",
+              border: "1px solid #e5e7eb",
+            }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                Last Service
-              </span>
-              <span style={{ color: "#111827", fontWeight: "500" }}>
-                {formatDate(vehicle.lastService)}
-              </span>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
-                Next Service
-              </span>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-              >
-                <span style={{ color: "#111827", fontWeight: "500" }}>
-                  {formatDate(vehicle.nextService)}
-                </span>
-                <span
-                  style={{
-                    padding: "0.25rem 0.5rem",
-                    backgroundColor: serviceStatus.color + "20",
-                    color: serviceStatus.color,
-                    borderRadius: "0.375rem",
-                    fontSize: "0.75rem",
-                    fontWeight: "500",
-                  }}
-                >
-                  {serviceStatus.status}
-                </span>
-              </div>
-            </div>
+            <p style={{ color: "#6b7280", margin: 0, fontSize: "0.875rem" }}>
+              No service history available yet
+            </p>
           </div>
         </div>
 
@@ -298,14 +211,14 @@ export default function VehicleDetailsModal({
           <button
             onClick={() => {
               // Handle book service logic
-              console.log("Book service for:", vehicle.id);
+              console.log("Book service for:", vehicle.vehicleId);
               onClose();
             }}
             style={{
               padding: "0.75rem 1.5rem",
-              border: "1px solid var(--color-primary)",
+              border: "1px solid #03009B",
               borderRadius: "0.5rem",
-              backgroundColor: "var(--color-primary)",
+              backgroundColor: "#03009B",
               color: "white",
               fontSize: "0.875rem",
               fontWeight: "500",
@@ -314,21 +227,19 @@ export default function VehicleDetailsModal({
               outline: "none",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor =
-                "var(--color-primary-hover)";
-              e.currentTarget.style.borderColor = "var(--color-primary-hover)";
+              e.currentTarget.style.backgroundColor = "#020079";
+              e.currentTarget.style.borderColor = "#020079";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--color-primary)";
-              e.currentTarget.style.borderColor = "var(--color-primary)";
+              e.currentTarget.style.backgroundColor = "#03009B";
+              e.currentTarget.style.borderColor = "#03009B";
             }}
             onMouseDown={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--color-primary)";
+              e.currentTarget.style.backgroundColor = "#01024D";
               e.currentTarget.style.transform = "scale(0.98)";
             }}
             onMouseUp={(e) => {
-              e.currentTarget.style.backgroundColor =
-                "var(--color-primary-hover)";
+              e.currentTarget.style.backgroundColor = "#020079";
               e.currentTarget.style.transform = "scale(1)";
             }}
           >

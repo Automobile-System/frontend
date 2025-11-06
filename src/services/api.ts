@@ -96,6 +96,16 @@ export const addCustomerVehicle = (payload: {
   body: JSON.stringify(payload)
 });
 
+export const updateCustomerVehicle = (id: string, payload: {
+  registrationNo?: string;
+  brandName?: string;
+  model?: string;
+  capacity?: number;
+}) => apiFetch(`/api/customer/vehicles/${id}`, {
+  method: "PUT",
+  body: JSON.stringify(payload)
+});
+
 export const deleteCustomerVehicle = (id: string) => 
   apiFetch(`/api/customer/vehicles/${id}`, {
     method: "DELETE"

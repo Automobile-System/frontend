@@ -1,19 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { addCustomerVehicle } from "@/services/api";
+import { updateCustomerVehicle } from "@/services/api";
+import { CustomerVehicle } from "@/types/authTypes";
 
-interface AddVehicleModalProps {
+interface EditVehicleModalProps {
+  vehicle: CustomerVehicle;
   onClose: () => void;
-  onVehicleAdded?: () => void;
+  onVehicleUpdated?: () => void;
 }
 
-export default function AddVehicleModal({ onClose, onVehicleAdded }: AddVehicleModalProps) {
+export default function EditVehicleModal({
+  vehicle,
+  onClose,
+  onVehicleUpdated,
+}: EditVehicleModalProps) {
   const [formData, setFormData] = useState({
-    make: "",
-    model: "",
-    plateNumber: "",
-    capacity: "",
+    make: vehicle.brandName,
+    model: vehicle.model,
+    plateNumber: vehicle.registrationNo,
+    capacity: vehicle.capacity.toString(),
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,23 +28,27 @@ export default function AddVehicleModal({ onClose, onVehicleAdded }: AddVehicleM
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
-      await addCustomerVehicle({
+      await updateCustomerVehicle(vehicle.vehicleId, {
         registrationNo: formData.plateNumber.toUpperCase(),
         brandName: formData.make,
         model: formData.model,
-        capacity: parseInt(formData.capacity)
+        capacity: parseInt(formData.capacity),
       });
-      
+
       // Call the callback to refresh the vehicle list
-      if (onVehicleAdded) {
-        onVehicleAdded();
+      if (onVehicleUpdated) {
+        onVehicleUpdated();
       }
       onClose();
-    } catch (err: any) {
-      console.error("Failed to add vehicle:", err);
-      setError(err.message || "Failed to add vehicle. Please try again.");
+    } catch (err: unknown) {
+      console.error("Failed to update vehicle:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to update vehicle. Please try again."
+      );
       setIsSubmitting(false);
     }
   };
@@ -83,23 +93,25 @@ export default function AddVehicleModal({ onClose, onVehicleAdded }: AddVehicleM
               margin: "0 0 0.5rem 0",
             }}
           >
-            Add New Vehicle
+            Edit Vehicle
           </h2>
           <p style={{ color: "#6b7280", margin: 0 }}>
-            Enter your vehicle details
+            Update your vehicle details
           </p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div style={{
-            padding: '1rem',
-            backgroundColor: '#fee2e2',
-            border: '1px solid #fecaca',
-            borderRadius: '0.5rem',
-            marginBottom: '1.5rem'
-          }}>
-            <p style={{ color: '#991b1b', margin: 0, fontSize: '0.875rem' }}>
+          <div
+            style={{
+              padding: "1rem",
+              backgroundColor: "#fee2e2",
+              border: "1px solid #fecaca",
+              borderRadius: "0.5rem",
+              marginBottom: "1.5rem",
+            }}
+          >
+            <p style={{ color: "#991b1b", margin: 0, fontSize: "0.875rem" }}>
               {error}
             </p>
           </div>
@@ -360,7 +372,7 @@ export default function AddVehicleModal({ onClose, onVehicleAdded }: AddVehicleM
                   "0 2px 8px rgba(3, 0, 155, 0.2)";
               }}
             >
-              {isSubmitting ? "Adding Vehicle..." : "Add Vehicle"}
+              {isSubmitting ? "Saving Changes..." : "Save Changes"}
             </button>
           </div>
         </form>

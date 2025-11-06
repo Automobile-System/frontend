@@ -14,15 +14,7 @@ export default function CustomerSidebar() {
       path: "/customer/book-service",
     },
     { name: "My Services", path: "/customer/services" },
-    {
-      name: "Preferred Employees",
-      path: "/customer/preferred-employees",
-    },
     { name: "Messages", path: "/customer/messages" },
-    {
-      name: "Payment History",
-      path: "/customer/payments",
-    },
   ];
 
   const sidebarStyle = {
@@ -98,9 +90,6 @@ export default function CustomerSidebar() {
           ))}
         </nav>
       </div>
-
-     
-      
     </div>
   );
 }

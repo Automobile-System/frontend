@@ -25,9 +25,9 @@ export default function Vehicles() {
             setError(null);
             const data = await getCustomerVehicles();
             setVehicles(data);
-        } catch (err: unknown) {
+        } catch (err: any) {
             console.error('Failed to fetch vehicles:', err);
-            setError(err instanceof Error ? err.message : 'Failed to load vehicles');
+            setError(err.message || 'Failed to load vehicles');
         } finally {
             setIsLoading(false);
         }
@@ -228,6 +228,7 @@ export default function Vehicles() {
                                 key={vehicle.vehicleId} 
                                 vehicle={vehicle}
                                 onDelete={fetchVehicles}
+                                onUpdate={fetchVehicles}
                             />
                         ))}
                     </div>
