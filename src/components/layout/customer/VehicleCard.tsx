@@ -4,16 +4,19 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CustomerVehicle } from '@/types/authTypes';
 import { deleteCustomerVehicle } from '@/services/api';
+import EditVehicleModal from './EditVehicleModal';
 
 interface VehicleCardProps {
     vehicle: CustomerVehicle;
     onDelete?: () => void;
+    onUpdate?: () => void;
 }
 
-export default function VehicleCard({ vehicle, onDelete }: VehicleCardProps) {
+export default function VehicleCard({ vehicle, onDelete, onUpdate }: VehicleCardProps) {
     const router = useRouter();
     const [isDeleting, setIsDeleting] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const viewServiceHistory = () => {
         router.push(`/customer/vehicles/${vehicle.vehicleId}`);
@@ -36,6 +39,13 @@ export default function VehicleCard({ vehicle, onDelete }: VehicleCardProps) {
             alert('Failed to delete vehicle. Please try again.');
             setIsDeleting(false);
             setShowConfirm(false);
+        }
+    };
+
+    const handleVehicleUpdated = () => {
+        setIsEditModalOpen(false);
+        if (onUpdate) {
+            onUpdate();
         }
     };
 
@@ -166,6 +176,32 @@ export default function VehicleCard({ vehicle, onDelete }: VehicleCardProps) {
                 </button>
 
                 <button
+                    onClick={() => setIsEditModalOpen(true)}
+                    style={{
+                        background: 'transparent',
+                        border: '1px solid #03009B',
+                        color: '#03009B',
+                        padding: '0.5rem 0.75rem',
+                        borderRadius: '0.5rem',
+                        cursor: 'pointer',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        transition: 'all 0.2s ease',
+                        whiteSpace: 'nowrap'
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#03009B';
+                        e.currentTarget.style.color = 'white';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent';
+                        e.currentTarget.style.color = '#03009B';
+                    }}
+                >
+                    ✏️
+                </button>
+
+                <button
                     onClick={handleDelete}
                     disabled={isDeleting}
                     style={{
@@ -211,6 +247,15 @@ export default function VehicleCard({ vehicle, onDelete }: VehicleCardProps) {
                 }}>
                     Click again to confirm deletion
                 </div>
+            )}
+
+            {/* Edit Modal */}
+            {isEditModalOpen && (
+                <EditVehicleModal
+                    vehicle={vehicle}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onVehicleUpdated={handleVehicleUpdated}
+                />
             )}
         </div>
     );
