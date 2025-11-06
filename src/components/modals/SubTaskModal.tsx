@@ -3,13 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 
 interface SubTask {
@@ -72,48 +73,53 @@ export default function SubTaskModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="bg-emerald-600 -mx-6 -mt-6 px-6 py-4 mb-4">
-          <DialogTitle className="text-2xl font-bold text-white">
-            Create Sub-Tasks for Project
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
+        <DialogTitle className="sr-only">Create Sub-Tasks for {project.title}</DialogTitle>
+        <DialogDescription className="sr-only">Define sub-tasks and assign team members for project {project.id}</DialogDescription>
+        
+        {/* Header */}
+        <div className="bg-[#020079] text-white -mx-6 -mt-6 px-6 py-6 mb-6 border-b-4 border-[#FFD700]">
+          <h2 className="text-2xl font-bebas tracking-wide">CREATE SUB-TASKS FOR PROJECT</h2>
+        </div>
 
-        <div className="bg-gray-50 rounded-lg p-4 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{project.title}</h3>
-          <div className="space-y-1 text-sm">
-            <p className="text-gray-600">
-              Project ID: <span className="text-gray-900 font-medium">{project.id}</span>
+        {/* Project Info Section */}
+        <div className="border-l-4 border-[#020079] bg-white pl-4 py-3 mb-6">
+          <h3 className="text-lg font-bebas text-[#020079] tracking-wide mb-2">{project.title}</h3>
+          <div className="space-y-1 text-sm font-roboto">
+            <p className="text-[#020079]/60">
+              Project ID: <span className="text-[#020079] font-semibold">{project.id}</span>
             </p>
-            <p className="text-gray-600">
-              Customer: <span className="text-gray-900 font-medium">{project.customer}</span>
+            <p className="text-[#020079]/60">
+              Customer: <span className="text-[#020079] font-semibold">{project.customer}</span>
             </p>
-            <p className="text-emerald-600 flex items-center gap-1 font-medium">
-              <span>✓</span>
+            <p className="text-[#FFD700] flex items-center gap-1 font-semibold">
               <span>Requirements Gathering Complete</span>
             </p>
           </div>
         </div>
 
         <div>
-          <h4 className="text-lg font-semibold text-white-800 mb-4">Define Sub-Tasks & Assign Team</h4>
+          <h4 className="text-lg font-bebas text-[#020079] tracking-wide border-b-2 border-[#020079]/20 pb-2 mb-4">
+            DEFINE SUB-TASKS & ASSIGN TEAM
+          </h4>
           
           <div className="space-y-4">
             <div className="grid gap-2">
-              <Label htmlFor="subTaskName">
-                Sub-Task Name <span className="text-red-500">*</span>
+              <Label htmlFor="subTaskName" className="font-roboto text-[#020079]/70 font-semibold uppercase tracking-wide text-sm">
+                Sub-Task Name <span className="text-[#FFD700]">*</span>
               </Label>
               <Input
                 id="subTaskName"
                 placeholder="e.g., Engine Disassembly, Parts Inspection, Reassembly"
                 value={currentSubTask.name}
                 onChange={(e) => setCurrentSubTask({ ...currentSubTask, name: e.target.value })}
+                className="h-12 border-[#020079]/20 focus:border-[#020079]/40 font-roboto"
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="estimatedDuration">
-                Estimated Duration (hours) <span className="text-red-500">*</span>
+              <Label htmlFor="estimatedDuration" className="font-roboto text-[#020079]/70 font-semibold uppercase tracking-wide text-sm">
+                Estimated Duration (hours) <span className="text-[#FFD700]">*</span>
               </Label>
               <Input
                 id="estimatedDuration"
@@ -121,24 +127,25 @@ export default function SubTaskModal({
                 min="1"
                 value={currentSubTask.duration || ""}
                 onChange={(e) => setCurrentSubTask({ ...currentSubTask, duration: parseInt(e.target.value) })}
+                className="h-12 border-[#020079]/20 focus:border-[#020079]/40 font-roboto"
               />
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="assignEmployee">
-                Assign Employee <span className="text-red-500">*</span>
+              <Label htmlFor="assignEmployee" className="font-roboto text-[#020079]/70 font-semibold uppercase tracking-wide text-sm">
+                Assign Employee <span className="text-[#FFD700]">*</span>
               </Label>
               <select
                 id="assignEmployee"
                 className={cn(
-                  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background",
-                  "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                  "flex h-12 w-full rounded-md border border-[#020079]/20 bg-white px-4 py-2 font-roboto text-[#020079]",
+                  "focus:outline-none focus:ring-2 focus:ring-[#020079]/20 focus:border-[#020079]",
                   "disabled:cursor-not-allowed disabled:opacity-50"
                 )}
                 value={currentSubTask.assignedTo}
                 onChange={(e) => setCurrentSubTask({ ...currentSubTask, assignedTo: e.target.value })}
               >
-                <option value="">Select Employee...</option>
+                <option value="" className="text-[#020079]/40">Select Employee...</option>
                 {EMPLOYEES.map((emp) => (
                   <option key={emp.name} value={emp.name}>
                     {emp.name} - {emp.role}
@@ -148,12 +155,12 @@ export default function SubTaskModal({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="priority">Priority</Label>
+              <Label htmlFor="priority" className="font-roboto text-[#020079]/70 font-semibold uppercase tracking-wide text-sm">Priority</Label>
               <select
                 id="priority"
                 className={cn(
-                  "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background",
-                  "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                  "flex h-12 w-full rounded-md border border-[#020079]/20 bg-white px-4 py-2 font-roboto text-[#020079]",
+                  "focus:outline-none focus:ring-2 focus:ring-[#020079]/20 focus:border-[#020079]",
                   "disabled:cursor-not-allowed disabled:opacity-50"
                 )}
                 value={currentSubTask.priority}
@@ -170,39 +177,39 @@ export default function SubTaskModal({
 
             <Button
               type="button"
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-base h-11 mt-2"
+              className="w-full h-12 bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold tracking-wide mt-2"
               onClick={handleAddSubTask}
             >
-              + Add Sub-Task to List
+              ADD SUB-TASK TO LIST
             </Button>
           </div>
 
 
 
           <div className="mt-6">
-            <h4 className="text-lg font-semibold text-gray-800 mb-3">Sub-Tasks List:</h4>
-            <div className="bg-gray-50 rounded-lg p-4 min-h-[120px] border border-gray-200">
+            <h4 className="text-lg font-bebas text-[#020079] tracking-wide border-b-2 border-[#020079]/20 pb-2 mb-3">SUB-TASKS LIST</h4>
+            <div className="bg-white rounded-lg p-4 min-h-[120px] border-2 border-[#020079]/10">
               {subTasks.length === 0 ? (
-                <p className="text-gray-500 text-center py-6">No sub-tasks created yet. Add sub-tasks above.</p>
+                <p className="text-[#020079]/60 font-roboto text-center py-6">No sub-tasks created yet. Add sub-tasks above.</p>
               ) : (
                 <div className="space-y-3">
                   {subTasks.map((task, index) => (
-                    <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <div key={index} className="bg-white border-2 border-[#020079]/20 rounded-lg p-4 shadow-sm">
                       <div className="flex justify-between items-center">
                         <div className="flex-1">
-                          <h5 className="text-gray-900 font-medium mb-1">{task.name}</h5>
-                          <p className="text-sm text-gray-600">Assigned to: {task.assignedTo}</p>
+                          <h5 className="text-[#020079] font-bebas text-lg tracking-wide mb-1">{task.name}</h5>
+                          <p className="text-sm text-[#020079]/60 font-roboto">Assigned to: {task.assignedTo}</p>
                         </div>
                         <div className="flex items-center gap-4">
-                          <span className="text-gray-700 font-medium">{task.duration} hours</span>
-                          <span className={cn(
-                            "px-3 py-1 rounded-full text-sm font-medium",
-                            task.priority === "High" && "bg-red-100 text-red-700",
-                            task.priority === "Medium" && "bg-yellow-100 text-yellow-700",
-                            task.priority === "Low" && "bg-blue-100 text-blue-700"
+                          <span className="text-[#020079] font-roboto font-semibold">{task.duration} hours</span>
+                          <Badge className={cn(
+                            "font-roboto font-semibold",
+                            task.priority === "High" && "bg-[#020079] text-white",
+                            task.priority === "Medium" && "bg-[#FFD700] text-[#020079]",
+                            task.priority === "Low" && "bg-[#020079]/20 text-[#020079]"
                           )}>
                             {task.priority}
-                          </span>
+                          </Badge>
                         </div>
                       </div>
                     </div>
@@ -211,9 +218,8 @@ export default function SubTaskModal({
               )}
             </div>
 
-            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mt-6">
-              <p className="flex items-center gap-2 text-emerald-700 text-sm">
-                <span className="text-lg">✓</span>
+            <div className="border-l-4 border-[#FFD700] bg-white pl-4 py-4 rounded-lg mt-6">
+              <p className="flex items-center gap-2 text-[#020079] text-sm font-roboto">
                 <span>
                   <strong>Auto-Balance:</strong> System prevents overlapping employee assignments and ensures fair workload distribution
                 </span>
@@ -222,11 +228,11 @@ export default function SubTaskModal({
 
             <Button
               type="button"
-              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-base h-11 mt-6"
+              className="w-full h-12 bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold tracking-wide mt-6"
               onClick={handleFinalize}
               disabled={subTasks.length === 0}
             >
-              ✓ Finalize & Move Project to &quot;In Progress&quot;
+              FINALIZE & MOVE PROJECT TO IN PROGRESS
             </Button>
           </div>
         </div>

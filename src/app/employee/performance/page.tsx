@@ -131,94 +131,94 @@ export default function PerformancePage() {
             {/* Statistics Cards Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {/* Total Earnings Card */}
-              <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
+              <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="p-2 bg-emerald-100 rounded-xl">
-                    <DollarSign className="h-6 w-6 text-emerald-600" />
+                  <div className="p-2 bg-[#FFD70029] rounded-xl">
+                    <DollarSign className="h-6 w-6 text-[#020079]" />
                   </div>
-                  <TrendingUp className="h-5 w-5 text-emerald-600" />
+                  <TrendingUp className="h-5 w-5 text-[#E6C200]" />
                 </div>
-                <p className="text-sm font-medium text-gray-600 mb-1">
+                <p className="text-sm font-medium text-[#020079] mb-1">
                   Total Earnings
                 </p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-[#020079]">
                   LKR {(earnings.totalEarnings / 1000).toFixed(0)}K
                 </p>
-                <p className="text-xs text-emerald-600 mt-2 font-semibold">
+                <p className="text-xs text-[#020079] mt-2 font-semibold">
                   +12.5% from last month
                 </p>
               </Card>
 
               {/* Tasks Completed Card */}
-              <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
+              <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="p-2 bg-blue-100 rounded-xl">
-                    <CheckCircle2 className="h-6 w-6 text-blue-600" />
+                  <div className="p-2 bg-[#0200791F] rounded-xl">
+                    <CheckCircle2 className="h-6 w-6 text-[#020079]" />
                   </div>
-                  <Target className="h-5 w-5 text-blue-600" />
+                  <Target className="h-5 w-5 text-[#020079]" />
                 </div>
-                <p className="text-sm font-medium text-gray-600 mb-1">
+                <p className="text-sm font-medium text-[#020079] mb-1">
                   Tasks This Month
                 </p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-[#020079]">
                   {monthlyTaskData[monthlyTaskData.length - 1].tasksCompleted}
                 </p>
-                <p className="text-xs text-blue-600 mt-2 font-semibold">
+                <p className="text-xs text-[#020079] mt-2 font-semibold">
                   +6.7% completion rate
                 </p>
               </Card>
 
               {/* Avg Completion Time Card */}
-              <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
+              <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="p-2 bg-gray-100 rounded-xl">
-                    <Clock className="h-6 w-6 text-gray-700" />
+                  <div className="p-2 bg-[#0200791F] rounded-xl">
+                    <Clock className="h-6 w-6 text-[#020079]" />
                   </div>
-                  <TrendingDown className="h-5 w-5 text-emerald-600" />
+                  <TrendingDown className="h-5 w-5 text-[#020079]" />
                 </div>
-                <p className="text-sm font-medium text-gray-600 mb-1">
+                <p className="text-sm font-medium text-[#020079] mb-1">
                   Avg Completion
                 </p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-[#020079]">
                   {
                     monthlyTaskData[monthlyTaskData.length - 1]
                       .avgCompletionTime
                   }
                   h
                 </p>
-                <p className="text-xs text-emerald-600 mt-2 font-semibold">
+                <p className="text-xs text-[#020079] mt-2 font-semibold">
                   -15% faster than avg
                 </p>
               </Card>
 
               {/* Customer Demand Card */}
-              <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
+              <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="p-2 bg-blue-100 rounded-xl">
-                    <Zap className="h-6 w-6 text-blue-600" />
+                  <div className="p-2 bg-[#0200791F] rounded-xl">
+                    <Zap className="h-6 w-6 text-[#020079]" />
                   </div>
-                  <Award className="h-5 w-5 text-blue-600" />
+                  <Award className="h-5 w-5 text-[#E6C200]" />
                 </div>
-                <p className="text-sm font-medium text-gray-600 mb-1">
+                <p className="text-sm font-medium text-[#020079] mb-1">
                   Demand Score
                 </p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-[#020079]">
                   {demandPercentage}%
                 </p>
-                <p className="text-xs text-blue-600 mt-2 font-semibold">
+                <p className="text-xs text-[#020079] mt-2 font-semibold">
                   High customer demand
                 </p>
               </Card>
             </div>
 
             {/* Earnings Breakdown Section */}
-            <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
+            <Card className="p-6 rounded-2xl shadow-lg border-[#020079]/20 hover:border-[#020079] bg-white hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl">
-                  <DollarSign className="h-6 w-6 text-white" />
+                <div className="p-3 bg-[#FFD70029] rounded-xl">
+                  <DollarSign className="h-6 w-6 text-[#020079]" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-[#020079]">
                     Monthly Earnings Breakdown
                   </h2>
                   <p className="text-sm text-gray-600">
@@ -231,11 +231,11 @@ export default function PerformancePage() {
                 {/* Left Column - Earnings Items */}
                 <div className="space-y-4">
                   {/* Base Salary */}
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+                  <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#020079]/20 hover:border-[#020079] hover:shadow-lg transition-all duration-300">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-12 bg-blue-600 rounded-full" />
+                      <div className="w-2 h-12 bg-[#020079] rounded-full" />
                       <div>
-                        <p className="text-sm text-gray-600 font-medium">
+                        <p className="text-sm text-[#020079] font-medium">
                           Base Salary
                         </p>
                         <p className="text-xs text-gray-500">
@@ -243,33 +243,33 @@ export default function PerformancePage() {
                         </p>
                       </div>
                     </div>
-                    <p className="text-xl font-bold text-blue-700">
+                    <p className="text-xl font-bold text-[#020079]">
                       LKR {earnings.baseSalary.toLocaleString()}
                     </p>
                   </div>
 
                   {/* Performance Bonus */}
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl border border-emerald-100">
+                  <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#E6C200]/30 hover:border-[#E6C200] hover:shadow-lg transition-all duration-300">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-12 bg-emerald-600 rounded-full" />
+                      <div className="w-2 h-12 bg-[#E6C200] rounded-full" />
                       <div>
-                        <p className="text-sm text-gray-600 font-medium">
+                        <p className="text-sm text-[#020079] font-medium">
                           Performance Bonus
                         </p>
                         <p className="text-xs text-gray-500">Rating: 4.8/5.0</p>
                       </div>
                     </div>
-                    <p className="text-xl font-bold text-emerald-700">
+                    <p className="text-xl font-bold text-[#E6C200]">
                       LKR {earnings.performanceBonus.toLocaleString()}
                     </p>
                   </div>
 
                   {/* Demand Bonus */}
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-100">
+                  <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#020079]/20 hover:border-[#020079] hover:shadow-lg transition-all duration-300">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-12 bg-purple-600 rounded-full" />
+                      <div className="w-2 h-12 bg-[#03009B] rounded-full" />
                       <div>
-                        <p className="text-sm text-gray-600 font-medium">
+                        <p className="text-sm text-[#020079] font-medium">
                           Demand Bonus
                         </p>
                         <p className="text-xs text-gray-500">
@@ -277,17 +277,17 @@ export default function PerformancePage() {
                         </p>
                       </div>
                     </div>
-                    <p className="text-xl font-bold text-purple-700">
+                    <p className="text-xl font-bold text-[#03009B]">
                       LKR {earnings.demandBonus.toLocaleString()}
                     </p>
                   </div>
 
                   {/* Overtime */}
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-100">
+                  <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#E6C200]/30 hover:border-[#E6C200] hover:shadow-lg transition-all duration-300">
                     <div className="flex items-center gap-3">
-                      <div className="w-2 h-12 bg-orange-600 rounded-full" />
+                      <div className="w-2 h-12 bg-[#E6C200] rounded-full" />
                       <div>
-                        <p className="text-sm text-gray-600 font-medium">
+                        <p className="text-sm text-[#020079] font-medium">
                           Overtime Pay
                         </p>
                         <p className="text-xs text-gray-500">
@@ -295,7 +295,7 @@ export default function PerformancePage() {
                         </p>
                       </div>
                     </div>
-                    <p className="text-xl font-bold text-orange-700">
+                    <p className="text-xl font-bold text-[#E6C200]">
                       LKR {earnings.overtimeAmount.toLocaleString()}
                     </p>
                   </div>
@@ -304,15 +304,15 @@ export default function PerformancePage() {
                 {/* Right Column - Visual Breakdown & Total */}
                 <div className="space-y-4">
                   {/* Visual Bar Chart */}
-                  <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-                    <p className="text-sm font-semibold text-gray-700 mb-4">
+                  <div className="p-6 bg-[#0200791F] rounded-xl border border-[#020079]/20">
+                    <p className="text-sm font-semibold text-[#020079] mb-4">
                       Earnings Distribution
                     </p>
                     <div className="space-y-3">
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs text-gray-600">Base</span>
-                          <span className="text-xs font-semibold text-gray-700">
+                          <span className="text-xs text-[#020079]">Base</span>
+                          <span className="text-xs font-semibold text-[#020079]">
                             {(
                               (earnings.baseSalary / earnings.totalEarnings) *
                               100
@@ -322,7 +322,7 @@ export default function PerformancePage() {
                         </div>
                         <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+                            className="h-full bg-[#020079] rounded-full"
                             style={{
                               width: `${
                                 (earnings.baseSalary / earnings.totalEarnings) *
@@ -335,10 +335,10 @@ export default function PerformancePage() {
 
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs text-gray-600">
+                          <span className="text-xs text-[#020079]">
                             Performance
                           </span>
-                          <span className="text-xs font-semibold text-gray-700">
+                          <span className="text-xs font-semibold text-[#020079]">
                             {(
                               (earnings.performanceBonus /
                                 earnings.totalEarnings) *
@@ -349,7 +349,7 @@ export default function PerformancePage() {
                         </div>
                         <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full"
+                            className="h-full bg-[#E6C200] rounded-full"
                             style={{
                               width: `${
                                 (earnings.performanceBonus /
@@ -363,8 +363,8 @@ export default function PerformancePage() {
 
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs text-gray-600">Demand</span>
-                          <span className="text-xs font-semibold text-gray-700">
+                          <span className="text-xs text-[#020079]">Demand</span>
+                          <span className="text-xs font-semibold text-[#020079]">
                             {(
                               (earnings.demandBonus / earnings.totalEarnings) *
                               100
@@ -374,7 +374,7 @@ export default function PerformancePage() {
                         </div>
                         <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full"
+                            className="h-full bg-[#03009B] rounded-full"
                             style={{
                               width: `${
                                 (earnings.demandBonus /
@@ -388,10 +388,10 @@ export default function PerformancePage() {
 
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs text-gray-600">
+                          <span className="text-xs text-[#020079]">
                             Overtime
                           </span>
-                          <span className="text-xs font-semibold text-gray-700">
+                          <span className="text-xs font-semibold text-[#020079]">
                             {(
                               (earnings.overtimeAmount /
                                 earnings.totalEarnings) *
@@ -402,7 +402,7 @@ export default function PerformancePage() {
                         </div>
                         <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full"
+                            className="h-full bg-[#E6C200] rounded-full"
                             style={{
                               width: `${
                                 (earnings.overtimeAmount /
@@ -417,7 +417,7 @@ export default function PerformancePage() {
                   </div>
 
                   {/* Total Earnings Highlight */}
-                  <div className="p-6 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl shadow-lg">
+                  <div className="p-6 bg-gradient-to-br from-[#020079] to-[#01024D] rounded-xl shadow-lg">
                     <p className="text-sm font-medium text-white/90 mb-2">
                       Total Monthly Earnings
                     </p>
@@ -452,13 +452,13 @@ export default function PerformancePage() {
             {/* Performance Charts Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Tasks Completed - Bar Chart */}
-              <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
+              <Card className="p-6 rounded-2xl shadow-lg border-[#020079]/20 hover:border-[#020079] bg-white hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl">
-                    <CheckCircle2 className="h-5 w-5 text-white" />
+                  <div className="p-2 bg-[#0200791F] rounded-xl">
+                    <CheckCircle2 className="h-5 w-5 text-[#020079]" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-[#020079]">
                       Tasks per Month
                     </h2>
                     <p className="text-xs text-gray-600">
@@ -476,7 +476,7 @@ export default function PerformancePage() {
                       >
                         <div className="relative w-full group">
                           <div
-                            className="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-lg transition-all duration-300 hover:from-blue-700 hover:to-blue-500 cursor-pointer"
+                            className="w-full bg-[#020079] rounded-t-lg transition-all duration-300 hover:bg-[#03009B] cursor-pointer"
                             style={{
                               height: `${
                                 (data.tasksCompleted / maxTasks) * 200
@@ -486,7 +486,7 @@ export default function PerformancePage() {
                           />
                           {/* Tooltip */}
                           <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                            <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 whitespace-nowrap shadow-xl">
+                            <div className="bg-[#020079] text-white text-xs rounded-lg py-2 px-3 whitespace-nowrap shadow-xl">
                               <p className="font-semibold">
                                 {data.tasksCompleted} tasks
                               </p>
@@ -494,7 +494,7 @@ export default function PerformancePage() {
                             </div>
                           </div>
                         </div>
-                        <p className="text-xs font-semibold text-gray-600">
+                        <p className="text-xs font-semibold text-[#020079]">
                           {data.month}
                         </p>
                       </div>
@@ -502,17 +502,17 @@ export default function PerformancePage() {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-gray-200">
+                <div className="mt-4 pt-4 border-t border-[#020079]/20">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">
                       Peak:{" "}
-                      <span className="font-bold text-gray-900">
+                      <span className="font-bold text-[#020079]">
                         {maxTasks} tasks
                       </span>
                     </span>
                     <span className="text-gray-600">
                       Average:{" "}
-                      <span className="font-bold text-gray-900">
+                      <span className="font-bold text-[#020079]">
                         {(
                           monthlyTaskData.reduce(
                             (acc, d) => acc + d.tasksCompleted,
@@ -527,13 +527,13 @@ export default function PerformancePage() {
               </Card>
 
               {/* Completion Time Trend - Line Chart */}
-              <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
+              <Card className="p-6 rounded-2xl shadow-lg border-[#020079]/20 hover:border-[#020079] bg-white hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl">
-                    <Clock className="h-5 w-5 text-white" />
+                  <div className="p-2 bg-[#FFD70029] rounded-xl">
+                    <Clock className="h-5 w-5 text-[#020079]" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-[#020079]">
                       Average Completion Time
                     </h2>
                     <p className="text-xs text-gray-600">
@@ -564,8 +564,8 @@ export default function PerformancePage() {
                         x2="100%"
                         y2="0%"
                       >
-                        <stop offset="0%" stopColor="#a855f7" />
-                        <stop offset="100%" stopColor="#ec4899" />
+                        <stop offset="0%" stopColor="#E6C200" />
+                        <stop offset="100%" stopColor="#E6C200" />
                       </linearGradient>
                       <linearGradient
                         id="areaGradient"
@@ -576,12 +576,12 @@ export default function PerformancePage() {
                       >
                         <stop
                           offset="0%"
-                          stopColor="#a855f7"
+                          stopColor="#E6C200"
                           stopOpacity="0.3"
                         />
                         <stop
                           offset="100%"
-                          stopColor="#a855f7"
+                          stopColor="#E6C200"
                           stopOpacity="0"
                         />
                       </linearGradient>
@@ -627,7 +627,7 @@ export default function PerformancePage() {
                         cy={200 - (d.avgCompletionTime / 3) * 200}
                         r="5"
                         fill="#ffffff"
-                        stroke="#a855f7"
+                        stroke="#E6C200"
                         strokeWidth="3"
                         className="hover:r-7 transition-all cursor-pointer"
                       >
@@ -643,7 +643,7 @@ export default function PerformancePage() {
                     {monthlyTaskData.map((data, index) => (
                       <span
                         key={index}
-                        className="text-xs font-semibold text-gray-600"
+                        className="text-xs font-semibold text-[#020079]"
                       >
                         {data.month}
                       </span>
@@ -651,11 +651,11 @@ export default function PerformancePage() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-gray-200">
+                <div className="mt-6 pt-4 border-t border-[#020079]/20">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">
                       Current:{" "}
-                      <span className="font-bold text-purple-600">
+                      <span className="font-bold text-[#E6C200]">
                         {
                           monthlyTaskData[monthlyTaskData.length - 1]
                             .avgCompletionTime
@@ -664,8 +664,8 @@ export default function PerformancePage() {
                       </span>
                     </span>
                     <span className="text-gray-600 flex items-center gap-1">
-                      <TrendingDown className="h-4 w-4 text-emerald-600" />
-                      <span className="font-bold text-emerald-600">
+                      <TrendingDown className="h-4 w-4 text-[#020079]" />
+                      <span className="font-bold text-[#020079]">
                         -28% improvement
                       </span>
                     </span>
@@ -674,13 +674,13 @@ export default function PerformancePage() {
               </Card>
 
               {/* Customer Rating Trend - Line Chart */}
-              <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
+              <Card className="p-6 rounded-2xl shadow-lg border-[#020079]/20 hover:border-[#020079] bg-white hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl">
-                    <Award className="h-5 w-5 text-white" />
+                  <div className="p-2 bg-[#FFD70029] rounded-xl">
+                    <Award className="h-5 w-5 text-[#E6C200]" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-[#020079]">
                       Customer Rating Trend
                     </h2>
                     <p className="text-xs text-gray-600">
@@ -716,8 +716,8 @@ export default function PerformancePage() {
                         x2="100%"
                         y2="0%"
                       >
-                        <stop offset="0%" stopColor="#f97316" />
-                        <stop offset="100%" stopColor="#dc2626" />
+                        <stop offset="0%" stopColor="#020079" />
+                        <stop offset="100%" stopColor="#03009B" />
                       </linearGradient>
                     </defs>
 
@@ -746,7 +746,7 @@ export default function PerformancePage() {
                           cy={200 - ((d.rating - 3) / 2) * 200}
                           r="6"
                           fill="#ffffff"
-                          stroke="#f97316"
+                          stroke="#E6C200"
                           strokeWidth="3"
                         />
                         <title>
@@ -761,7 +761,7 @@ export default function PerformancePage() {
                     {monthlyTaskData.map((data, index) => (
                       <span
                         key={index}
-                        className="text-xs font-semibold text-gray-600"
+                        className="text-xs font-semibold text-[#020079]"
                       >
                         {data.month}
                       </span>
@@ -769,17 +769,17 @@ export default function PerformancePage() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-gray-200">
+                <div className="mt-6 pt-4 border-t border-[#020079]/20">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">
                       Current:{" "}
-                      <span className="font-bold text-orange-600">
+                      <span className="font-bold text-[#E6C200]">
                         {monthlyTaskData[monthlyTaskData.length - 1].rating}/5.0
                       </span>
                     </span>
                     <span className="text-gray-600">
                       Average:{" "}
-                      <span className="font-bold text-gray-900">
+                      <span className="font-bold text-[#020079]">
                         {(
                           monthlyTaskData.reduce(
                             (acc, d) => acc + d.rating,
@@ -794,13 +794,13 @@ export default function PerformancePage() {
               </Card>
 
               {/* Service Type Distribution - Horizontal Bar Chart */}
-              <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
+              <Card className="p-6 rounded-2xl shadow-lg border-[#020079]/20 hover:border-[#020079] bg-white hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl">
-                    <Target className="h-5 w-5 text-white" />
+                  <div className="p-2 bg-[#0200791F] rounded-xl">
+                    <Target className="h-5 w-5 text-[#020079]" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">
+                    <h2 className="text-xl font-bold text-[#020079]">
                       Service Type Distribution
                     </h2>
                     <p className="text-xs text-gray-600">
@@ -815,9 +815,19 @@ export default function PerformancePage() {
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <div
-                            className={`w-3 h-3 ${service.color} rounded-full`}
+                            className="w-3 h-3 rounded-full"
+                            style={{
+                              backgroundColor:
+                                index === 0
+                                  ? "#020079"
+                                  : index === 1
+                                  ? "#03009B"
+                                  : index === 2
+                                  ? "#E6C200"
+                                  : "#01024D",
+                            }}
                           />
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="text-sm font-medium text-[#020079]">
                             {service.type}
                           </span>
                         </div>
@@ -825,26 +835,36 @@ export default function PerformancePage() {
                           <span className="text-sm text-gray-600">
                             {service.count} tasks
                           </span>
-                          <span className="text-sm font-bold text-gray-900">
+                          <span className="text-sm font-bold text-[#020079]">
                             {service.percentage}%
                           </span>
                         </div>
                       </div>
                       <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                         <div
-                          className={`h-full ${service.color} rounded-full transition-all duration-500 group-hover:opacity-80`}
-                          style={{ width: `${service.percentage}%` }}
+                          className="h-full rounded-full transition-all duration-500 group-hover:opacity-80"
+                          style={{
+                            width: `${service.percentage}%`,
+                            backgroundColor:
+                              index === 0
+                                ? "#020079"
+                                : index === 1
+                                ? "#03009B"
+                                : index === 2
+                                ? "#E6C200"
+                                : "#01024D",
+                          }}
                         />
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-gray-200">
+                <div className="mt-6 pt-4 border-t border-[#020079]/20">
                   <div className="text-center">
                     <p className="text-sm text-gray-600">
                       Total Services:{" "}
-                      <span className="font-bold text-gray-900">
+                      <span className="font-bold text-[#020079]">
                         {serviceTypeData.reduce((acc, s) => acc + s.count, 0)}{" "}
                         tasks
                       </span>

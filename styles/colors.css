@@ -1,0 +1,21 @@
+:root {
+    /* Primary brand colors */
+    --color-primary: #01024D;             /* Deep blue (gradient end) */
+    --color-primary-hover: #03009B;       /* Brand hover blue (buttons) */
+  
+    /* Accent colors */
+    --color-accent: #E6C200;              /* Accent hover gold (buttons) */
+    --color-accent-hover: #FFD700;        /* Accent hover gold */
+  
+    /* Soft tint / overlays - converted from hex with alpha to rgba */
+    /* #0200791F = rgba(2, 0, 121, 0.12) - Brand soft tint (12% alpha) */
+    /* #FFD70029 = rgba(255, 215, 0, 0.16) - Accent soft tint (16% alpha) */
+    --color-tint-primary: rgba(2, 0, 121, 0.12);  /* Brand soft tint (12% alpha) */
+    --color-tint-accent: rgba(255, 215, 0, 0.16); /* Accent soft tint (16% alpha) */
+  
+    /* Neutral colors for balance */
+    --color-bg: #f9fafc;                  /* Light background */
+    --color-text: #1a1a1a;                /* Default text */
+    --color-muted: #888888;               /* Muted text / secondary info */
+  }
+  

@@ -14,9 +14,9 @@ async function handleRes(res: Response) {
 }
 
 const apiFetch = async (path: string, opts: RequestInit = {}) => {
-  const base = process.env.NEXT_PUBLIC_API_BASE ?? "";
+  const base = process.env.NEXT_PUBLIC_BASE_URL ?? "";
   const res = await fetch(base + path, {
-    credentials: "same-origin",
+    credentials: "include", // Changed to "include" for HTTP-only cookies
     headers: {
       "Content-Type": "application/json",
       ...(opts.headers || {}),
@@ -67,3 +67,36 @@ export const getEmployeeEfficiency = () => apiFetch("/api/reports/employee-effic
 export const getMostRequestedEmployees = () => apiFetch("/api/reports/most-requested-employees");
 export const getPartsDelayAnalytics = () => apiFetch("/api/reports/parts-delay-analytics");
 export const getCompletedProjectsByType = () => apiFetch("/api/reports/completed-projects-by-type");
+
+/* Customer Profile */
+export const getCustomerProfile = () => apiFetch("/api/customer/profile");
+
+export const updateCustomerProfile = (payload: {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  nationalId?: string;
+  phoneNumber?: string;
+  profileImageUrl?: string;
+}) => apiFetch("/api/customer/profile", { 
+  method: "PUT", 
+  body: JSON.stringify(payload) 
+});
+
+/* Customer Vehicles */
+export const getCustomerVehicles = () => apiFetch("/api/customer/vehicles");
+
+export const addCustomerVehicle = (payload: {
+  registrationNo: string;
+  brandName: string;
+  model: string;
+  capacity: number;
+}) => apiFetch("/api/customer/vehicles", {
+  method: "POST",
+  body: JSON.stringify(payload)
+});
+
+export const deleteCustomerVehicle = (id: string) => 
+  apiFetch(`/api/customer/vehicles/${id}`, {
+    method: "DELETE"
+  });

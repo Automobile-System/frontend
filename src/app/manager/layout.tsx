@@ -8,7 +8,7 @@ export default function ManagerLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <TopNavBar />
 
@@ -18,7 +18,7 @@ export default function ManagerLayout({
         <Sidebar />
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-10">
+        <main className="flex-1 overflow-y-auto">
           {children}
         </main>
       </div>
