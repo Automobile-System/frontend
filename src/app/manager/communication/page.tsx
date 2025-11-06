@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import BroadcastModal from "@/components/modals/BroadcastModal";
 import ComposeMessageModal from "@/components/modals/ComposeMessageModal";
@@ -139,101 +140,115 @@ export default function CommunicationPage() {
   };
 
   return (
-    <div className="p-8">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <span className="text-4xl">💬</span>
-        <h1 className="text-3xl font-bold text-gray-800">Communication Center</h1>
+    <div className="p-8 bg-white min-h-screen">
+      {/* Page Title */}
+      <div className="mb-10">
+        <h1 className="text-4xl font-bebas text-[#020079] mb-2">
+          COMMUNICATION CENTER
+        </h1>
+        <p className="font-roboto text-[#020079]/60">Manage messages with employees and customers</p>
       </div>
 
       {/* Action Buttons */}
       <div className="flex gap-4 mb-8">
         <Button
-          className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6"
+          className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold px-6 h-12"
           onClick={() => setShowBroadcastModal(true)}
         >
-          📢 Broadcast to All Employees
+          Broadcast to All Employees
         </Button>
         <Button
-          className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6"
+          className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold px-6 h-12"
           onClick={() => setShowComposeModal(true)}
         >
-          ✉️ Compose Message
+          Compose Message
         </Button>
       </div>
 
       {/* Main Content */}
       <div className="grid grid-cols-5 gap-6">
         {/* Inbox - Left Side (2 columns) */}
-        <div className="col-span-2 bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Inbox</h2>
-          
-          <div className="space-y-2">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`p-4 rounded-lg cursor-pointer transition-colors ${
-                  message.isAlert 
-                    ? "bg-blue-50 hover:bg-blue-100 border-l-4 border-orange-500" 
-                    : selectedMessage?.id === message.id
-                    ? "bg-blue-100"
-                    : "bg-blue-50 hover:bg-blue-100"
-                }`}
-                onClick={() => setSelectedMessage(message)}
-              >
-                <div className="flex items-start justify-between mb-1">
-                  <h3 className="font-bold text-gray-800 text-sm">
-                    {message.senderType === "customer" && "Customer: "}
-                    {message.senderType === "employee" && "Employee: "}
-                    {message.isAlert && "⚠️ "}
-                    {message.sender}
-                  </h3>
-                </div>
-                <p className="text-sm text-gray-600 mb-1">{message.subject}</p>
-                <p className="text-xs text-gray-500">{message.timestamp}</p>
+        <div className="col-span-2">
+          <Card className="border-2 border-[#020079]/20 hover:border-[#020079]/40 transition-all">
+            <CardHeader className="border-b-2 border-[#020079]/10">
+              <CardTitle className="text-xl font-bebas text-[#020079] tracking-wide">INBOX</CardTitle>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="space-y-2">
+                {messages.map((message) => (
+                  <Card
+                    key={message.id}
+                    className={`cursor-pointer transition-all ${
+                      message.isAlert 
+                        ? "border-l-4 border-[#FFD700] bg-[#FFD700]/5 hover:bg-[#FFD700]/10" 
+                        : selectedMessage?.id === message.id
+                        ? "border-2 border-[#020079] bg-[#020079]/5"
+                        : "border-2 border-[#020079]/20 hover:border-[#020079]/40"
+                    }`}
+                    onClick={() => setSelectedMessage(message)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-1">
+                        <h3 className="font-bebas text-[#020079] text-sm tracking-wide">
+                          {message.senderType === "customer" && "CUSTOMER: "}
+                          {message.senderType === "employee" && "EMPLOYEE: "}
+                          {message.isAlert && "SYSTEM ALERT"}
+                          {!message.isAlert && message.sender.toUpperCase()}
+                        </h3>
+                      </div>
+                      <p className="text-sm font-roboto text-[#020079]/70 mb-1">{message.subject}</p>
+                      <p className="text-xs font-roboto text-[#020079]/50">{message.timestamp}</p>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            ))}
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Message Thread - Right Side (3 columns) */}
-        <div className="col-span-3 bg-white rounded-lg shadow-md p-6 flex flex-col" style={{ height: '600px' }}>
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Message Thread</h2>
-          
-          {selectedMessage ? (
-            <>
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto mb-4">
-                {(messageThreads[selectedMessage.id] || []).map((thread, index) => (
-                  <div key={index} className="mb-6">
-                    <h3 className="font-bold text-gray-800 mb-2">{thread.sender}</h3>
-                    <p className="text-gray-700 mb-2">{thread.content}</p>
-                    <p className="text-xs text-gray-500">{thread.timestamp}</p>
+        <div className="col-span-3">
+          <Card className="border-2 border-[#020079]/20 hover:border-[#020079]/40 transition-all" style={{ height: '600px' }}>
+            <CardHeader className="border-b-2 border-[#020079]/10">
+              <CardTitle className="text-xl font-bebas text-[#020079] tracking-wide">MESSAGE THREAD</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 flex flex-col h-[calc(100%-80px)]">
+              {selectedMessage ? (
+                <>
+                  {/* Messages */}
+                  <div className="flex-1 overflow-y-auto mb-4 space-y-4">
+                    {(messageThreads[selectedMessage.id] || []).map((thread, index) => (
+                      <div key={index} className="border-l-4 border-[#020079] pl-4 py-2">
+                        <h3 className="font-bebas text-[#020079] mb-2 tracking-wide">{thread.sender.toUpperCase()}</h3>
+                        <p className="font-roboto text-[#020079] mb-2">{thread.content}</p>
+                        <p className="text-xs font-roboto text-[#020079]/50">{thread.timestamp}</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
 
-              {/* Reply Box */}
-              <div>
-                <textarea
-                  className="w-full border text-black border-gray-300 rounded-lg p-4 mb-4 min-h-[120px] resize-none focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  placeholder="Type your response here..."
-                  value={replyText}
-                  onChange={(e) => setReplyText(e.target.value)}
-                />
-                <Button
-                  className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold h-12"
-                  onClick={handleSendReply}
-                >
-                  Send Message
-                </Button>
-              </div>
-            </>
-          ) : (
-            <div className="flex-1 flex items-center justify-center text-gray-400">
-              Select a message to view the conversation
-            </div>
-          )}
+                  {/* Reply Box */}
+                  <div>
+                    <textarea
+                      className="w-full border-2 border-[#020079]/20 rounded-lg p-4 mb-4 min-h-[120px] resize-none focus:outline-none focus:ring-2 focus:ring-[#020079]/20 focus:border-[#020079] font-roboto text-[#020079] placeholder:text-[#020079]/40"
+                      placeholder="Type your response here..."
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                    />
+                    <Button
+                      className="w-full bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold h-12"
+                      onClick={handleSendReply}
+                    >
+                      Send Message
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex-1 flex items-center justify-center text-[#020079]/40 font-roboto">
+                  Select a message to view the conversation
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
 

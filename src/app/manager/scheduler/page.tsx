@@ -110,42 +110,44 @@ export default function SchedulerPage() {
   };
 
   return (
-    <div className="p-8">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <span className="text-4xl">📅</span>
-        <h1 className="text-3xl font-bold text-gray-800">Workload Scheduler</h1>
+    <div className="p-8 bg-white min-h-screen">
+      {/* Page Title */}
+      <div className="mb-10">
+        <h1 className="text-4xl font-bebas text-[#020079] mb-2">
+          WORKLOAD SCHEDULER
+        </h1>
+        <p className="font-roboto text-[#020079]/60">Manage employee schedules and workload distribution</p>
       </div>
 
       {/* Action Buttons */}
       <div className="flex gap-4 mb-8">
         <Button
-          className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6"
+          className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold px-6 h-12"
           onClick={() => setShowTaskModal(true)}
         >
           + Schedule New Task
         </Button>
         <Button
-          className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6"
+          className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold px-6 h-12"
           onClick={handleAutoBalance}
         >
-          ⚖️ Auto-Balance Workload
+          Auto-Balance Workload
         </Button>
       </div>
 
       {/* Week Navigation */}
       <div className="flex items-center justify-between mb-6">
         <Button
-          className="bg-teal-600 hover:bg-teal-700 text-white font-semibold"
+          className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold h-12"
           onClick={handlePreviousWeek}
         >
           ← Previous Week
         </Button>
-        <h2 className="text-2xl font-bold text-gray-800">
-          Week of {getWeekRange()}
+        <h2 className="text-2xl font-bebas text-[#020079] tracking-wide">
+          WEEK OF {getWeekRange().toUpperCase()}
         </h2>
         <Button
-          className="bg-teal-600 hover:bg-teal-700 text-white font-semibold"
+          className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold h-12"
           onClick={handleNextWeek}
         >
           Next Week →
@@ -157,33 +159,32 @@ export default function SchedulerPage() {
         {schedule.map((day) => (
           <div
             key={day.date}
-            className={`bg-white rounded-lg border shadow-sm p-4 min-h-[200px] ${
-              day.closed ? "bg-red-50" : ""
+            className={`bg-white rounded-lg border-2 border-[#020079]/20 shadow-sm p-4 min-h-[200px] hover:border-[#020079]/40 transition-all ${
+              day.closed ? "bg-[#020079]/5" : ""
             }`}
           >
-            <div className="mb-3">
-              <h3 className="font-semibold text-gray-700">{day.dayName}</h3>
-              <p className="text-2xl font-bold text-gray-800">{day.date}</p>
+            <div className="mb-3 border-b-2 border-[#020079]/10 pb-2">
+              <h3 className="font-bebas text-[#020079]/70 tracking-wide text-sm">{day.dayName.toUpperCase()}</h3>
+              <p className="text-2xl font-bebas text-[#020079]">{day.date}</p>
             </div>
             
             {day.closed ? (
-              <div className="text-center text-red-400 mt-8">
-                <p className="font-medium">Closed</p>
+              <div className="text-center text-[#020079]/40 mt-8">
+                <p className="font-roboto font-medium">Closed</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {day.tasks.map((task) => (
                   <div
                     key={task.id}
-                    className={`${task.color} text-white rounded-md p-2.5 text-sm cursor-move hover:opacity-90 transition-opacity`}
+                    className="bg-white border-2 border-[#020079]/20 hover:border-[#020079]/40 rounded-md p-2.5 text-sm cursor-move transition-all shadow-sm"
                   >
                     <div className="flex items-start gap-1.5">
-                      <span className="text-base">🔧</span>
                       <div className="flex-1">
-                        <div className="font-medium leading-tight">
+                        <div className="font-roboto font-semibold leading-tight text-[#020079]">
                           {task.employeeName} - {task.taskType}
                         </div>
-                        <div className="text-xs mt-0.5">{task.taskId}</div>
+                        <div className="font-roboto text-xs mt-0.5 text-[#020079]/60">{task.taskId}</div>
                       </div>
                     </div>
                   </div>
@@ -195,12 +196,11 @@ export default function SchedulerPage() {
       </div>
 
       {/* Instructions */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+      <div className="border-l-4 border-[#020079] bg-white pl-4 py-4 rounded-lg mb-4">
         <div className="flex items-start gap-2">
-          <span className="text-2xl">💡</span>
           <div>
-            <h3 className="font-semibold text-gray-800 mb-2">Drag & Drop Instructions:</h3>
-            <ul className="space-y-1 text-gray-700 text-sm">
+            <h3 className="font-bebas text-[#020079] mb-2 text-lg tracking-wide">DRAG & DROP INSTRUCTIONS</h3>
+            <ul className="space-y-1 text-[#020079]/70 font-roboto text-sm">
               <li>• Drag tasks to different days to reschedule</li>
               <li>• System automatically checks for conflicts</li>
               <li>• Employee notifications sent on schedule changes</li>
@@ -211,11 +211,10 @@ export default function SchedulerPage() {
       </div>
 
       {/* System Protection */}
-      <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded">
-        <p className="text-green-800 flex items-center gap-2">
-          <span className="text-lg">✓</span>
+      <div className="border-l-4 border-[#FFD700] bg-white pl-4 py-4 rounded-lg">
+        <p className="text-[#020079] font-roboto flex items-start gap-2">
           <span>
-            <strong>System Protection:</strong> Auto-balance prevents employee overwork | No duplicate bookings across customers
+            <strong className="font-semibold">System Protection:</strong> Auto-balance prevents employee overwork | No duplicate bookings across customers
           </span>
         </p>
       </div>

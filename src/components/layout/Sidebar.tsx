@@ -42,85 +42,78 @@ export function Sidebar({ activePage, className = '' }: SidebarProps) {
   const currentActivePage = getActivePage();
 
   return (
-    <aside className={`w-[270px] bg-gradient-to-b from-teal-600 to-teal-700 text-white min-h-screen shadow-2xl ${className}`}>
+    <aside className={`w-[270px] bg-[#020079]/5 border-r border-[#020079]/20 min-h-screen ${className}`}>
       <div className="p-6">
         <nav className="space-y-2">
           <Link
             href="/manager/dashboard"
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+            className={`block px-4 py-3 rounded-lg text-sm font-roboto transition-all duration-200 ${
               currentActivePage === 'dashboard'
-                ? "bg-white/25 font-semibold shadow-lg"
-                : ""
+                ? "bg-[#020079] text-white font-semibold"
+                : "text-[#020079] hover:bg-[#020079]/10 bg-white"
             }`}
           >
-            <LayoutDashboard className="w-5 h-5" />
-            <span>Dashboard</span>
+            Dashboard
           </Link>
           <Link
             href="/manager/employees"
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+            className={`block px-4 py-3 rounded-lg text-sm font-roboto transition-all duration-200 ${
               currentActivePage === 'employees'
-                ? "bg-white/25 font-semibold shadow-lg"
-                : ""
+                ? "bg-[#020079] text-white font-semibold"
+                : "text-[#020079] hover:bg-[#020079]/10 bg-white"
             }`}
           >
-            <Users className="w-5 h-5" />
-            <span>Manage Employees</span>
+            Manage Employees
           </Link>
           <Link
             href="/manager/task-scheduler"
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+            className={`block px-4 py-3 rounded-lg text-sm font-roboto transition-all duration-200 ${
               currentActivePage === 'assign'
-                ? "bg-white/25 font-semibold shadow-lg"
-                : ""
+                ? "bg-[#020079] text-white font-semibold"
+                : "text-[#020079] hover:bg-[#020079]/10 bg-white"
             }`}
           >
-            <ClipboardList className="w-5 h-5" />
-            <span>Assign Tasks</span>
+            Assign Tasks
           </Link>
           <Link
             href="/manager/projects"
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+            className={`block px-4 py-3 rounded-lg text-sm font-roboto transition-all duration-200 ${
               currentActivePage === 'projects'
-                ? "bg-white/25 font-semibold shadow-lg"
-                : ""
+                ? "bg-[#020079] text-white font-semibold"
+                : "text-[#020079] hover:bg-[#020079]/10 bg-white"
             }`}
           >
-            <Briefcase className="w-5 h-5" />
-            <span>Projects</span>
+            Projects
           </Link>
           <Link
             href="/manager/scheduler"
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+            className={`block px-4 py-3 rounded-lg text-sm font-roboto transition-all duration-200 ${
               currentActivePage === 'scheduler'
-                ? "bg-white/25 font-semibold shadow-lg"
-                : ""
+                ? "bg-[#020079] text-white font-semibold"
+                : "text-[#020079] hover:bg-[#020079]/10 bg-white"
             }`}
           >
-            <Calendar className="w-5 h-5" />
-            <span>Scheduler</span>
+            Scheduler
           </Link>
           <Link
             href="/manager/reports"
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+            className={`block px-4 py-3 rounded-lg text-sm font-roboto transition-all duration-200 ${
               currentActivePage === 'reports'
-                ? "bg-white/25 font-semibold shadow-lg"
-                : ""
+                ? "bg-[#020079] text-white font-semibold"
+                : "text-[#020079] hover:bg-[#020079]/10 bg-white"
             }`}
           >
-            <BarChartHorizontal className="w-5 h-5" />
-            <span>Reports</span>
+            Reports
           </Link>
           <Link
             href="/manager/communication"
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+            className={`block px-4 py-3 rounded-lg text-sm font-roboto transition-all duration-200 ${
               currentActivePage === 'communication'
-                ? "bg-white/25 font-semibold shadow-lg"
-                : ""
+                ? "bg-[#020079] text-white font-semibold"
+                : "text-[#020079] hover:bg-[#020079]/10 bg-white"
             }`}
           >
-            <MessageSquare className="w-5 h-5" />
-            <span>Communication</span>
+            Communication
           </Link>
         </nav>
       </div>
