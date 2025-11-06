@@ -1,7 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
 import { EmployeeHistoryModal } from "@/components/modals/EmployeeHistoryModal";
 import AddTaskModal from "@/components/modals/AddTaskModal";
@@ -90,13 +91,13 @@ const EMPLOYEES = [
 
 function getStatusBadge(status: string) {
   if (status === "Available")
-    return <span className="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">Available</span>;
+    return <Badge className="bg-[#FFD700]/20 text-[#020079] hover:bg-[#FFD700]/30 border-0 font-roboto">Available</Badge>;
   if (status === "Busy (Max Load)")
-    return <span className="px-3 py-1 rounded-full bg-orange-200 text-orange-800 text-sm font-semibold whitespace-nowrap">Busy (Max Load)</span>;
+    return <Badge className="bg-[#020079]/20 text-[#020079] hover:bg-[#020079]/30 border-0 font-roboto whitespace-nowrap">Busy (Max Load)</Badge>;
   if (status === "Busy")
-    return <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-sm font-semibold">Busy</span>;
+    return <Badge className="bg-[#020079]/10 text-[#020079] hover:bg-[#020079]/20 border-0 font-roboto">Busy</Badge>;
   if (status === "Unavailable")
-    return <span className="px-3 py-1 rounded-full bg-red-100 text-red-700 text-sm font-semibold">Unavailable</span>;
+    return <Badge className="bg-[#020079]/10 text-[#020079]/70 hover:bg-[#020079]/20 border-0 font-roboto">Unavailable</Badge>;
   return <span>{status}</span>;
 }
 
@@ -114,10 +115,13 @@ export default function EmployeesPage() {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <div className="flex items-center gap-3 mb-8">
-        <span className="text-4xl">🧑‍🔧</span>
-        <h1 className="text-3xl font-bold text-gray-800">Manage Employees</h1>
+    <div className="p-8 bg-white min-h-screen">
+      {/* Page Title */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bebas text-[#020079] mb-2">
+          Manage Employees
+        </h1>
+        <p className="font-roboto text-[#020079]/70">View and manage employee roster, assignments, and availability</p>
       </div>
 
       {selectedEmployee && (
@@ -138,58 +142,74 @@ export default function EmployeesPage() {
           onSubmit={handleTaskAssignment}
         />
       )}
-      <Card className="p-8 rounded-xl shadow-md">
-        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-gray-800">Employee Roster</h2>
+      <Card className="bg-white border-[#020079]/20">
+        <CardHeader className="border-b border-[#020079]/20">
+          <CardTitle className="text-xl font-bebas text-[#020079]">
+            Employee Roster
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-separate border-spacing-y-2">
+          <table className="w-full">
             <thead>
-              <tr className="bg-emerald-600 text-white">
-                <th className="px-4 py-3 rounded-tl-lg">Name</th>
-                <th className="px-4 py-3">Skill</th>
-                <th className="px-4 py-3">Current Tasks</th>
-                <th className="px-4 py-3">Rating</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 rounded-tr-lg">Actions</th>
+              <tr className="border-b-2 border-[#020079]/20">
+                <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
+                  Name
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
+                  Skill
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
+                  Current Tasks
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
+                  Rating
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
+                  Status
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
+                  Actions
+                </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-[#020079]/10">
               {EMPLOYEES.map((emp) => (
-                <tr key={emp.name}>
-                  <td className="px-4 py-3 font-semibold text-gray-800 bg-white shadow-sm rounded-l-lg">
-                    {emp.name}
+                <tr key={emp.name} className="hover:bg-[#020079]/5 transition-colors">
+                  <td className="px-6 py-4">
+                    <span className="font-roboto font-semibold text-[#020079]">{emp.name}</span>
                   </td>
-                  <td className="px-4 py-3 text-gray-700 bg-white shadow-sm">
+                  <td className="px-6 py-4 font-roboto text-[#020079]/70">
                     {emp.skill}
                   </td>
-                  <td className="px-4 py-3 text-gray-700 bg-white shadow-sm">
+                  <td className="px-6 py-4 font-roboto text-[#020079]/70">
                     {emp.tasks}
                   </td>
-                  <td className="px-4 py-3 text-yellow-600 font-semibold bg-white shadow-sm">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 stroke-yellow-400" />
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-1 font-roboto text-[#020079] font-semibold">
+                      <Star className="w-4 h-4 fill-[#FFD700] stroke-[#FFD700]" />
                       {emp.rating}
                     </div>
                   </td>
-                  <td className="px-4 py-3 bg-white shadow-sm">
+                  <td className="px-6 py-4">
                     {getStatusBadge(emp.status)}
                   </td>
-                  <td className="px-4 py-3 bg-white shadow-sm rounded-r-lg">
+                  <td className="px-6 py-4">
                     <div className="flex gap-2">
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        className="bg-blue-100 text-blue-700 font-semibold"
+                        className="border-[#020079]/30 text-[#020079] hover:bg-[#020079]/5 font-roboto"
                         onClick={() => setSelectedEmployee(emp)}
                       >
                         View History
                       </Button>
                       {emp.status === "Unavailable" ? (
-                        <Button size="sm" variant="outline" className="bg-green-100 text-green-700 font-semibold">Make Available</Button>
+                        <Button size="sm" className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold">Make Available</Button>
                       ) : (
                         <Button 
                           size="sm" 
-                          variant="outline" 
-                          className="bg-green-100 text-green-700 font-semibold"
+                          className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
                           onClick={() => {
                             setSelectedEmployeeForTask(emp);
                             setShowAssignModal(true);
@@ -198,7 +218,7 @@ export default function EmployeesPage() {
                           Assign
                         </Button>
                       )}
-                      <Button size="sm" variant="outline" className="bg-orange-100 text-orange-700 font-semibold">Mark Unavailable</Button>
+                      <Button size="sm" variant="outline" className="border-[#020079]/30 text-[#020079] hover:bg-[#020079]/5 font-roboto">Mark Unavailable</Button>
                     </div>
                   </td>
                 </tr>
@@ -206,6 +226,7 @@ export default function EmployeesPage() {
             </tbody>
           </table>
         </div>
+        </CardContent>
       </Card>
     </div>
   );

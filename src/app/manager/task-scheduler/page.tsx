@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import AddTaskModal from "@/components/modals/AddTaskModal";
 import ProjectFormModal from "@/components/modals/ProjectFormModal";
@@ -17,21 +19,21 @@ interface PendingTask {
 
 const PENDING_TASKS: PendingTask[] = [
   {
-    id: "#1247",
+    id: "1247",
     vehicle: "PQ-7890 (Toyota Prius)",
     serviceType: "Brake System Service",
     dateTime: "2025-11-06 09:00 AM",
     customer: "Robert Chen"
   },
   {
-    id: "#1248",
+    id: "1248",
     vehicle: "RS-4321 (Honda CR-V)",
     serviceType: "Engine Diagnostics",
     dateTime: "2025-11-06 02:00 PM",
     customer: "Jessica Taylor"
   },
   {
-    id: "#1249",
+    id: "1249",
     vehicle: "TU-9876 (Mazda CX-5)",
     serviceType: "Full Service Package",
     dateTime: "2025-11-07 10:30 AM",
@@ -64,7 +66,7 @@ interface EmployeeAvailability {
 
 const HELD_TASKS: HeldTask[] = [
   {
-    id: "#1245",
+    id: "1245",
     reason: "missing parts",
     duration: "24 hours"
   }
@@ -72,7 +74,7 @@ const HELD_TASKS: HeldTask[] = [
 
 const SCHEDULED_TASKS: ScheduledTask[] = [
   {
-    id: "#1243",
+    id: "1243",
     customer: "Michael Chen",
     vehicle: "KA-1234 (Toyota Corolla)",
     serviceType: "Engine Oil Change",
@@ -81,7 +83,7 @@ const SCHEDULED_TASKS: ScheduledTask[] = [
     status: "Scheduled"
   },
   {
-    id: "#1244",
+    id: "1244",
     customer: "Sarah Williams",
     vehicle: "BC-5678 (Honda Civic)",
     serviceType: "Brake Inspection",
@@ -90,7 +92,7 @@ const SCHEDULED_TASKS: ScheduledTask[] = [
     status: "In Progress"
   },
   {
-    id: "#1245",
+    id: "1245",
     customer: "David Kumar",
     vehicle: "XY-9012 (Nissan Altima)",
     serviceType: "Transmission Repair",
@@ -99,7 +101,7 @@ const SCHEDULED_TASKS: ScheduledTask[] = [
     status: "On Hold"
   },
   {
-    id: "#1246",
+    id: "1246",
     customer: "Emma Johnson",
     vehicle: "LM-3456 (Mazda 3)",
     serviceType: "Full Service",
@@ -185,7 +187,7 @@ export default function TaskSchedulerPage() {
   const handleTaskSubmit = (formData: Record<string, string>) => {
     // Create a new pending task from the form data
     const newTask: PendingTask = {
-      id: `#${Math.floor(1000 + Math.random() * 9000)}`, // Generate a random 4-digit ID
+      id: `${Math.floor(1000 + Math.random() * 9000)}`, // Generate a random 4-digit ID
       vehicle: `${formData.vehicleRegistration} (${formData.vehicleModel})`,
       serviceType: formData.serviceType,
       dateTime: `${formData.preferredDate} ${formData.preferredTime}`,
@@ -215,165 +217,219 @@ export default function TaskSchedulerPage() {
   };
 
   return (
-    <div className="p-8 min-h-screen">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-3">
-          <span className="text-4xl">📋</span>
-          <h1 className="text-3xl font-bold text-gray-800">Task Assignment & Scheduler</h1>
-        </div>
-        <div className="flex gap-4">
-          <Button 
-            size="lg"
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold"
-            onClick={() => setShowAddTaskModal(true)}
-          >
-            + Add Task (Predefined Service)
-          </Button>
-          <Button 
-            size="lg"
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold"
-            onClick={() => setShowProjectModal(true)}
-          >
-            + Create New Project
-          </Button>
-        </div>
+    <div className="p-8 min-h-screen bg-white">
+      {/* Page Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-bebas text-[#020079] mb-2">
+          Task Assignment & Scheduler
+        </h1>
+        <p className="font-roboto text-[#020079]/70">
+          Manage pending tasks, assign employees, and view scheduling calendar
+        </p>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-4 mb-8">
+        <Button 
+          size="lg"
+          className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold"
+          onClick={() => setShowAddTaskModal(true)}
+        >
+          + Add Task (Predefined Service)
+        </Button>
+        <Button 
+          size="lg"
+          className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold"
+          onClick={() => setShowProjectModal(true)}
+        >
+          + Create New Project
+        </Button>
       </div>
 
       {/* Pending Tasks Section */}
-      <div className="bg-amber-50 rounded-lg p-6 mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-xl">⚠️</span>
-          <h2 className="text-xl font-semibold text-amber-800">
-            Tasks Pending Employee Assignment
-            <span className="ml-2 px-2 py-0.5 bg-orange-500 text-white text-sm rounded">
+      <Card className="border-[#020079]/20 mb-6">
+        <CardHeader className="border-b border-[#020079]/20">
+          <div className="flex items-center justify-between">
+            <CardTitle className="font-bebas text-xl text-[#020079]">
+              Tasks Pending Employee Assignment
+            </CardTitle>
+            <Badge className="bg-[#FFD700] text-[#020079] font-roboto font-semibold px-3 py-1">
               {tasks.length} Tasks
-            </span>
-          </h2>
-        </div>
-        <p className="text-gray-700 mb-6">
-          These tasks were created without employee selection. Please assign available employees:
-        </p>
-        
-        <div className="bg-white rounded-lg overflow-hidden shadow-sm">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-emerald-600 text-white">
-                <th className="px-6 py-3 text-left font-medium">Task ID</th>
-                <th className="px-6 py-3 text-left font-medium">Vehicle</th>
-                <th className="px-6 py-3 text-left font-medium">Service Type</th>
-                <th className="px-6 py-3 text-left font-medium">Date/Time</th>
-                <th className="px-6 py-3 text-left font-medium">Customer</th>
-                <th className="px-6 py-3 text-left font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task) => (
-                <tr key={task.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium text-gray-900">{task.id}</td>
-                  <td className="px-6 py-4 text-gray-700">{task.vehicle}</td>
-                  <td className="px-6 py-4 text-gray-700">{task.serviceType}</td>
-                  <td className="px-6 py-4 text-gray-700">{task.dateTime}</td>
-                  <td className="px-6 py-4 text-gray-700">{task.customer}</td>
-                  <td className="px-6 py-4">
-                    <Button 
-                      size="sm"
-                      className="bg-emerald-500 text-white hover:bg-emerald-600 font-medium px-4"
-                      onClick={() => handleAssignEmployee(task)}
-                    >
-                      👨‍🔧 Assign Employee
-                    </Button>
-                  </td>
+            </Badge>
+          </div>
+          <p className="font-roboto text-[#020079]/70 mt-2">
+            These tasks were created without employee selection. Please assign available employees.
+          </p>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b-2 border-[#020079]/20">
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Task ID</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Vehicle</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Service Type</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Date/Time</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Customer</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              </thead>
+              <tbody>
+                {tasks.map((task) => (
+                  <tr key={task.id} className="border-b border-[#020079]/10 hover:bg-[#020079]/5">
+                    <td className="px-4 py-4 font-roboto text-[#020079] font-semibold">{task.id}</td>
+                    <td className="px-4 py-4 font-roboto text-[#020079]">{task.vehicle}</td>
+                    <td className="px-4 py-4 font-roboto text-[#020079]">{task.serviceType}</td>
+                    <td className="px-4 py-4 font-roboto text-[#020079]">{task.dateTime}</td>
+                    <td className="px-4 py-4 font-roboto text-[#020079]">{task.customer}</td>
+                    <td className="px-4 py-4">
+                      <Button 
+                        size="sm"
+                        className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold"
+                        onClick={() => handleAssignEmployee(task)}
+                      >
+                        Assign Employee
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Held Tasks Section */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-6">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">🕒</span>
-          <h2 className="text-lg font-semibold text-gray-800">Held Tasks:</h2>
-          {heldTasks.map((task) => (
-            <div key={task.id} className="flex items-center gap-2">
-              <span className="text-gray-600">
-                Task {task.id} on hold for {task.duration} ({task.reason})
-              </span>
-              <div className="flex gap-2">
-                <Button size="sm" className="bg-blue-500 text-white hover:bg-blue-600">
-                  Contact Customer
-                </Button>
-                <Button size="sm" className="bg-amber-500 text-white hover:bg-amber-600">
-                  Reassign Task
-                </Button>
+      <Card className="border-[#020079]/20 mb-6">
+        <CardHeader className="border-b border-[#020079]/20">
+          <CardTitle className="font-bebas text-xl text-[#020079]">
+            Held Tasks
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="space-y-4">
+            {heldTasks.map((task) => (
+              <div key={task.id} className="flex items-center justify-between p-4 bg-[#FFD700]/10 border border-[#FFD700]/30 rounded-lg">
+                <span className="font-roboto text-[#020079]">
+                  <span className="font-semibold">Task {task.id}</span> on hold for {task.duration} ({task.reason})
+                </span>
+                <div className="flex gap-2">
+                  <Button size="sm" className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto">
+                    Contact Customer
+                  </Button>
+                  <Button size="sm" className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto">
+                    Reassign Task
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* All Scheduled Tasks Section */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-xl">⚡</span>
-          <h2 className="text-xl font-semibold text-gray-800">All Scheduled Tasks</h2>
-        </div>
-        <div className="bg-white rounded-lg overflow-hidden shadow-sm">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-emerald-600 text-white">
-                <th className="px-4 py-3 text-left text-sm font-medium">Task ID</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Customer</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Vehicle</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Service Type</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Assigned To</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Date/Time</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {scheduledTasks.map((task) => (
-                <tr key={task.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{task.id}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{task.customer}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{task.vehicle}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{task.serviceType}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{task.assignedTo}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{task.dateTime}</td>
-                  <td className="px-4 py-3 text-sm">
-                    <span className={`inline-flex px-2 py-1 rounded text-xs font-medium whitespace-nowrap
-                      ${task.status === "Scheduled" ? "bg-emerald-100 text-emerald-700" : 
-                        task.status === "In Progress" ? "bg-blue-100 text-blue-700" :
-                        "bg-amber-100 text-amber-700"}`}>
-                      {task.status === "In Progress" ? "In Progress" : task.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        className="bg-blue-500 text-white hover:bg-blue-600 text-xs px-2"
-                        onClick={() => handleViewDetails(task)}
-                      >
-                        View Details
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        className="bg-emerald-500 text-white hover:bg-emerald-600 text-xs px-2"
-                        onClick={() => handleReassign(task)}
-                      >
-                        Reassign
-                      </Button>
-                    </div>
-                  </td>
+      <Card className="border-[#020079]/20 mb-6">
+        <CardHeader className="border-b border-[#020079]/20">
+          <CardTitle className="font-bebas text-xl text-[#020079]">
+            All Scheduled Tasks
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b-2 border-[#020079]/20">
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Task ID</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Customer</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Vehicle</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Service Type</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Assigned To</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Date/Time</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Status</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+              </thead>
+              <tbody>
+                {scheduledTasks.map((task) => (
+                  <tr key={task.id} className="border-b border-[#020079]/10 hover:bg-[#020079]/5">
+                    <td className="px-4 py-3 font-roboto text-[#020079] font-semibold">{task.id}</td>
+                    <td className="px-4 py-3 font-roboto text-[#020079]">{task.customer}</td>
+                    <td className="px-4 py-3 font-roboto text-[#020079]">{task.vehicle}</td>
+                    <td className="px-4 py-3 font-roboto text-[#020079]">{task.serviceType}</td>
+                    <td className="px-4 py-3 font-roboto text-[#020079]">{task.assignedTo}</td>
+                    <td className="px-4 py-3 font-roboto text-[#020079]">{task.dateTime}</td>
+                    <td className="px-4 py-3">
+                      <Badge className={`font-roboto
+                        ${task.status === "Scheduled" ? "bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30" : 
+                          task.status === "In Progress" ? "bg-[#020079]/20 text-[#020079] border-[#020079]/30" :
+                          "bg-[#FFD700]/30 text-[#020079] border-[#FFD700]/40"}`}>
+                        {task.status}
+                      </Badge>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
+                          onClick={() => handleViewDetails(task)}
+                        >
+                          View Details
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto"
+                          onClick={() => handleReassign(task)}
+                        >
+                          Reassign
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Employee Availability Calendar */}
+      <Card className="border-[#020079]/20">
+        <CardHeader className="border-b border-[#020079]/20">
+          <CardTitle className="font-bebas text-xl text-[#020079]">
+            Employee Availability Calendar
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b-2 border-[#020079]/20">
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Employee</th>
+                  {Object.keys(employeeAvailability[0].schedule).map((day) => (
+                    <th key={day} className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">{day}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {employeeAvailability.map((employee) => (
+                  <tr key={employee.name} className="border-b border-[#020079]/10 hover:bg-[#020079]/5">
+                    <td className="px-4 py-3 font-roboto text-[#020079] font-semibold">{employee.name}</td>
+                    {Object.entries(employee.schedule).map(([day, status]) => (
+                      <td key={day} className="px-4 py-3">
+                        <Badge className={`font-roboto
+                          ${status === "Available" ? "bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30" : 
+                          "bg-[#020079]/20 text-[#020079] border-[#020079]/30"}`}>
+                          {status}
+                        </Badge>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Task Details Modal */}
       {selectedScheduledTask && (
@@ -386,42 +442,6 @@ export default function TaskSchedulerPage() {
           task={selectedScheduledTask}
         />
       )}
-
-      {/* Employee Availability Calendar */}
-      <div className="mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-xl">📅</span>
-          <h2 className="text-xl font-semibold text-gray-800">Employee Availability Calendar</h2>
-        </div>
-        <div className="bg-white rounded-lg overflow-hidden shadow-sm">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-emerald-600 text-white">
-                <th className="px-4 py-3 text-left text-sm font-medium">Employee</th>
-                {Object.keys(employeeAvailability[0].schedule).map((day) => (
-                  <th key={day} className="px-4 py-3 text-left text-sm font-medium">{day}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {employeeAvailability.map((employee) => (
-                <tr key={employee.name} className="border-b border-gray-100 last:border-0">
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{employee.name}</td>
-                  {Object.entries(employee.schedule).map(([day, status]) => (
-                    <td key={day} className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded text-xs font-medium 
-                        ${status === "Available" ? "bg-emerald-100 text-emerald-700" : 
-                        "bg-red-100 text-red-700"}`}>
-                        {status}
-                      </span>
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
 
       {/* Add Task Modal */}
       <AddTaskModal
