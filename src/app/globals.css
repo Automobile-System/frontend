@@ -91,18 +91,24 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
-    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
   }
   
-  /* Apply Bebas Neue only to main headings */
-  h1, h2, h3, h4, h5, h6 {
+  /* Apply Bebas Neue to h1-h3 and large text (5xl+) */
+  h1, h2, h3, 
+  .text-5xl, .text-6xl, .text-7xl, .text-8xl, .text-9xl {
     font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
     letter-spacing: 0.02em;
+  }
+  
+  /* Apply Roboto to h4-h6, paragraphs, and body text */
+  h4, h5, h6, p, span, div, a, button, input, textarea, select {
+    font-family: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
   }
 }
 
 @layer utilities {
-  /* Brand palette: dark blue updated to #020079 + gold */
+  /* Brand palette: deep blue gradient + gold accent */
   .text-brand { color: #020079; }
   .bg-brand { background-color: #020079; }
   .border-brand { border-color: #020079; }
@@ -111,19 +117,19 @@
   .bg-accent { background-color: #FFD700; }
   .border-accent { border-color: #FFD700; }
 
-  /* Subtle tints */
-  .bg-brand-soft { background-color: rgba(2, 0, 121, 0.12); }
-  .bg-accent-soft { background-color: rgba(255, 215, 0, 0.16); }
+  /* Subtle tints with specified alpha values */
+  .bg-brand-soft { background-color: #0200791F; } /* 12% alpha */
+  .bg-accent-soft { background-color: #FFD70029; } /* 16% alpha */
 
-  /* Buttons */
+  /* Buttons with hover states */
   .btn-brand { background-color: #020079; color: #fff; }
-  .btn-brand:hover { background-color: #03009b; }
+  .btn-brand:hover { background-color: #03009B; } /* Brand hover blue */
 
   .btn-accent { background-color: #FFD700; color: #111827; }
-  .btn-accent:hover { background-color: #e6c200; }
+  .btn-accent:hover { background-color: #E6C200; } /* Accent hover gold */
 
   .btn-accent-outline { border: 2px solid #FFD700; color: #FFD700; background: transparent; }
-  .btn-accent-outline:hover { background-color: rgba(255, 215, 0, 0.12); }
+  .btn-accent-outline:hover { background-color: #FFD70029; } /* 16% alpha */
 
   /* Glow helpers */
   .shadow-accent-glow { box-shadow: 0 0 28px rgba(255, 215, 0, 0.45); }
@@ -134,11 +140,11 @@
     background: linear-gradient(
       135deg,
       rgba(2, 0, 121, 0.78) 0%,
-      rgba(1, 0, 90, 0.64) 100%
+      rgba(1, 2, 77, 0.64) 100%
     );
   }
 
-  /* Solid dark blue gradient (no transparency) */
+  /* Solid dark blue gradient (no transparency) - using deep blue gradient end */
   .bg-brand-gradient {
     background: linear-gradient(
       135deg,
@@ -180,25 +186,26 @@
   .delay-600 { animation-delay: 600ms; }
   .delay-750 { animation-delay: 750ms; }
 
-  /* Global font utilities mapped to Bebas Neue */
+  /* Global font utilities */
   .font-bebas {
     font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
     letter-spacing: 0.02em;
   }
+  
+  .font-roboto {
+    font-family: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
+  }
+  
   /* Teko for navbar - similar to Ethnocentric */
   .font-teko {
     font-family: var(--font-teko), ui-sans-serif, system-ui, sans-serif;
     letter-spacing: 0.15em;
     font-weight: 600;
   }
-  /* Remap existing utilities to Bebas for backwards compatibility */
+  
+  /* Legacy font utilities for backwards compatibility */
   .font-inter {
-    font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
-    letter-spacing: 0.02em;
-  }
-  .font-roboto {
-    font-family: var(--font-bebas), ui-sans-serif, system-ui, sans-serif;
-    letter-spacing: 0.02em;
+    font-family: var(--font-roboto), ui-sans-serif, system-ui, sans-serif;
   }
 
   /* Service header angled shape */

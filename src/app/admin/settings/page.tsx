@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Settings, Users, Wrench, Calendar, DollarSign, AlertCircle, Plus, Edit, Trash2, CheckCircle2 } from "lucide-react"
+import { Plus, Edit, Trash2, CheckCircle2 } from "lucide-react"
 import { 
   fetchRolesPermissions, 
   fetchServicesPricing, 
@@ -54,8 +54,8 @@ export default function SettingsPage() {
     return (
       <AdminDashboardLayout>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-          <span className="ml-3 text-gray-600">Loading settings...</span>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#020079]"></div>
+          <span className="ml-3 font-roboto text-[#020079]/70">Loading settings...</span>
         </div>
       </AdminDashboardLayout>
     )
@@ -65,8 +65,7 @@ export default function SettingsPage() {
     return (
       <AdminDashboardLayout>
         <div className="flex items-center justify-center min-h-screen">
-          <AlertCircle className="w-12 h-12 text-rose-600 mr-3" />
-          <span className="text-rose-600">{error}</span>
+          <span className="font-roboto text-[#020079]">{error}</span>
         </div>
       </AdminDashboardLayout>
     )
@@ -74,21 +73,17 @@ export default function SettingsPage() {
 
   return (
     <AdminDashboardLayout>
-      <div className="p-8 space-y-6 bg-gradient-to-br from-slate-50 to-indigo-50 min-h-screen">
+      <div className="p-8 space-y-6 bg-white min-h-screen">
         {/* Page Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <Settings className="w-8 h-8 text-indigo-600" />
-          <div>
-            <h1 className="text-3xl font-bold text-slate-800">Settings & Configuration</h1>
-            <p className="text-slate-600">Manage roles, services, limits, and compensation policies</p>
-          </div>
+        <div className="mb-6">
+          <h1 className="text-4xl font-bebas text-[#020079]">Settings & Configuration</h1>
+          <p className="font-roboto text-[#020079]/70">Manage roles, services, limits, and compensation policies</p>
         </div>
 
         {/* Roles & Permissions */}
-        <Card className="border-slate-200 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-indigo-100">
-            <CardTitle className="flex items-center gap-2 text-indigo-700">
-              <Users className="w-6 h-6" />
+        <Card className="border-[#020079]/20">
+          <CardHeader className="bg-[#020079] border-b border-[#020079]">
+            <CardTitle className="font-bebas text-xl text-white">
               Manage Roles & Permissions
             </CardTitle>
           </CardHeader>
@@ -96,34 +91,34 @@ export default function SettingsPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Role</th>
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Users</th>
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Permissions</th>
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Status</th>
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Actions</th>
+                  <tr className="border-b border-[#020079]/20">
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Role</th>
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Users</th>
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Permissions</th>
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Status</th>
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {roles.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="text-center py-8 text-slate-600">
+                      <td colSpan={5} className="text-center py-8 font-roboto text-[#020079]/60">
                         No roles configured.
                       </td>
                     </tr>
                   ) : (
                     roles.map((role) => (
-                      <tr key={role.roleId} className="border-b border-slate-100 hover:bg-slate-50">
-                        <td className="py-3 px-4 text-slate-800 font-semibold">{role.roleName}</td>
-                        <td className="py-3 px-4 text-slate-800">{role.userCount}</td>
-                        <td className="py-3 px-4 text-slate-600 text-sm">{role.permissions}</td>
+                      <tr key={role.roleId} className="border-b border-[#020079]/10 hover:bg-[#020079]/5">
+                        <td className="py-3 px-4 font-roboto text-[#020079] font-semibold">{role.roleName}</td>
+                        <td className="py-3 px-4 font-roboto text-[#020079]">{role.userCount}</td>
+                        <td className="py-3 px-4 font-roboto text-[#020079]/60 text-sm">{role.permissions}</td>
                         <td className="py-3 px-4">
-                          <Badge className="bg-emerald-100 text-emerald-700 border-emerald-300">
+                          <Badge className="bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30">
                             {role.status}
                           </Badge>
                         </td>
                         <td className="py-3 px-4">
-                          <Button size="sm" className="bg-indigo-500 hover:bg-indigo-600 text-white">
+                          <Button size="sm" className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto">
                             <Edit className="w-4 h-4 mr-1" />
                             Edit Permissions
                           </Button>
@@ -138,10 +133,9 @@ export default function SettingsPage() {
         </Card>
 
         {/* Services & Pricing */}
-        <Card className="border-slate-200 shadow-lg">
-          <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50 border-b border-cyan-100">
-            <CardTitle className="flex items-center gap-2 text-cyan-700">
-              <Wrench className="w-6 h-6" />
+        <Card className="border-[#020079]/20">
+          <CardHeader className="bg-[#020079] border-b border-[#020079]">
+            <CardTitle className="font-bebas text-xl text-white">
               Manage Services & Pricing
             </CardTitle>
           </CardHeader>
@@ -149,45 +143,45 @@ export default function SettingsPage() {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-200">
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Service Name</th>
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Base Price (LKR)</th>
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Duration</th>
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Required Skill</th>
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Status</th>
-                    <th className="text-left py-3 px-4 text-slate-700 font-semibold">Actions</th>
+                  <tr className="border-b border-[#020079]/20">
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Service Name</th>
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Base Price (LKR)</th>
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Duration</th>
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Required Skill</th>
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Status</th>
+                    <th className="text-left py-3 px-4 font-roboto text-[#020079] font-semibold">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {services.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="text-center py-8 text-slate-600">
+                      <td colSpan={6} className="text-center py-8 font-roboto text-[#020079]/60">
                         No services configured.
                       </td>
                     </tr>
                   ) : (
                     services.map((service) => (
-                      <tr key={service.serviceId} className="border-b border-slate-100 hover:bg-slate-50">
-                        <td className="py-3 px-4 text-slate-800 font-semibold">{service.serviceName}</td>
-                        <td className="py-3 px-4 text-slate-800">{service.basePrice.toLocaleString()}</td>
-                        <td className="py-3 px-4 text-slate-800">{service.duration} mins</td>
-                        <td className="py-3 px-4 text-slate-600 text-sm">{service.requiredSkill}</td>
+                      <tr key={service.serviceId} className="border-b border-[#020079]/10 hover:bg-[#020079]/5">
+                        <td className="py-3 px-4 font-roboto text-[#020079] font-semibold">{service.serviceName}</td>
+                        <td className="py-3 px-4 font-roboto text-[#020079]">{service.basePrice.toLocaleString()}</td>
+                        <td className="py-3 px-4 font-roboto text-[#020079]">{service.duration} mins</td>
+                        <td className="py-3 px-4 font-roboto text-[#020079]/60 text-sm">{service.requiredSkill}</td>
                         <td className="py-3 px-4">
                           <Badge className={`${
                             service.status === "Active" 
-                              ? "bg-emerald-100 text-emerald-700 border-emerald-300" 
-                              : "bg-slate-100 text-slate-700 border-slate-300"
+                              ? "bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30" 
+                              : "bg-[#020079]/10 text-[#020079]/60 border-[#020079]/20"
                           }`}>
                             {service.status}
                           </Badge>
                         </td>
                         <td className="py-3 px-4">
                           <div className="flex gap-2">
-                            <Button size="sm" className="bg-cyan-500 hover:bg-cyan-600 text-white">
+                            <Button size="sm" className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto">
                               <Edit className="w-4 h-4 mr-1" />
                               Edit
                             </Button>
-                            <Button size="sm" className="bg-rose-500 hover:bg-rose-600 text-white">
+                            <Button size="sm" className="bg-[#020079]/20 hover:bg-[#020079]/30 text-[#020079] font-roboto">
                               <Trash2 className="w-4 h-4 mr-1" />
                               Disable
                             </Button>
@@ -199,7 +193,7 @@ export default function SettingsPage() {
                 </tbody>
               </table>
             </div>
-            <Button className="mt-4 bg-emerald-500 hover:bg-emerald-600 text-white">
+            <Button className="mt-4 bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold">
               <Plus className="w-4 h-4 mr-1" />
               Add New Service
             </Button>
@@ -208,33 +202,32 @@ export default function SettingsPage() {
 
         {/* Employee Task Limits */}
         {taskLimits && (
-          <Card className="border-slate-200 shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-100">
-              <CardTitle className="flex items-center gap-2 text-amber-700">
-                <Calendar className="w-6 h-6" />
+          <Card className="border-[#020079]/20">
+            <CardHeader className="bg-[#020079] border-b border-[#020079]">
+              <CardTitle className="font-bebas text-xl text-white">
                 Employee Task Limits
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label className="text-slate-700 font-semibold">Maximum Tasks Per Employee Per Day:</Label>
+                  <Label className="font-roboto text-[#020079] font-semibold">Maximum Tasks Per Employee Per Day:</Label>
                   <Input 
                     type="number" 
                     value={taskLimits.maxTasksPerDay} 
-                    className="border-slate-300"
+                    className="border-[#020079]/20 font-roboto"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-slate-700 font-semibold">Overload Warning Threshold:</Label>
+                  <Label className="font-roboto text-[#020079] font-semibold">Overload Warning Threshold:</Label>
                   <Input 
                     type="number" 
                     value={taskLimits.overloadThreshold} 
-                    className="border-slate-300"
+                    className="border-[#020079]/20 font-roboto"
                   />
                 </div>
               </div>
-              <Button className="mt-6 bg-amber-500 hover:bg-amber-600 text-white">
+              <Button className="mt-6 bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold">
                 <CheckCircle2 className="w-4 h-4 mr-1" />
                 Save Changes
               </Button>
@@ -244,43 +237,42 @@ export default function SettingsPage() {
 
         {/* Compensation Rules */}
         {compensation && (
-          <Card className="border-slate-200 shadow-lg">
-            <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-100">
-              <CardTitle className="flex items-center gap-2 text-emerald-700">
-                <DollarSign className="w-6 h-6" />
+          <Card className="border-[#020079]/20">
+            <CardHeader className="bg-[#020079] border-b border-[#020079]">
+              <CardTitle className="font-bebas text-xl text-white">
                 Compensation Rules
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div className="space-y-2">
-                  <Label className="text-slate-700 font-semibold">Base Salary (LKR/month):</Label>
+                  <Label className="font-roboto text-[#020079] font-semibold">Base Salary (LKR/month):</Label>
                   <Input 
                     type="number" 
                     value={compensation.baseSalary} 
-                    className="border-slate-300"
+                    className="border-[#020079]/20 font-roboto"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-slate-700 font-semibold">Demand-Based Bonus (% of base):</Label>
+                  <Label className="font-roboto text-[#020079] font-semibold">Demand-Based Bonus (% of base):</Label>
                   <Input 
                     type="number" 
                     value={compensation.demandBonusPercentage} 
-                    className="border-slate-300"
+                    className="border-[#020079]/20 font-roboto"
                   />
                 </div>
               </div>
               
-              <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg mb-6">
+              <div className="bg-[#FFD700]/10 border-l-4 border-[#FFD700] p-4 rounded-lg mb-6">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-blue-600" />
-                  <p className="text-slate-800">
+                  <CheckCircle2 className="w-5 h-5 text-[#020079]" />
+                  <p className="font-roboto text-[#020079]">
                     <span className="font-semibold">Example Calculation:</span> Base (LKR {compensation.baseSalary.toLocaleString()}) + {compensation.demandBonusPercentage}% Bonus (LKR {compensation.exampleBonus.toLocaleString()}) = Total LKR {compensation.exampleTotal.toLocaleString()}/month for high-demand employees.
                   </p>
                 </div>
               </div>
 
-              <Button className="bg-emerald-500 hover:bg-emerald-600 text-white">
+              <Button className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold">
                 <CheckCircle2 className="w-4 h-4 mr-1" />
                 Update Compensation Policy
               </Button>
