@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-type PageType = 'dashboard' | 'employees' | 'assign' | 'projects' | 'scheduler' | 'reports' | 'communication';
+type PageType = 'dashboard' | 'employees' | 'assign' | 'projects' | 'scheduler' | 'reports' | 'communication' | 'customersdetails';
 
 interface SidebarProps {
   activePage?: PageType;
@@ -29,6 +29,7 @@ export function Sidebar({ activePage, className = '' }: SidebarProps) {
     if (pathname.includes('/scheduler')) return 'scheduler';
     if (pathname.includes('/reports')) return 'reports';
     if (pathname.includes('/communication')) return 'communication';
+    if (pathname.includes('/customersdetails')) return 'customersdetails';
     return 'dashboard';
   };
 
@@ -107,6 +108,16 @@ export function Sidebar({ activePage, className = '' }: SidebarProps) {
             }`}
           >
             Communication
+          </Link>
+          <Link
+            href="/manager/customersdetails"
+            className={`block px-4 py-3 rounded-lg text-sm font-roboto transition-all duration-200 ${
+              currentActivePage === 'customersdetails'
+                ? "bg-[#020079] text-white font-semibold"
+                : "text-[#020079] hover:bg-[#020079]/10 bg-white"
+              }`}
+          >
+            Customers
           </Link>
         </nav>
       </div>
