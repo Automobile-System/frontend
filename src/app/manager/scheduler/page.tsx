@@ -76,7 +76,7 @@ export default function SchedulerPage() {
     }
   ];
 
-  const [schedule, setSchedule] = useState(INITIAL_SCHEDULE);
+  const [schedule] = useState(INITIAL_SCHEDULE);
 
   const handlePreviousWeek = () => {
     const newDate = new Date(currentWeekStart);

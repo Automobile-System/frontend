@@ -78,7 +78,7 @@ const useProfile = () => {
     setLoading(true);
 
     // Simple validation
-    let errors: { [key: string]: string | undefined } = {};
+    const errors: { [key: string]: string | undefined } = {};
     if (!formData.firstName) errors.firstName = "First name is required.";
     if (!formData.lastName) errors.lastName = "Last name is required.";
     if (!formData.email) errors.email = "Email is required.";

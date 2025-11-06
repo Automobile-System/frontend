@@ -1,8 +1,8 @@
 interface ServiceTimelineProps {
-    serviceId: string;
+    serviceId?: string;
 }
 
-export default function ServiceTimeline({ serviceId }: ServiceTimelineProps) {
+export default function ServiceTimeline({ }: ServiceTimelineProps) {
     const timelineEvents = [
         {
             time: '10:35 AM',

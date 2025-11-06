@@ -17,7 +17,7 @@ export default function AutoBalanceModal({
   onClose
 }: AutoBalanceModalProps) {
   const [isProcessing, setIsProcessing] = useState(true);
-  const [results, setResults] = useState({
+  const [results] = useState({
     tasksMovedFrom: "Kamal Perera",
     tasksMovedCount: 3,
     tasksReassigned: 2,

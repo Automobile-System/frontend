@@ -114,7 +114,7 @@ export default function CommunicationPage() {
     }
   ];
 
-  const [messages, setMessages] = useState(INBOX_MESSAGES);
+  const [messages] = useState(INBOX_MESSAGES);
 
   const handleSendReply = () => {
     if (replyText.trim() && selectedMessage) {
@@ -247,7 +247,7 @@ export default function CommunicationPage() {
       <ComposeMessageModal
         isOpen={showComposeModal}
         onClose={() => setShowComposeModal(false)}
-        onSend={(data: any) => {
+        onSend={(data) => {
           console.log("Composing message:", data);
           setShowComposeModal(false);
         }}

@@ -73,7 +73,7 @@ export default function BookService() {
                         onConfirm={() => {
                             console.log('Booking confirmed:', bookingData);
                             alert('Service booked successfully!');
-                        }} onUpdate={function (data: Partial<BookingData>): void {
+                        }} onUpdate={function (): void {
                             throw new Error('Function not implemented.');
                         }} />
                 );

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 interface Employee {
@@ -84,7 +83,7 @@ export default function EmployeeAssignmentModal({
   task,
   onAssign
 }: EmployeeAssignmentModalProps) {
-  const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null);
+  const [, setSelectedEmployee] = useState<string | null>(null);
 
   const handleEmployeeSelect = (name: string) => {
     const employee = EMPLOYEES.find(e => e.name === name);

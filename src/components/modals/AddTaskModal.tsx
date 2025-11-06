@@ -40,10 +40,24 @@ const SERVICE_TYPES = [
   "Other (Specify in notes)"
 ];
 
+interface TaskFormData {
+  customerName: string;
+  contactNumber: string;
+  vehicleRegistration: string;
+  vehicleModel: string;
+  serviceType: string;
+  serviceNote: string;
+  preferredDate: string;
+  preferredTime: string;
+  estimatedDurationHours: string;
+  estimatedPrice: string;
+  [key: string]: string; // Allow additional properties
+}
+
 interface AddTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: TaskFormData) => void;
   initialData?: {
     customerName: string;
     vehicleRegistration: string;
@@ -69,7 +83,7 @@ export default function AddTaskModal({ isOpen, onClose, onSubmit, initialData }:
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit(formData as unknown as TaskFormData);
     onClose();
   };
 
