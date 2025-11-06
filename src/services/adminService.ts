@@ -332,6 +332,37 @@ export interface CompensationRules {
   exampleTotal: number
 }
 
+// --- Customer Details Page Types ---
+export interface CustomerOverview {
+  totalCustomers: number
+  newThisMonth: number
+  activeCustomers: number
+  activityRate: number
+  topCustomer: {
+    name: string
+    email: string
+    totalSpent: number
+    servicesUsed: number
+  }
+}
+
+export interface Customer {
+  id: string
+  name: string
+  email: string
+  phone: string
+  vehicleCount: number
+  totalSpent: number
+  lastServiceDate: string
+  status: "Active" | "Inactive"
+}
+
+export interface AddCustomerRequest {
+  name: string
+  email: string
+  phone: string
+}
+
 // ============================================================================
 // COMMON/SHARED ENDPOINTS (Used across multiple pages)
 // ============================================================================
@@ -1903,6 +1934,447 @@ export const fetchCompensationRules = async (): Promise<CompensationRules> => {
     })
   } catch (error) {
     console.error('Failed to fetch compensation rules:', error)
+    throw error
+  }
+}
+
+// ============================================================================
+// CUSTOMER DETAILS PAGE ENDPOINTS
+// ============================================================================
+
+/**
+ * CUSTOMER DETAILS: Fetch customer overview statistics
+ * Endpoint: GET /api/customers/overview
+ * Backend SQL Query:
+ * ```sql
+ * SELECT 
+ *   COUNT(*) as total_customers,
+ *   COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) THEN 1 END) as new_this_month,
+ *   COUNT(CASE WHEN status = 'Active' THEN 1 END) as active_customers,
+ *   (COUNT(CASE WHEN status = 'Active' THEN 1 END) * 100.0 / COUNT(*)) as activity_rate,
+ *   SUM(total_spent) as total_revenue,
+ *   AVG(total_spent) as avg_customer_value,
+ *   AVG(satisfaction_score) as avg_satisfaction,
+ *   (COUNT(CASE WHEN repeat_customer = true THEN 1 END) * 100.0 / COUNT(*)) as retention_rate,
+ *   COUNT(CASE WHEN repeat_customer = true THEN 1 END) as repeat_customers,
+ *   AVG(lifetime_months) as avg_lifetime_months
+ * FROM customers
+ * ```
+ */
+export const fetchCustomerOverview = async (): Promise<CustomerOverview> => {
+  try {
+    // TODO: Replace with actual API call
+    // const response = await fetch(`${API_BASE_URL}/customers/overview`, {
+    //   headers: { Authorization: `Bearer ${token}` }
+    // })
+    // if (!response.ok) throw new Error('Failed to fetch customer overview')
+    // return await response.json()
+    
+    console.log('API: Fetch customer overview endpoint called')
+    
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          totalCustomers: 1247,
+          newThisMonth: 89,
+          activeCustomers: 1103,
+          activityRate: 88.5,
+          topCustomer: {
+            name: "Nimal Perera",
+            email: "nimal.perera@email.com",
+            totalSpent: 45780,
+            servicesUsed: 24
+          }
+        })
+      }, 800)
+    })
+  } catch (error) {
+    console.error('Failed to fetch customer overview:', error)
+    throw error
+  }
+}
+
+/**
+ * CUSTOMER DETAILS: Fetch list of all customers
+ * Endpoint: GET /api/customers/list
+ * Backend SQL Query:
+ * ```sql
+ * SELECT 
+ *   c.customer_id as id,
+ *   c.name,
+ *   c.email,
+ *   c.phone,
+ *   COUNT(DISTINCT v.vehicle_id) as vehicle_count,
+ *   COALESCE(SUM(b.total_amount), 0) as total_spent,
+ *   MAX(b.service_date) as last_service_date,
+ *   c.status
+ * FROM customers c
+ * LEFT JOIN vehicles v ON c.customer_id = v.customer_id
+ * LEFT JOIN bookings b ON c.customer_id = b.customer_id
+ * GROUP BY c.customer_id, c.name, c.email, c.phone, c.status
+ * ORDER BY c.name ASC
+ * ```
+ */
+export const fetchCustomerList = async (): Promise<Customer[]> => {
+  try {
+    // TODO: Replace with actual API call
+    // const response = await fetch(`${API_BASE_URL}/customers/list`, {
+    //   headers: { Authorization: `Bearer ${token}` }
+    // })
+    // if (!response.ok) throw new Error('Failed to fetch customer list')
+    // return await response.json()
+    
+    console.log('API: Fetch customer list endpoint called')
+    
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve([
+          {
+            id: 'CUST001',
+            name: 'Nimal Perera',
+            email: 'nimal.perera@email.com',
+            phone: '+94 77 123 4567',
+            vehicleCount: 2,
+            totalSpent: 45780,
+            lastServiceDate: '2024-10-28',
+            status: 'Active'
+          },
+          {
+            id: 'CUST002',
+            name: 'Saman Silva',
+            email: 'saman.silva@email.com',
+            phone: '+94 71 234 5678',
+            vehicleCount: 1,
+            totalSpent: 12450,
+            lastServiceDate: '2024-10-25',
+            status: 'Active'
+          },
+          {
+            id: 'CUST003',
+            name: 'Kamal Fernando',
+            email: 'kamal.fernando@email.com',
+            phone: '+94 76 345 6789',
+            vehicleCount: 3,
+            totalSpent: 67890,
+            lastServiceDate: '2024-11-02',
+            status: 'Active'
+          },
+          {
+            id: 'CUST004',
+            name: 'Dilani Jayawardena',
+            email: 'dilani.j@email.com',
+            phone: '+94 77 456 7890',
+            vehicleCount: 1,
+            totalSpent: 8900,
+            lastServiceDate: '2024-09-15',
+            status: 'Active'
+          },
+          {
+            id: 'CUST005',
+            name: 'Ruwan Bandara',
+            email: 'ruwan.b@email.com',
+            phone: '+94 71 567 8901',
+            vehicleCount: 2,
+            totalSpent: 23450,
+            lastServiceDate: '2024-10-30',
+            status: 'Active'
+          },
+          {
+            id: 'CUST006',
+            name: 'Chaminda Rathnayake',
+            email: 'chaminda.r@email.com',
+            phone: '+94 76 678 9012',
+            vehicleCount: 1,
+            totalSpent: 5600,
+            lastServiceDate: '2024-07-20',
+            status: 'Inactive'
+          },
+          {
+            id: 'CUST007',
+            name: 'Priyantha Gunawardena',
+            email: 'priyantha.g@email.com',
+            phone: '+94 77 789 0123',
+            vehicleCount: 2,
+            totalSpent: 34560,
+            lastServiceDate: '2024-11-01',
+            status: 'Active'
+          },
+          {
+            id: 'CUST008',
+            name: 'Sanduni Wickramasinghe',
+            email: 'sanduni.w@email.com',
+            phone: '+94 71 890 1234',
+            vehicleCount: 1,
+            totalSpent: 15670,
+            lastServiceDate: '2024-10-18',
+            status: 'Active'
+          },
+          {
+            id: 'CUST009',
+            name: 'Nuwan Kumara',
+            email: 'nuwan.k@email.com',
+            phone: '+94 76 901 2345',
+            vehicleCount: 4,
+            totalSpent: 89120,
+            lastServiceDate: '2024-11-03',
+            status: 'Active'
+          },
+          {
+            id: 'CUST010',
+            name: 'Amali De Silva',
+            email: 'amali.ds@email.com',
+            phone: '+94 77 012 3456',
+            vehicleCount: 1,
+            totalSpent: 7890,
+            lastServiceDate: '2024-08-12',
+            status: 'Inactive'
+          },
+          {
+            id: 'CUST011',
+            name: 'Thisara Perera',
+            email: 'thisara.p@email.com',
+            phone: '+94 71 123 4567',
+            vehicleCount: 2,
+            totalSpent: 28900,
+            lastServiceDate: '2024-10-27',
+            status: 'Active'
+          },
+          {
+            id: 'CUST012',
+            name: 'Nadeesha Kumari',
+            email: 'nadeesha.k@email.com',
+            phone: '+94 76 234 5678',
+            vehicleCount: 1,
+            totalSpent: 19450,
+            lastServiceDate: '2024-10-22',
+            status: 'Active'
+          }
+        ])
+      }, 800)
+    })
+  } catch (error) {
+    console.error('Failed to fetch customer list:', error)
+    throw error
+  }
+}
+
+/**
+ * CUSTOMER DETAILS: Add new customer
+ * Endpoint: POST /api/customers
+ * Backend SQL Query:
+ * ```sql
+ * INSERT INTO customers (name, email, phone, status, created_at)
+ * VALUES (?, ?, ?, 'Active', NOW())
+ * RETURNING customer_id as id, name, email, phone, status
+ * ```
+ */
+export const addCustomer = async (customerData: AddCustomerRequest): Promise<Customer> => {
+  try {
+    // TODO: Replace with actual API call
+    // const response = await fetch(`${API_BASE_URL}/customers`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${token}`
+    //   },
+    //   body: JSON.stringify(customerData)
+    // })
+    // if (!response.ok) throw new Error('Failed to add customer')
+    // return await response.json()
+    
+    console.log('API: Add customer endpoint called', customerData)
+    
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          id: `CUST${Date.now()}`,
+          name: customerData.name,
+          email: customerData.email,
+          phone: customerData.phone,
+          vehicleCount: 0,
+          totalSpent: 0,
+          lastServiceDate: 'N/A',
+          status: 'Active'
+        })
+      }, 600)
+    })
+  } catch (error) {
+    console.error('Failed to add customer:', error)
+    throw error
+  }
+}
+
+/**
+ * CUSTOMER DETAILS: Update customer status (Active/Inactive)
+ * Endpoint: PUT /api/customers/:id/status
+ * Backend SQL Query:
+ * ```sql
+ * UPDATE customers
+ * SET status = ?, updated_at = NOW()
+ * WHERE customer_id = ?
+ * RETURNING customer_id as id, name, email, phone, status
+ * ```
+ */
+export const updateCustomerStatus = async (
+  customerId: string,
+  newStatus: string
+): Promise<Customer> => {
+  try {
+    // TODO: Replace with actual API call
+    // const response = await fetch(`${API_BASE_URL}/customers/${customerId}/status`, {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${token}`
+    //   },
+    //   body: JSON.stringify({ status: newStatus })
+    // })
+    // if (!response.ok) throw new Error('Failed to update customer status')
+    // return await response.json()
+    
+    console.log(`API: Update customer status endpoint called - ID: ${customerId}, New Status: ${newStatus}`)
+    
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          id: customerId,
+          name: 'Updated Customer',
+          email: 'updated@email.com',
+          phone: '+94 77 000 0000',
+          vehicleCount: 1,
+          totalSpent: 5000,
+          lastServiceDate: '2024-11-01',
+          status: newStatus as "Active" | "Inactive"
+        })
+      }, 600)
+    })
+  } catch (error) {
+    console.error('Failed to update customer status:', error)
+    throw error
+  }
+}
+
+/**
+ * CUSTOMER DETAILS: Delete customer
+ * Endpoint: DELETE /api/customers/:id
+ * Backend SQL Query:
+ * ```sql
+ * DELETE FROM customers
+ * WHERE customer_id = ?
+ * ```
+ */
+export const deleteCustomer = async (customerId: string): Promise<void> => {
+  try {
+    // TODO: Replace with actual API call
+    // const response = await fetch(`${API_BASE_URL}/customers/${customerId}`, {
+    //   method: 'DELETE',
+    //   headers: {
+    //     Authorization: `Bearer ${token}`
+    //   }
+    // })
+    // if (!response.ok) throw new Error('Failed to delete customer')
+    
+    console.log(`API: Delete customer endpoint called - ID: ${customerId}`)
+    
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve()
+      }, 600)
+    })
+  } catch (error) {
+    console.error('Failed to delete customer:', error)
+    throw error
+  }
+}
+
+/**
+ * CUSTOMER DETAILS: Activate customer
+ * Endpoint: PUT /api/customers/:id/activate
+ * Backend SQL Query:
+ * ```sql
+ * UPDATE customers
+ * SET status = 'Active', updated_at = NOW()
+ * WHERE customer_id = ?
+ * RETURNING customer_id as id, name, email, phone, status
+ * ```
+ */
+export const activateCustomer = async (customerId: string): Promise<Customer> => {
+  try {
+    // TODO: Replace with actual API call
+    // const response = await fetch(`${API_BASE_URL}/customers/${customerId}/activate`, {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${token}`
+    //   }
+    // })
+    // if (!response.ok) throw new Error('Failed to activate customer')
+    // return await response.json()
+    
+    console.log(`API: Activate customer endpoint called - ID: ${customerId}`)
+    
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          id: customerId,
+          name: 'Activated Customer',
+          email: 'activated@email.com',
+          phone: '+94 77 000 0000',
+          vehicleCount: 1,
+          totalSpent: 5000,
+          lastServiceDate: '2024-11-01',
+          status: 'Active'
+        })
+      }, 600)
+    })
+  } catch (error) {
+    console.error('Failed to activate customer:', error)
+    throw error
+  }
+}
+
+/**
+ * CUSTOMER DETAILS: Deactivate customer
+ * Endpoint: PUT /api/customers/:id/deactivate
+ * Backend SQL Query:
+ * ```sql
+ * UPDATE customers
+ * SET status = 'Inactive', updated_at = NOW()
+ * WHERE customer_id = ?
+ * RETURNING customer_id as id, name, email, phone, status
+ * ```
+ */
+export const deactivateCustomer = async (customerId: string): Promise<Customer> => {
+  try {
+    // TODO: Replace with actual API call
+    // const response = await fetch(`${API_BASE_URL}/customers/${customerId}/deactivate`, {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${token}`
+    //   }
+    // })
+    // if (!response.ok) throw new Error('Failed to deactivate customer')
+    // return await response.json()
+    
+    console.log(`API: Deactivate customer endpoint called - ID: ${customerId}`)
+    
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          id: customerId,
+          name: 'Deactivated Customer',
+          email: 'deactivated@email.com',
+          phone: '+94 77 000 0000',
+          vehicleCount: 1,
+          totalSpent: 5000,
+          lastServiceDate: '2024-11-01',
+          status: 'Inactive'
+        })
+      }, 600)
+    })
+  } catch (error) {
+    console.error('Failed to deactivate customer:', error)
     throw error
   }
 }

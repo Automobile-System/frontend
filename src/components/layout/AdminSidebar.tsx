@@ -38,6 +38,12 @@ export default function AdminSidebar() {
       id: "ai",
     },
     {
+      href: "/admin/customerdetails",
+      label: "Customers Overview",
+
+      id: "customerdetails",
+    },
+    {
       href: "/admin/settings",
       label: "Settings",
      
