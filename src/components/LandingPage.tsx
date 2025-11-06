@@ -10,6 +10,8 @@ import { ServicesGrid } from "@/components/layout/ServicesGrid"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { ChatWidget } from "@/components/chat/ChatWidget"
+import { AIChatWidget } from "@/components/chat/AIChatWidget"
 import {
   Car,
   Wrench,
@@ -30,6 +32,11 @@ const LandingPage = () => {
     <div className="min-h-screen bg-gray-50 font-inter">
       {/* Navigation Header */}
       <Navigation />
+
+      <div className="fixed top-24 right-4 z-50 space-y-4">
+        <ChatWidget />
+        <AIChatWidget />
+      </div>
 
       {/* Hero Section */}
       <HeroSection />
