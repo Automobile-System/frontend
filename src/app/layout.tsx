@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Teko } from "next/font/google";
+import { Bebas_Neue, Teko, Roboto } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "sonner";
@@ -19,9 +19,18 @@ const teko = Teko({
   display: "swap",
 });
 
+// Roboto for body text
+const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Automobile Management System",
-  description: "Enterprise automobile management application developed by Team Nemmi",
+  description:
+    "Enterprise automobile management application developed by Team Nemmi",
 };
 
 export default function RootLayout({
@@ -41,10 +50,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <Toaster 
-            position="top-right" 
-            richColors 
-            closeButton 
+          <Toaster
+            position="top-right"
+            richColors
+            closeButton
             expand={true}
             duration={4000}
           />

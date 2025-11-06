@@ -36,9 +36,9 @@ export default function AddVehicleModal({ onClose, onVehicleAdded }: AddVehicleM
         onVehicleAdded();
       }
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to add vehicle:", err);
-      setError(err.message || "Failed to add vehicle. Please try again.");
+      setError(err instanceof Error ? err.message : "Failed to add vehicle. Please try again.");
       setIsSubmitting(false);
     }
   };

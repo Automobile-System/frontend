@@ -6,7 +6,7 @@ import { CustomerProfile } from "@/types/authTypes";
 interface EditProfileModalProps {
   customer: CustomerProfile;
   onClose: () => void;
-  onSave: (updatedData: any) => void;
+  onSave: (updatedData: Partial<CustomerProfile>) => void;
 }
 
 export default function EditProfileModal({

@@ -25,9 +25,9 @@ export default function Vehicles() {
             setError(null);
             const data = await getCustomerVehicles();
             setVehicles(data);
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to fetch vehicles:', err);
-            setError(err.message || 'Failed to load vehicles');
+            setError(err instanceof Error ? err.message : 'Failed to load vehicles');
         } finally {
             setIsLoading(false);
         }

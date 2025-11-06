@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { User } from "lucide-react";
 import { CustomerProfile } from "@/types/authTypes";
 
@@ -56,15 +57,17 @@ export default function ProfileHeader({
             justifyContent: "center",
             color: "white",
             flexShrink: 0,
+            overflow: "hidden",
+            position: "relative",
           }}
         >
           {customer.profileImageUrl ? (
-            <img
+            <Image
               src={customer.profileImageUrl}
               alt={fullName}
+              width={80}
+              height={80}
               style={{
-                width: "100%",
-                height: "100%",
                 borderRadius: "50%",
                 objectFit: "cover",
               }}
