@@ -2,6 +2,9 @@ import CustomerLayout from '@/components/layout/customer/CustomerLayout';
 import DashboardContent from '@/components/layout/customer/DashboardContent';
 import DashboardHeader from '@/components/customer/dashboard/DashboardHeader';
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+
 export default function CustomerDashboard() {
     return (
         <CustomerLayout>
