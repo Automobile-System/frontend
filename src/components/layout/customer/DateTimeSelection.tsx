@@ -45,9 +45,9 @@ export default function DateTimeSelection({ data, onUpdate, onNext, onBack }: St
                                 onClick={() => handleDateSelect(date)}
                                 style={{
                                     padding: '1rem',
-                                    border: `2px solid ${isSelected ? '#2563eb' : '#e5e7eb'}`,
+                                    border: `2px solid ${isSelected ? '#03009B' : '#e5e7eb'}`,
                                     borderRadius: '0.75rem',
-                                    background: isSelected ? '#f0f7ff' : 'white',
+                                    background: isSelected ? 'var(--color-tint-primary)' : 'white',
                                     cursor: 'pointer',
                                     minWidth: '100px',
                                     textAlign: 'center',
@@ -81,10 +81,10 @@ export default function DateTimeSelection({ data, onUpdate, onNext, onBack }: St
                             onClick={() => handleTimeSelect(time)}
                             style={{
                                 padding: '0.75rem',
-                                border: `2px solid ${data.time === time ? '#2563eb' : '#e5e7eb'}`,
+                                border: `2px solid ${data.time === time ? '#03009B' : '#e5e7eb'}`,
                                 borderRadius: '0.5rem',
-                                background: data.time === time ? '#f0f7ff' : 'white',
-                                color: data.time === time ? '#2563eb' : '#374151',
+                                background: data.time === time ? 'var(--color-tint-primary)' : 'white',
+                                color: data.time === time ? '#03009B' : '#374151',
                                 cursor: 'pointer',
                                 fontWeight: '500',
                                 transition: 'all 0.2s'
@@ -115,13 +115,50 @@ export default function DateTimeSelection({ data, onUpdate, onNext, onBack }: St
                     onClick={onNext}
                     disabled={!data.date || !data.time}
                     style={{
-                        background: (data.date && data.time) ? '#2563eb' : '#9ca3af',
+                        background: (data.date && data.time) ? '#03009B' : '#9ca3af',
                         color: 'white',
                         padding: '0.75rem 2rem',
                         borderRadius: '0.5rem',
                         border: 'none',
                         fontWeight: '500',
-                        cursor: (data.date && data.time) ? 'pointer' : 'not-allowed'
+                        cursor: (data.date && data.time) ? 'pointer' : 'not-allowed',
+                        transition: 'all 0.2s ease',
+                        outline: 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                        if (data.date && data.time) {
+                            e.currentTarget.style.background = '#03009B';
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(3, 0, 155, 0.3)';
+                        }
+                    }}
+                    onMouseLeave={(e) => {
+                        if (data.date && data.time) {
+                            e.currentTarget.style.background = '#03009B';
+                            e.currentTarget.style.boxShadow = 'none';
+                        }
+                    }}
+                    onMouseDown={(e) => {
+                        if (data.date && data.time) {
+                            e.currentTarget.style.background = '#03009B';
+                            e.currentTarget.style.transform = 'scale(0.98)';
+                            e.currentTarget.style.opacity = '0.9';
+                        }
+                    }}
+                    onMouseUp={(e) => {
+                        if (data.date && data.time) {
+                            e.currentTarget.style.background = '#03009B';
+                            e.currentTarget.style.transform = 'scale(1)';
+                            e.currentTarget.style.opacity = '1';
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(3, 0, 155, 0.3)';
+                        }
+                    }}
+                    onFocus={(e) => {
+                        if (data.date && data.time) {
+                            e.currentTarget.style.boxShadow = '0 0 0 3px rgba(3, 0, 155, 0.2)';
+                        }
+                    }}
+                    onBlur={(e) => {
+                        e.currentTarget.style.boxShadow = 'none';
                     }}
                 >
                     Next Step →
