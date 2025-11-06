@@ -10,7 +10,7 @@ import { ServicesGrid } from "@/components/layout/ServicesGrid"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ChatButton } from "@/components/chat/ChatButton"
+import { ChatWidget } from "@/components/chat/ChatWidget"
 import { AIChatWidget } from "@/components/chat/AIChatWidget"
 import {
   Car,
@@ -34,7 +34,7 @@ const LandingPage = () => {
       <Navigation />
 
       <div className="fixed top-24 right-4 z-50 space-y-4">
-        <ChatButton />
+        <ChatWidget />
         <AIChatWidget />
       </div>
 

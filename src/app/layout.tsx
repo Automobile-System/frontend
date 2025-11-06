@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Teko, Roboto } from "next/font/google";
+import { Bebas_Neue, Teko } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "sonner";
@@ -16,13 +16,6 @@ const teko = Teko({
   variable: "--font-teko",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const roboto = Roboto({
-  variable: "--font-roboto",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "700"],
   display: "swap",
 });
 
