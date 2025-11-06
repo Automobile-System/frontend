@@ -100,3 +100,11 @@ export const deleteCustomerVehicle = (id: string) =>
   apiFetch(`/api/customer/vehicles/${id}`, {
     method: "DELETE"
   });
+/* Contact */
+export const postContactMessage = (payload: {
+  name: string
+  email: string
+  phone?: string
+  subject?: string
+  message: string
+}) => apiFetch("/api/contact", { method: "POST", body: JSON.stringify(payload) });

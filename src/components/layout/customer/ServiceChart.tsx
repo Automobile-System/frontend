@@ -1,5 +1,22 @@
-﻿export default function ServiceChart() {
-    const serviceData = [
+﻿interface ServiceFrequency {
+    month: string;
+    jobs: number;
+}
+
+interface ServiceChartProps {
+    data: ServiceFrequency[];
+}
+
+export default function ServiceChart({ data }: ServiceChartProps) {
+    // Transform data to match component format and add trend
+    const serviceData = data.map((item, index, arr) => ({
+        month: item.month,
+        services: item.jobs,
+        trend: index > 0 && item.jobs > arr[index - 1].jobs ? 'up' : 'down'
+    }));
+
+    // Fallback to default data if no data provided
+    const displayData = serviceData.length > 0 ? serviceData : [
         { month: 'Jan', services: 2, trend: 'down' },
         { month: 'Feb', services: 1, trend: 'down' },
         { month: 'Mar', services: 3, trend: 'up' },
@@ -14,7 +31,7 @@
         { month: 'Dec', services: 2, trend: 'down' }
     ];
 
-    const maxServices = Math.max(...serviceData.map(d => d.services));
+    const maxServices = Math.max(...displayData.map(d => d.services));
 
     return (
         <div style={{
@@ -61,7 +78,7 @@
                     paddingBottom: '0.5rem'
                 }}>
 
-                    {serviceData.map((data) => {
+                    {displayData.map((data) => {
                         const barHeight = `${(data.services / maxServices) * 100}%`;
                         const isCurrentMonth = data.month === 'Nov';
 
