@@ -63,7 +63,7 @@ export default function EmployeeSidebar() {
   const isActive = (href: string) => pathname === href;
 
   return (
-    <aside className="w-[270px] bg-gradient-to-b from-[#A52A2A] to-[#8B0000] text-white min-h-screen shadow-2xl">
+    <aside className="w-[270px] bg-[#0200791F] border-r border-[#020079]/20 min-h-screen">
       <div className="p-6">
         <nav className="space-y-2">
           {navigationItems.map((item) => {
@@ -72,10 +72,10 @@ export default function EmployeeSidebar() {
               <Link
                 key={item.id}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-300 hover:bg-white/15 hover:translate-x-1 ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
                   isActive(item.href)
-                    ? "bg-white/25 font-semibold shadow-lg"
-                    : ""
+                    ? "bg-[#020079] text-white font-semibold"
+                    : "text-[#020079] hover:bg-[#020079]/10 bg-white"
                 }`}
               >
                 <Icon className="w-5 h-5" />
