@@ -57,13 +57,13 @@ export function useLoginForm() {
           // Redirect staff and admins to admin dashboard
           router.push("/admin/dashboard");
         } else if (response.roles.includes("STAFF")) {
-          router.push("/admin/dashboard");
+          router.push("/employee/dashboard");
         } else if (response.roles.includes("MANAGER")) {
           // Redirect managers to manager dashboard
-          router.push("/admin/dashboard");
+          router.push("/manager/dashboard");
         } else if (response.roles.includes("CUSTOMER")) {
           // Redirect customers to home page or customer dashboard
-          router.push("/");
+          router.push("/customer/dashboard");
         } else {
           // Default redirect
           router.push("/");
