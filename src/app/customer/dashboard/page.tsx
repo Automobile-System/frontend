@@ -1,13 +1,52 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import CustomerLayout from "@/components/layout/customer/CustomerLayout";
 import StatsCards from "@/components/layout/customer/StatsCards";
 import Recommendations from "@/components/layout/customer/Recommendations";
 import ServiceChart from "@/components/layout/customer/ServiceChart";
+import { getCustomerProfile } from "@/services/api";
+import { CustomerProfile } from "@/types/authTypes";
 
 export default function CustomerDashboard() {
   const router = useRouter();
+  const [customerData, setCustomerData] = useState<CustomerProfile | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchCustomerProfile();
+  }, []);
+
+  const fetchCustomerProfile = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getCustomerProfile();
+      setCustomerData(data);
+    } catch (err) {
+      console.error("Failed to fetch customer profile:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
+  };
+
+  const isNewUser = (customer: CustomerProfile) => {
+    const createdAt = new Date(customer.createdAt);
+    const lastLoginAt = new Date(customer.lastLoginAt);
+    const diffInHours =
+      (lastLoginAt.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
+    // If last login is within 24 hours of account creation, consider as new user
+    return diffInHours < 24;
+  };
 
   const handleBookService = () => {
     router.push("/customer/book-service");
@@ -38,28 +77,154 @@ export default function CustomerDashboard() {
           }}
         >
           <div>
-            <h1
-              style={{
-                fontSize: "2.5rem",
-                fontWeight: "700",
-                color: "#020079",
-                margin: "0 0 0.5rem 0",
-                fontFamily: "var(--font-bebas, sans-serif)",
-                letterSpacing: "0.5px",
-              }}
-            >
-              Dashboard Overview
-            </h1>
-            <p
-              style={{
-                color: "#6b7280",
-                margin: 0,
-                fontSize: "1rem",
-                fontFamily: "var(--font-roboto, sans-serif)",
-              }}
-            >
-              Your vehicle service summary and recommendations
-            </p>
+            {isLoading ? (
+              <>
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: `
+                    @keyframes pulse {
+                      0%, 100% { opacity: 1; }
+                      50% { opacity: 0.5; }
+                    }
+                    .loading-pulse {
+                      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+                    }
+                  `,
+                  }}
+                />
+                <h1
+                  style={{
+                    fontSize: "2.5rem",
+                    fontWeight: "700",
+                    color: "#020079",
+                    margin: "0 0 0.5rem 0",
+                    fontFamily: "var(--font-bebas, sans-serif)",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Dashboard Overview
+                </h1>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                  }}
+                >
+                  <div
+                    className="loading-pulse"
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      border: "3px solid #f3f4f6",
+                      borderTop: "3px solid #03009B",
+                      borderRadius: "50%",
+                      display: "inline-block",
+                    }}
+                  >
+                    <style
+                      dangerouslySetInnerHTML={{
+                        __html: `
+                        @keyframes spin {
+                          0% { transform: rotate(0deg); }
+                          100% { transform: rotate(360deg); }
+                        }
+                        .loading-pulse {
+                          animation: spin 1s linear infinite;
+                        }
+                      `,
+                      }}
+                    />
+                  </div>
+                  <p
+                    style={{
+                      color: "#6b7280",
+                      margin: 0,
+                      fontSize: "1rem",
+                      fontFamily: "var(--font-roboto, sans-serif)",
+                    }}
+                  >
+                    Loading your dashboard...
+                  </p>
+                </div>
+              </>
+            ) : customerData ? (
+              <>
+                <div style={{ marginBottom: "0.25rem" }}>
+                  <span
+                    style={{
+                      fontSize: "1.125rem",
+                      color: "#6b7280",
+                      fontFamily: "var(--font-roboto, sans-serif)",
+                      fontWeight: "400",
+                    }}
+                  >
+                    {getGreeting()},{" "}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "1.125rem",
+                      color: "#020079",
+                      fontFamily: "var(--font-roboto, sans-serif)",
+                      fontWeight: "600",
+                    }}
+                  >
+                    {customerData.firstName}! 👋
+                  </span>
+                </div>
+                <h1
+                  style={{
+                    fontSize: "2.5rem",
+                    fontWeight: "700",
+                    color: "#020079",
+                    margin: "0 0 0.5rem 0",
+                    fontFamily: "var(--font-bebas, sans-serif)",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  {isNewUser(customerData)
+                    ? "Welcome to NitroLine"
+                    : "Welcome Back"}
+                </h1>
+                <p
+                  style={{
+                    color: "#6b7280",
+                    margin: 0,
+                    fontSize: "1rem",
+                    fontFamily: "var(--font-roboto, sans-serif)",
+                  }}
+                >
+                  {isNewUser(customerData)
+                    ? "We're excited to have you here! Let's get started with your vehicle services"
+                    : "Here's your vehicle service summary and recommendations"}
+                </p>
+              </>
+            ) : (
+              <>
+                <h1
+                  style={{
+                    fontSize: "2.5rem",
+                    fontWeight: "700",
+                    color: "#020079",
+                    margin: "0 0 0.5rem 0",
+                    fontFamily: "var(--font-bebas, sans-serif)",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Dashboard Overview
+                </h1>
+                <p
+                  style={{
+                    color: "#6b7280",
+                    margin: 0,
+                    fontSize: "1rem",
+                    fontFamily: "var(--font-roboto, sans-serif)",
+                  }}
+                >
+                  Your vehicle service summary and recommendations
+                </p>
+              </>
+            )}
           </div>
           <button
             onClick={handleBookService}

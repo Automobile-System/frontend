@@ -1,30 +1,45 @@
 "use client";
 
 import { useState } from "react";
+import { addCustomerVehicle } from "@/services/api";
 
 interface AddVehicleModalProps {
   onClose: () => void;
+  onVehicleAdded?: () => void;
 }
 
-export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
+export default function AddVehicleModal({ onClose, onVehicleAdded }: AddVehicleModalProps) {
   const [formData, setFormData] = useState({
     make: "",
     model: "",
-    year: "",
     plateNumber: "",
-    photo: null as File | null,
+    capacity: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Vehicle data:", formData);
-    onClose();
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData((prev) => ({ ...prev, photo: e.target.files![0] }));
+    setIsSubmitting(true);
+    setError(null);
+    
+    try {
+      await addCustomerVehicle({
+        registrationNo: formData.plateNumber.toUpperCase(),
+        brandName: formData.make,
+        model: formData.model,
+        capacity: parseInt(formData.capacity)
+      });
+      
+      // Call the callback to refresh the vehicle list
+      if (onVehicleAdded) {
+        onVehicleAdded();
+      }
+      onClose();
+    } catch (err: any) {
+      console.error("Failed to add vehicle:", err);
+      setError(err.message || "Failed to add vehicle. Please try again.");
+      setIsSubmitting(false);
     }
   };
 
@@ -74,6 +89,21 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
             Enter your vehicle details
           </p>
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div style={{
+            padding: '1rem',
+            backgroundColor: '#fee2e2',
+            border: '1px solid #fecaca',
+            borderRadius: '0.5rem',
+            marginBottom: '1.5rem'
+          }}>
+            <p style={{ color: '#991b1b', margin: 0, fontSize: '0.875rem' }}>
+              {error}
+            </p>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit}>
@@ -159,7 +189,7 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
             />
           </div>
 
-          {/* Year */}
+          {/* Capacity */}
           <div style={{ marginBottom: "1rem" }}>
             <label
               style={{
@@ -170,17 +200,16 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
                 marginBottom: "0.5rem",
               }}
             >
-              Year *
+              Engine Capacity (CC) *
             </label>
             <input
               type="number"
               required
-              placeholder="e.g., 2020"
-              min="1990"
-              max="2024"
-              value={formData.year}
+              placeholder="e.g., 1500"
+              min="1"
+              value={formData.capacity}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, year: e.target.value }))
+                setFormData((prev) => ({ ...prev, capacity: e.target.value }))
               }
               style={{
                 width: "100%",
@@ -203,50 +232,6 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
           </div>
 
           {/* Plate Number */}
-          <div style={{ marginBottom: "1.5rem" }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                color: "#374151",
-                marginBottom: "0.5rem",
-              }}
-            >
-              Plate Number *
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g., KA-1234"
-              value={formData.plateNumber}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  plateNumber: e.target.value,
-                }))
-              }
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "0.5rem",
-                fontSize: "0.875rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#03009B";
-                e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#d1d5db";
-                e.target.style.boxShadow = "none";
-              }}
-            />
-          </div>
-
-          {/* Vehicle Photo */}
           <div style={{ marginBottom: "2rem" }}>
             <label
               style={{
@@ -257,89 +242,38 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
                 marginBottom: "0.5rem",
               }}
             >
-              Vehicle Photo (Optional)
+              Registration/Plate Number *
             </label>
-            <div
+            <input
+              type="text"
+              required
+              placeholder="e.g., KA-1234"
+              value={formData.plateNumber}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  plateNumber: e.target.value.toUpperCase(),
+                }))
+              }
               style={{
-                border: "2px dashed #d1d5db",
+                width: "100%",
+                padding: "0.75rem",
+                border: "1px solid #d1d5db",
                 borderRadius: "0.5rem",
-                padding: "1.5rem",
-                textAlign: "center" as const,
-                backgroundColor: "#f9fafb",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-                position: "relative",
+                fontSize: "0.875rem",
+                outline: "none",
+                transition: "border-color 0.2s",
+                textTransform: "uppercase",
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#03009B";
-                e.currentTarget.style.backgroundColor = "rgba(3, 0, 155, 0.05)";
+              onFocus={(e) => {
+                e.target.style.borderColor = "#03009B";
+                e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
               }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#d1d5db";
-                e.currentTarget.style.backgroundColor = "#f9fafb";
+              onBlur={(e) => {
+                e.target.style.borderColor = "#d1d5db";
+                e.target.style.boxShadow = "none";
               }}
-            >
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  opacity: 0,
-                  cursor: "pointer",
-                  zIndex: 1,
-                }}
-              />
-              {formData.photo ? (
-                <div style={{ zIndex: 0, position: "relative" }}>
-                  <p
-                    style={{
-                      fontSize: "0.875rem",
-                      color: "#03009B",
-                      margin: "0 0 0.5rem 0",
-                      fontWeight: "600",
-                    }}
-                  >
-                    ✓ {formData.photo.name}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "0.75rem",
-                      color: "#6b7280",
-                      margin: 0,
-                    }}
-                  >
-                    Click to change file
-                  </p>
-                </div>
-              ) : (
-                <div style={{ zIndex: 0, position: "relative" }}>
-                  <p
-                    style={{
-                      fontSize: "0.875rem",
-                      color: "#374151",
-                      margin: "0 0 0.5rem 0",
-                      fontWeight: "500",
-                    }}
-                  >
-                    📷 Upload Photo
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "0.75rem",
-                      color: "#6b7280",
-                      margin: 0,
-                    }}
-                  >
-                    Click to browse or drag and drop
-                  </p>
-                </div>
-              )}
-            </div>
+            />
           </div>
 
           {/* Buttons */}
@@ -374,47 +308,59 @@ export default function AddVehicleModal({ onClose }: AddVehicleModalProps) {
             </button>
             <button
               type="submit"
+              disabled={isSubmitting}
               style={{
                 padding: "0.75rem 1.5rem",
-                background: "#03009B",
+                background: isSubmitting ? "#9ca3af" : "#03009B",
                 color: "white",
                 border: "none",
                 borderRadius: "0.5rem",
-                cursor: "pointer",
+                cursor: isSubmitting ? "not-allowed" : "pointer",
                 fontSize: "0.875rem",
                 fontWeight: "600",
                 transition: "all 0.2s ease",
                 outline: "none",
                 boxShadow: "0 2px 8px rgba(3, 0, 155, 0.2)",
+                opacity: isSubmitting ? 0.6 : 1,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#020079";
-                e.currentTarget.style.boxShadow =
-                  "0 4px 12px rgba(3, 0, 155, 0.3)";
+                if (!isSubmitting) {
+                  e.currentTarget.style.background = "#020079";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(3, 0, 155, 0.3)";
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#03009B";
-                e.currentTarget.style.boxShadow =
-                  "0 2px 8px rgba(3, 0, 155, 0.2)";
+                if (!isSubmitting) {
+                  e.currentTarget.style.background = "#03009B";
+                  e.currentTarget.style.boxShadow =
+                    "0 2px 8px rgba(3, 0, 155, 0.2)";
+                }
               }}
               onMouseDown={(e) => {
-                e.currentTarget.style.background = "#01024D";
-                e.currentTarget.style.transform = "scale(0.98)";
+                if (!isSubmitting) {
+                  e.currentTarget.style.background = "#01024D";
+                  e.currentTarget.style.transform = "scale(0.98)";
+                }
               }}
               onMouseUp={(e) => {
-                e.currentTarget.style.background = "#020079";
-                e.currentTarget.style.transform = "scale(1)";
+                if (!isSubmitting) {
+                  e.currentTarget.style.background = "#020079";
+                  e.currentTarget.style.transform = "scale(1)";
+                }
               }}
               onFocus={(e) => {
-                e.currentTarget.style.boxShadow =
-                  "0 0 0 3px rgba(3, 0, 155, 0.3)";
+                if (!isSubmitting) {
+                  e.currentTarget.style.boxShadow =
+                    "0 0 0 3px rgba(3, 0, 155, 0.3)";
+                }
               }}
               onBlur={(e) => {
                 e.currentTarget.style.boxShadow =
                   "0 2px 8px rgba(3, 0, 155, 0.2)";
               }}
             >
-              Add Vehicle
+              {isSubmitting ? "Adding Vehicle..." : "Add Vehicle"}
             </button>
           </div>
         </form>

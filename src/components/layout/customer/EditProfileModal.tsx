@@ -1,25 +1,12 @@
 "use client";
 
 import { useState } from "react";
-
-interface Address {
-  street: string;
-  city: string;
-  state: string;
-  zipCode: string;
-}
-
-interface Customer {
-  name: string;
-  email: string;
-  phone: string;
-  address: Address;
-}
+import { CustomerProfile } from "@/types/authTypes";
 
 interface EditProfileModalProps {
-  customer: Customer;
+  customer: CustomerProfile;
   onClose: () => void;
-  onSave: (updatedData: Customer) => void;
+  onSave: (updatedData: any) => void;
 }
 
 export default function EditProfileModal({
@@ -27,27 +14,30 @@ export default function EditProfileModal({
   onClose,
   onSave,
 }: EditProfileModalProps) {
-  const [formData, setFormData] = useState(customer);
+  const [formData, setFormData] = useState({
+    firstName: customer.firstName,
+    lastName: customer.lastName,
+    email: customer.email,
+    phoneNumber: customer.phoneNumber,
+    nationalId: customer.nationalId,
+    profileImageUrl: customer.profileImageUrl || '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    setIsSubmitting(true);
+    try {
+      await onSave(formData);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
-    }));
-  };
-
-  const handleAddressChange = (field: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      address: {
-        ...prev.address,
-        [field]: value,
-      },
     }));
   };
 
@@ -133,40 +123,80 @@ export default function EditProfileModal({
           <div
             style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
           >
-            <div>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                Full Name
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleChange("name", e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "0.75rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.5rem",
-                  fontSize: "0.875rem",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#03009B";
-                  e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#d1d5db";
-                  e.target.style.boxShadow = "none";
-                }}
-              />
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <div style={{ flex: 1 }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.875rem",
+                    fontWeight: "500",
+                    color: "#374151",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  value={formData.firstName}
+                  onChange={(e) => handleChange("firstName", e.target.value)}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "0.5rem",
+                    fontSize: "0.875rem",
+                    outline: "none",
+                    transition: "border-color 0.2s",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#03009B";
+                    e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "none";
+                  }}
+                />
+              </div>
+
+              <div style={{ flex: 1 }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: "0.875rem",
+                    fontWeight: "500",
+                    color: "#374151",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  value={formData.lastName}
+                  onChange={(e) => handleChange("lastName", e.target.value)}
+                  required
+                  style={{
+                    width: "100%",
+                    padding: "0.75rem",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "0.5rem",
+                    fontSize: "0.875rem",
+                    outline: "none",
+                    transition: "border-color 0.2s",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#03009B";
+                    e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "none";
+                  }}
+                />
+              </div>
             </div>
 
             <div>
@@ -185,6 +215,7 @@ export default function EditProfileModal({
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
+                required
                 style={{
                   width: "100%",
                   padding: "0.75rem",
@@ -219,8 +250,9 @@ export default function EditProfileModal({
               </label>
               <input
                 type="tel"
-                value={formData.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
+                value={formData.phoneNumber}
+                onChange={(e) => handleChange("phoneNumber", e.target.value)}
+                required
                 style={{
                   width: "100%",
                   padding: "0.75rem",
@@ -242,128 +274,77 @@ export default function EditProfileModal({
             </div>
 
             <div>
-              <h3
+              <label
                 style={{
-                  fontSize: "1rem",
+                  display: "block",
+                  fontSize: "0.875rem",
                   fontWeight: "500",
                   color: "#374151",
-                  margin: "0 0 1rem 0",
+                  marginBottom: "0.5rem",
                 }}
               >
-                Address
-              </h3>
-              <div
+                National ID
+              </label>
+              <input
+                type="text"
+                value={formData.nationalId}
+                onChange={(e) => handleChange("nationalId", e.target.value)}
+                required
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
+                  width: "100%",
+                  padding: "0.75rem",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "0.5rem",
+                  fontSize: "0.875rem",
+                  outline: "none",
+                  transition: "border-color 0.2s",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#03009B";
+                  e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "none";
+                }}
+              />
+            </div>
+
+            <div>
+              <label
+                style={{
+                  display: "block",
+                  fontSize: "0.875rem",
+                  fontWeight: "500",
+                  color: "#374151",
+                  marginBottom: "0.5rem",
                 }}
               >
-                <input
-                  type="text"
-                  placeholder="Street Address"
-                  value={formData.address.street}
-                  onChange={(e) =>
-                    handleAddressChange("street", e.target.value)
-                  }
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.5rem",
-                    fontSize: "0.875rem",
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "#03009B";
-                    e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "#d1d5db";
-                    e.target.style.boxShadow = "none";
-                  }}
-                />
-                <div style={{ display: "flex", gap: "1rem" }}>
-                  <input
-                    type="text"
-                    placeholder="City"
-                    value={formData.address.city}
-                    onChange={(e) =>
-                      handleAddressChange("city", e.target.value)
-                    }
-                    style={{
-                      flex: 1,
-                      padding: "0.75rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: "0.5rem",
-                      fontSize: "0.875rem",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#03009B";
-                      e.target.style.boxShadow =
-                        "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#d1d5db";
-                      e.target.style.boxShadow = "none";
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="State"
-                    value={formData.address.state}
-                    onChange={(e) =>
-                      handleAddressChange("state", e.target.value)
-                    }
-                    style={{
-                      flex: 1,
-                      padding: "0.75rem",
-                      border: "1px solid #d1d5db",
-                      borderRadius: "0.5rem",
-                      fontSize: "0.875rem",
-                      outline: "none",
-                      transition: "border-color 0.2s",
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = "#03009B";
-                      e.target.style.boxShadow =
-                        "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = "#d1d5db";
-                      e.target.style.boxShadow = "none";
-                    }}
-                  />
-                </div>
-                <input
-                  type="text"
-                  placeholder="ZIP Code"
-                  value={formData.address.zipCode}
-                  onChange={(e) =>
-                    handleAddressChange("zipCode", e.target.value)
-                  }
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.5rem",
-                    fontSize: "0.875rem",
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "#03009B";
-                    e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "#d1d5db";
-                    e.target.style.boxShadow = "none";
-                  }}
-                />
-              </div>
+                Profile Image URL (Optional)
+              </label>
+              <input
+                type="url"
+                value={formData.profileImageUrl}
+                onChange={(e) => handleChange("profileImageUrl", e.target.value)}
+                placeholder="https://example.com/image.jpg"
+                style={{
+                  width: "100%",
+                  padding: "0.75rem",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "0.5rem",
+                  fontSize: "0.875rem",
+                  outline: "none",
+                  transition: "border-color 0.2s",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#03009B";
+                  e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "none";
+                }}
+              />
             </div>
           </div>
 
@@ -405,46 +386,58 @@ export default function EditProfileModal({
             </button>
             <button
               type="submit"
+              disabled={isSubmitting}
               style={{
                 padding: "0.75rem 1.5rem",
                 border: "1px solid #03009B",
                 borderRadius: "0.5rem",
-                backgroundColor: "#03009B",
+                backgroundColor: isSubmitting ? "#9ca3af" : "#03009B",
                 color: "white",
                 fontSize: "0.875rem",
                 fontWeight: "500",
-                cursor: "pointer",
+                cursor: isSubmitting ? "not-allowed" : "pointer",
                 transition: "all 0.2s ease",
                 outline: "none",
+                opacity: isSubmitting ? 0.6 : 1,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#020079";
-                e.currentTarget.style.borderColor = "#020079";
-                e.currentTarget.style.boxShadow =
-                  "0 4px 12px rgba(3, 0, 155, 0.3)";
+                if (!isSubmitting) {
+                  e.currentTarget.style.backgroundColor = "#020079";
+                  e.currentTarget.style.borderColor = "#020079";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(3, 0, 155, 0.3)";
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#03009B";
-                e.currentTarget.style.borderColor = "#03009B";
-                e.currentTarget.style.boxShadow = "none";
+                if (!isSubmitting) {
+                  e.currentTarget.style.backgroundColor = "#03009B";
+                  e.currentTarget.style.borderColor = "#03009B";
+                  e.currentTarget.style.boxShadow = "none";
+                }
               }}
               onMouseDown={(e) => {
-                e.currentTarget.style.backgroundColor = "#01024D";
-                e.currentTarget.style.transform = "scale(0.98)";
+                if (!isSubmitting) {
+                  e.currentTarget.style.backgroundColor = "#01024D";
+                  e.currentTarget.style.transform = "scale(0.98)";
+                }
               }}
               onMouseUp={(e) => {
-                e.currentTarget.style.backgroundColor = "#020079";
-                e.currentTarget.style.transform = "scale(1)";
+                if (!isSubmitting) {
+                  e.currentTarget.style.backgroundColor = "#020079";
+                  e.currentTarget.style.transform = "scale(1)";
+                }
               }}
               onFocus={(e) => {
-                e.currentTarget.style.boxShadow =
-                  "0 0 0 3px rgba(3, 0, 155, 0.3)";
+                if (!isSubmitting) {
+                  e.currentTarget.style.boxShadow =
+                    "0 0 0 3px rgba(3, 0, 155, 0.3)";
+                }
               }}
               onBlur={(e) => {
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              Save Changes
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>

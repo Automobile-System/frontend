@@ -3,38 +3,40 @@
 import CustomerLayout from '@/components/layout/customer/CustomerLayout';
 import VehicleCard from '@/components/layout/customer/VehicleCard';
 import AddVehicleModal from '@/components/layout/customer/AddVehicleModal';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { getCustomerVehicles } from '@/services/api';
+import { CustomerVehicle } from '@/types/authTypes';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Vehicles() {
     const [showAddForm, setShowAddForm] = useState(false);
+    const [vehicles, setVehicles] = useState<CustomerVehicle[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const vehicles = [
-        {
-            id: 1,
-            name: 'Toyota Corolla',
-            model: 'Corolla 2020',
-            licensePlate: 'KA-1234',
-            lastService: 'Dec 1, 2024',
-            serviceCount: 12
-        },
-        {
-            id: 2,
-            name: 'Honda Civic',
-            model: 'Civic 2019',
-            licensePlate: 'KB-5678',
-            lastService: 'Nov 15, 2024',
-            serviceCount: 8
-        },
-        {
-            id: 3,
-            name: 'Ford Explorer',
-            model: 'Explorer 2021',
-            licensePlate: 'KC-9012',
-            lastService: 'Oct 20, 2024',
-            serviceCount: 5
+    useEffect(() => {
+        fetchVehicles();
+    }, []);
+
+    const fetchVehicles = async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            const data = await getCustomerVehicles();
+            setVehicles(data);
+        } catch (err: any) {
+            console.error('Failed to fetch vehicles:', err);
+            setError(err.message || 'Failed to load vehicles');
+        } finally {
+            setIsLoading(false);
         }
-    ];
+    };
+
+    const handleVehicleAdded = () => {
+        setShowAddForm(false);
+        fetchVehicles(); // Refresh the list
+    };
 
     return (
         <CustomerLayout>
@@ -137,19 +139,106 @@ export default function Vehicles() {
                 </div>
 
                 {/* Vehicles Grid */}
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                    gap: '1.5rem'
-                }}>
-                    {vehicles.map(vehicle => (
-                        <VehicleCard key={vehicle.id} vehicle={vehicle} />
-                    ))}
-                </div>
+                {isLoading ? (
+                    <LoadingSpinner 
+                        size="large" 
+                        message="Loading your vehicles..." 
+                    />
+                ) : error ? (
+                    <div style={{
+                        textAlign: 'center',
+                        padding: '3rem',
+                        backgroundColor: '#fee2e2',
+                        borderRadius: '0.75rem',
+                        border: '1px solid #fecaca'
+                    }}>
+                        <p style={{ fontSize: '1.125rem', color: '#991b1b', marginBottom: '1rem', fontWeight: '600' }}>
+                            Failed to load vehicles
+                        </p>
+                        <p style={{ color: '#7f1d1d', marginBottom: '1.5rem' }}>{error}</p>
+                        <button
+                            onClick={fetchVehicles}
+                            style={{
+                                padding: '0.75rem 1.5rem',
+                                backgroundColor: '#dc2626',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '0.5rem',
+                                cursor: 'pointer',
+                                fontWeight: '500'
+                            }}
+                        >
+                            Try Again
+                        </button>
+                    </div>
+                ) : vehicles.length === 0 ? (
+                    <div style={{
+                        textAlign: 'center',
+                        padding: '4rem 2rem',
+                        backgroundColor: '#f9fafb',
+                        borderRadius: '0.75rem',
+                        border: '2px dashed #d1d5db'
+                    }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🚗</div>
+                        <h3 style={{ 
+                            fontSize: '1.5rem', 
+                            fontWeight: '600', 
+                            color: '#111827', 
+                            margin: '0 0 0.5rem 0' 
+                        }}>
+                            No Vehicles Yet
+                        </h3>
+                        <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
+                            Get started by adding your first vehicle
+                        </p>
+                        <button
+                            onClick={() => setShowAddForm(true)}
+                            style={{
+                                padding: '0.75rem 1.5rem',
+                                backgroundColor: '#03009B',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '0.5rem',
+                                cursor: 'pointer',
+                                fontWeight: '600',
+                                fontSize: '1rem',
+                                transition: 'all 0.2s ease',
+                                boxShadow: '0 2px 8px rgba(3, 0, 155, 0.2)'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor = '#020079';
+                                e.currentTarget.style.transform = 'scale(1.05)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = '#03009B';
+                                e.currentTarget.style.transform = 'scale(1)';
+                            }}
+                        >
+                            + Add Your First Vehicle
+                        </button>
+                    </div>
+                ) : (
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                        gap: '1.5rem'
+                    }}>
+                        {vehicles.map(vehicle => (
+                            <VehicleCard 
+                                key={vehicle.vehicleId} 
+                                vehicle={vehicle}
+                                onDelete={fetchVehicles}
+                            />
+                        ))}
+                    </div>
+                )}
 
                 {/* Add Vehicle Form Modal */}
                 {showAddForm && (
-                    <AddVehicleModal onClose={() => setShowAddForm(false)} />
+                    <AddVehicleModal 
+                        onClose={() => setShowAddForm(false)}
+                        onVehicleAdded={handleVehicleAdded}
+                    />
                 )}
             </div>
         </CustomerLayout>

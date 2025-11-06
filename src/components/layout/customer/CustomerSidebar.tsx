@@ -99,72 +99,8 @@ export default function CustomerSidebar() {
         </nav>
       </div>
 
-      {/* === Bottom Section (User Profile) === */}
-      <div
-        onClick={() => router.push("/customer/profile")}
-        style={{
-          paddingTop: "1rem",
-          borderTop: "1px solid rgba(2, 0, 121, 0.2)",
-          display: "flex",
-          alignItems: "center",
-          gap: "0.75rem",
-          cursor: "pointer",
-          transition: "background 0.2s ease",
-          padding: "0.75rem",
-          borderRadius: "0.5rem",
-          backgroundColor: "white",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = hoverBg;
-          e.currentTarget.style.borderRadius = "0.5rem";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = "white";
-          e.currentTarget.style.borderRadius = "0.5rem";
-        }}
-      >
-        <div
-          style={{
-            width: "2.2rem",
-            height: "2.2rem",
-            background: "#020079",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <span
-            style={{ fontSize: "0.875rem", fontWeight: "600", color: "white" }}
-          >
-            KP
-          </span>
-        </div>
-        <div>
-          <p
-            style={{
-              fontSize: "0.875rem",
-              fontWeight: "500",
-              margin: 0,
-              color: "#020079",
-              fontFamily: "var(--font-roboto, sans-serif)",
-            }}
-          >
-            Kethmi Pujani
-          </p>
-          <p
-            style={{
-              fontSize: "0.75rem",
-              color: "#6b7280",
-              margin: 0,
-              fontFamily: "var(--font-roboto, sans-serif)",
-              fontWeight: "400",
-            }}
-          >
-            Customer
-          </p>
-        </div>
-      </div>
+     
+      
     </div>
   );
 }
