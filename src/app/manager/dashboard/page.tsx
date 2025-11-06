@@ -1,8 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
 import {
   ResponsiveContainer,
   PieChart,
@@ -29,45 +27,45 @@ const MOCK_DATA = {
     projectsPending: 5,
     avgCompletionTime: 3.2
   },
-  employees: [
-    { id: '1', name: 'John Doe', role: 'Mechanic', status: 'active', assignedTasks: 2 },
-    { id: '2', name: 'Jane Smith', role: 'Electrician', status: 'busy', assignedTasks: 3 },
-    { id: '3', name: 'Mike Johnson', role: 'Painter', status: 'active', assignedTasks: 1 }
-  ],
-  // No schedule data needed
 };
+//   employees: [
+//     { id: '1', name: 'John Doe', role: 'Mechanic', status: 'active', assignedTasks: 2 },
+//     { id: '2', name: 'Jane Smith', role: 'Electrician', status: 'busy', assignedTasks: 3 },
+//     { id: '3', name: 'Mike Johnson', role: 'Painter', status: 'active', assignedTasks: 1 }
+//   ],
+//   // No schedule data needed
+// };
 
-// Mock components will be added here when needed
+// // Mock components will be added here when needed
 
-const MockProjectForm = ({ onSuccess }: { onSuccess: () => void }) => (
-  <Card className="w-[500px] p-6">
-    <CardHeader>
-      <CardTitle>New Project</CardTitle>
-    </CardHeader>
-    <CardContent>
-      <form className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Project Name</label>
-          <input type="text" className="w-full border rounded p-2" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
-          <textarea className="w-full border rounded p-2" rows={3} />
-        </div>
-        <div className="flex justify-end space-x-2">
-          <Button variant="outline" onClick={onSuccess}>Cancel</Button>
-          <Button onClick={onSuccess}>Create Project</Button>
-        </div>
-      </form>
-    </CardContent>
-  </Card>
-);
+// const MockProjectForm = ({ onSuccess }: { onSuccess: () => void }) => (
+//   <Card className="w-[500px] p-6">
+//     <CardHeader>
+//       <CardTitle>New Project</CardTitle>
+//     </CardHeader>
+//     <CardContent>
+//       <form className="space-y-4">
+//         <div>
+//           <label className="block text-sm font-medium mb-1">Project Name</label>
+//           <input type="text" className="w-full border rounded p-2" />
+//         </div>
+//         <div>
+//           <label className="block text-sm font-medium mb-1">Description</label>
+//           <textarea className="w-full border rounded p-2" rows={3} />
+//         </div>
+//         <div className="flex justify-end space-x-2">
+//           <Button variant="outline" onClick={onSuccess}>Cancel</Button>
+//           <Button onClick={onSuccess}>Create Project</Button>
+//         </div>
+//       </form>
+//     </CardContent>
+//   </Card>
+// );
 
 export default function ManagerDashboardPage() {
-  const [showProjectForm, setShowProjectForm] = useState(false);
 
   return (
-    <div className="space-y-8">
+    <div className="p-8 bg-white min-h-screen">
       <div className="space-y-6">
         
         
@@ -75,45 +73,53 @@ export default function ManagerDashboardPage() {
 
         {/* Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] cursor-pointer border-l-4 border-l-emerald-500">
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-gray-600">ACTIVE EMPLOYEES</CardTitle>
+          <Card className="bg-white border-[#020079]/20 hover:border-[#020079]/40 transition-colors">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-roboto text-[#020079]/60">
+                Active Employees
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-gray-800">{MOCK_DATA.stats.activeEmployees.total}</div>
-              <div className="text-sm text-green-600 mt-1">
-                ✓ Available: {MOCK_DATA.stats.activeEmployees.available}
-              </div>
+              <div className="text-4xl font-bebas text-[#020079] mb-2">{MOCK_DATA.stats.activeEmployees.total}</div>
+              <p className="text-sm font-roboto text-[#020079]/70">
+                 Available: {MOCK_DATA.stats.activeEmployees.available}
+              </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] cursor-pointer border-l-4 border-l-emerald-500">
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-gray-600">ONGOING SERVICES</CardTitle>
+          <Card className="bg-white border-[#020079]/20 hover:border-[#020079]/40 transition-colors">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-roboto text-[#020079]/60">
+                Ongoing Services
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-gray-800">{MOCK_DATA.stats.ongoingServices}</div>
-              <div className="text-sm text-blue-600 mt-1">Currently Active</div>
+              <div className="text-4xl font-bebas text-[#020079] mb-2">{MOCK_DATA.stats.ongoingServices}</div>
+              <p className="text-sm font-roboto text-[#020079]/70">Currently Active</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] cursor-pointer border-l-4 border-l-emerald-500">
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-gray-600">PROJECTS PENDING</CardTitle>
+          <Card className="bg-white border-[#020079]/20 hover:border-[#FFD700]/40 transition-colors">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-roboto text-[#020079]/60">
+                Projects Pending
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-gray-800">{MOCK_DATA.stats.projectsPending}</div>
-              <div className="text-sm text-orange-600 mt-1">Awaiting Assignment</div>
+              <div className="text-4xl font-bebas text-[#020079] mb-2">{MOCK_DATA.stats.projectsPending}</div>
+              <p className="text-sm font-roboto text-[#020079]/70">Awaiting Assignment</p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] cursor-pointer border-l-4 border-l-emerald-500">
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-gray-600">AVG COMPLETION TIME</CardTitle>
+          <Card className="bg-white border-[#020079]/20 hover:border-[#020079]/40 transition-colors">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-roboto text-[#020079]/60">
+                Avg Completion Time
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-gray-800">{MOCK_DATA.stats.avgCompletionTime}</div>
-              <div className="text-sm text-emerald-600 mt-1">Hours per Service</div>
+              <div className="text-4xl font-bebas text-[#020079] mb-2">{MOCK_DATA.stats.avgCompletionTime}</div>
+              <p className="text-sm font-roboto text-[#020079]/70">Hours per Service</p>
             </CardContent>
           </Card>
         </div>
@@ -121,11 +127,11 @@ export default function ManagerDashboardPage() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-        <Card className="bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] cursor-pointer border-l-4 border-l-emerald-500">
-          <CardHeader>
-            <CardTitle className="font-medium text-gray-700">Task Distribution by Employee</CardTitle>
+        <Card className="border border-[#FFD700]/30 hover:border-[#FFD700] transition-all duration-300 bg-white">
+          <CardHeader className="border-b border-[#FFD700]/20">
+            <CardTitle className="text-base font-roboto font-semibold text-[#020079]">Task Distribution by Employee</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -140,24 +146,24 @@ export default function ManagerDashboardPage() {
                     cx="50%"
                     cy="50%"
                     outerRadius={80}
-                    fill="#10b981"
+                    fill="#020079"
                     label
                   />
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="text-xs text-gray-500 mt-2 text-center">
+            <div className="text-xs font-roboto text-[#020079]/60 mt-2 text-center">
               Distribution of tasks across team members
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] cursor-pointer border-l-4 border-l-emerald-500">
-          <CardHeader>
-            <CardTitle className="font-medium text-gray-700">Completion Rate Trend</CardTitle>
+        <Card className="border border-[#020079]/20 hover:border-[#020079] transition-all duration-300 bg-white">
+          <CardHeader className="border-b border-[#020079]/10">
+            <CardTitle className="text-base font-roboto font-semibold text-[#020079]">Completion Rate Trend</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-6">
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
@@ -172,11 +178,11 @@ export default function ManagerDashboardPage() {
                   <XAxis dataKey="month" />
                   <YAxis />
                   <Tooltip />
-                  <Line type="monotone" dataKey="rate" stroke="#10b981" strokeWidth={2} />
+                  <Line type="monotone" dataKey="rate" stroke="#020079" strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            <div className="text-xs text-gray-500 mt-2 text-center">
+            <div className="text-xs font-roboto text-[#020079]/60 mt-2 text-center">
               Monthly service completion rate (%)
             </div>
           </CardContent>
@@ -184,13 +190,13 @@ export default function ManagerDashboardPage() {
       </div>
 
       {/* Project Form Modal */}
-      {showProjectForm && (
+      {/* {false && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
           <div className="bg-white p-4 rounded-lg">
             <MockProjectForm onSuccess={() => setShowProjectForm(false)} />
           </div>
         </div>
-      )}
+      )} */}
 
     </div>
   );

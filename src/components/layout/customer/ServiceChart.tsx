@@ -1,5 +1,22 @@
-export default function ServiceChart() {
-    const serviceData = [
+﻿interface ServiceFrequency {
+    month: string;
+    jobs: number;
+}
+
+interface ServiceChartProps {
+    data: ServiceFrequency[];
+}
+
+export default function ServiceChart({ data }: ServiceChartProps) {
+    // Transform data to match component format and add trend
+    const serviceData = data.map((item, index, arr) => ({
+        month: item.month,
+        services: item.jobs,
+        trend: index > 0 && item.jobs > arr[index - 1].jobs ? 'up' : 'down'
+    }));
+
+    // Fallback to default data if no data provided
+    const displayData = serviceData.length > 0 ? serviceData : [
         { month: 'Jan', services: 2, trend: 'down' },
         { month: 'Feb', services: 1, trend: 'down' },
         { month: 'Mar', services: 3, trend: 'up' },
@@ -14,7 +31,7 @@ export default function ServiceChart() {
         { month: 'Dec', services: 2, trend: 'down' }
     ];
 
-    const maxServices = Math.max(...serviceData.map(d => d.services));
+    const maxServices = Math.max(...displayData.map(d => d.services));
 
     return (
         <div style={{
@@ -44,34 +61,10 @@ export default function ServiceChart() {
                 </p>
             </div>
 
-            {/* Chart Container */}
-            <div style={{
-                height: '16rem',
-                position: 'relative',
-                paddingLeft: '2.5rem',
-                paddingBottom: '2rem'
-            }}>
-                {/* Y-axis labels */}
-                <div style={{
-                    position: 'absolute',
-                    left: '0',
-                    top: '0',
-                    bottom: '2rem',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    width: '2.5rem'
-                }}>
-                    {[maxServices, Math.floor(maxServices * 0.75), Math.floor(maxServices * 0.5), Math.floor(maxServices * 0.25), 0].map((value) => (
-                        <span key={value} style={{
-                            fontSize: '0.75rem',
-                            color: '#6b7280',
-                            fontWeight: '500',
-                            textAlign: 'right',
-                            paddingRight: '0.5rem'
-                        }}>
-                            {value}
-                        </span>
+            <div className="h-64 relative pl-10 pb-8">
+                <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between w-10">
+                    {[maxServices, Math.floor(maxServices * 0.75), Math.floor(maxServices * 0.5), Math.floor(maxServices * 0.25), 0].map((value, index) => (
+                        <span key={`y-axis-${index}`} className="text-xs text-gray-600 font-medium text-right pr-2">{value}</span>
                     ))}
                 </div>
 
@@ -85,7 +78,7 @@ export default function ServiceChart() {
                     paddingBottom: '0.5rem'
                 }}>
 
-                    {serviceData.map((data) => {
+                    {displayData.map((data) => {
                         const barHeight = `${(data.services / maxServices) * 100}%`;
                         const isCurrentMonth = data.month === 'Nov';
 
@@ -143,6 +136,17 @@ export default function ServiceChart() {
                                     }}>
                                         {data.services} service{data.services !== 1 ? 's' : ''}
                                     </div>
+                                    {/* Tooltip arrow */}
+                                    <div style={{
+                                        position: 'absolute',
+                                        bottom: '-0.25rem',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        width: '0.5rem',
+                                        height: '0.5rem',
+                                        backgroundColor: '#020079',
+                                        rotate: '45deg'
+                                    }}></div>
                                 </div>
 
                                 {/* Month Label */}
@@ -156,31 +160,6 @@ export default function ServiceChart() {
                             </div>
                         );
                     })}
-                </div>
-
-                {/* Grid Lines */}
-                <div style={{
-                    position: 'absolute',
-                    top: '0.5rem',
-                    left: '2.5rem',
-                    right: 0,
-                    bottom: '1.5rem',
-                    pointerEvents: 'none'
-                }}>
-                    {[0, 25, 50, 75, 100].map((percent) => (
-                        <div
-                            key={percent}
-                            style={{
-                                position: 'absolute',
-                                top: `${percent}%`,
-                                left: 0,
-                                right: 0,
-                                height: '1px',
-                                backgroundColor: percent === 0 ? '#e5e7eb' : '#f3f4f6',
-                                transform: 'translateY(-50%)'
-                            }}
-                        />
-                    ))}
                 </div>
             </div>
 

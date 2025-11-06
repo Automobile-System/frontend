@@ -1,7 +1,8 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface TaskDetailsModalProps {
   isOpen: boolean;
@@ -25,80 +26,87 @@ export default function TaskDetailsModal({
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Scheduled":
-        return "bg-emerald-100 text-emerald-700";
+        return "bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30";
       case "In Progress":
-        return "bg-blue-100 text-blue-700";
+        return "bg-[#020079]/20 text-[#020079] border-[#020079]/30";
       case "On Hold":
-        return "bg-amber-100 text-amber-700";
+        return "bg-[#FFD700]/30 text-[#020079] border-[#FFD700]/40";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-[#020079]/10 text-[#020079] border-[#020079]/20";
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-white border-0">
-        <DialogHeader className="bg-emerald-600 -mx-6 -mt-6 px-6 py-4 mb-4">
-          <DialogTitle className="text-lg font-semibold text-white">
-            Task Details - #{task.id}
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto bg-white">
+        {/* Header Section */}
+        <div className="-mx-6 -mt-6 px-8 py-6 bg-[#020079] border-b-4 border-[#FFD700]">
+          <DialogTitle className="text-3xl font-bebas text-white tracking-wide mb-2">
+            TASK DETAILS - {task.id}
           </DialogTitle>
-        </DialogHeader>
+          <DialogDescription className="text-white/90 font-roboto text-base">
+            Complete information about this service task
+          </DialogDescription>
+        </div>
 
-        <div className="space-y-4">
+        <div className="px-2 pt-6 space-y-6">
           {/* Status Badge */}
           <div className="flex justify-center">
-            <span className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(task.status)}`}>
+            <Badge className={`font-roboto text-sm px-4 py-1 ${getStatusColor(task.status)}`}>
               {task.status}
-            </span>
+            </Badge>
           </div>
 
-          {/* Task Information */}
-          <div className="bg-white rounded-lg">
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="space-y-3">
-                <div>
-                  <p className="text-gray-500 font-medium">Customer</p>
-                  <p className="text-gray-900">{task.customer}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 font-medium">Vehicle</p>
-                  <p className="text-gray-900">{task.vehicle}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 font-medium">Service Type</p>
-                  <p className="text-gray-900">{task.serviceType}</p>
-                </div>
+          {/* Task Information Grid */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Left Column */}
+            <div className="space-y-5">
+              <div className="border-l-4 border-[#020079]/20 pl-4">
+                <p className="text-sm font-roboto text-[#020079]/60 uppercase tracking-wide mb-1">Customer</p>
+                <p className="font-roboto text-[#020079] font-semibold">{task.customer}</p>
               </div>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-gray-500 font-medium">Assigned To</p>
-                  <p className="text-gray-900">{task.assignedTo}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 font-medium">Date/Time</p>
-                  <p className="text-gray-900">{task.dateTime}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500 font-medium">Expected Duration</p>
-                  <p className="text-gray-900">2 hours</p>
-                </div>
+              <div className="border-l-4 border-[#020079]/20 pl-4">
+                <p className="text-sm font-roboto text-[#020079]/60 uppercase tracking-wide mb-1">Vehicle</p>
+                <p className="font-roboto text-[#020079] font-semibold">{task.vehicle}</p>
+              </div>
+              <div className="border-l-4 border-[#020079]/20 pl-4">
+                <p className="text-sm font-roboto text-[#020079]/60 uppercase tracking-wide mb-1">Service Type</p>
+                <p className="font-roboto text-[#020079] font-semibold">{task.serviceType}</p>
+              </div>
+            </div>
+
+            {/* Right Column */}
+            <div className="space-y-5">
+              <div className="border-l-4 border-[#FFD700]/40 pl-4">
+                <p className="text-sm font-roboto text-[#020079]/60 uppercase tracking-wide mb-1">Assigned To</p>
+                <p className="font-roboto text-[#020079] font-semibold">{task.assignedTo}</p>
+              </div>
+              <div className="border-l-4 border-[#FFD700]/40 pl-4">
+                <p className="text-sm font-roboto text-[#020079]/60 uppercase tracking-wide mb-1">Date/Time</p>
+                <p className="font-roboto text-[#020079] font-semibold">{task.dateTime}</p>
+              </div>
+              <div className="border-l-4 border-[#FFD700]/40 pl-4">
+                <p className="text-sm font-roboto text-[#020079]/60 uppercase tracking-wide mb-1">Expected Duration</p>
+                <p className="font-roboto text-[#020079] font-semibold">2 hours</p>
               </div>
             </div>
           </div>
 
-          {/* Additional Notes */}
-          <div className="mt-4">
-            <p className="text-gray-500 font-medium text-sm mb-2">Notes</p>
-            <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">
-              Regular maintenance service as per manufacturer guidelines.
-              Customer requested complete inspection report.
-            </p>
+          {/* Notes Section */}
+          <div className="border-t-2 border-[#020079]/20 pt-6">
+            <h3 className="text-lg font-bebas text-[#020079] mb-3">NOTES</h3>
+            <div className="bg-[#FFD700]/10 border-l-4 border-[#FFD700] p-4 rounded-r-lg">
+              <p className="font-roboto text-[#020079]">
+                Regular maintenance service as per manufacturer guidelines.
+                Customer requested complete inspection report.
+              </p>
+            </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-2 justify-end mt-4">
+          <div className="flex gap-3 justify-end pt-4 border-t border-[#020079]/20">
             <Button 
-              className="bg-blue-500 text-white hover:bg-blue-600"
+              className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold"
               onClick={() => {
                 // TODO: Implement edit functionality
                 onClose();
@@ -107,7 +115,7 @@ export default function TaskDetailsModal({
               Edit Details
             </Button>
             <Button
-              className="bg-emerald-500 text-white hover:bg-emerald-600"
+              className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold"
               onClick={onClose}
             >
               Close

@@ -19,6 +19,7 @@ const teko = Teko({
   display: "swap",
 });
 
+// Roboto for body text
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
@@ -28,7 +29,8 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: "Automobile Management System",
-  description: "Enterprise automobile management application developed by Team Nemmi",
+  description:
+    "Enterprise automobile management application developed by Team Nemmi",
 };
 
 export default function RootLayout({
@@ -48,10 +50,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <Toaster 
-            position="top-right" 
-            richColors 
-            closeButton 
+          <Toaster
+            position="top-right"
+            richColors
+            closeButton
             expand={true}
             duration={4000}
           />

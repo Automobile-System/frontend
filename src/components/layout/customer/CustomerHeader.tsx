@@ -1,164 +1,132 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { Bell } from 'lucide-react';
+import { useRouter } from "next/navigation";
+import { Bell, User } from "lucide-react";
 
 export default function CustomerHeader() {
-    const router = useRouter();
+  const router = useRouter();
 
-    const handleProfileClick = () => {
-        router.push('/customer/profile');
-    };
+  const handleProfileClick = () => {
+    router.push("/customer/profile");
+  };
 
-    const handleNotificationsClick = () => {
-        router.push('/customer/messages');
-    };
+  const handleNotificationsClick = () => {
+    router.push("/customer/messages");
+  };
 
-    return (
-        <header
+  return (
+    <header
+      style={{
+        background: "rgba(2, 0, 121, 0.05)",
+        borderBottom: "1px solid rgba(2, 0, 121, 0.2)",
+        padding: "1.25rem 2rem",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        {/* Left Side - Title */}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <h1
             style={{
-                background: 'white',
-                borderBottom: '1px solid #e5e7eb',
-                padding: '1rem 1.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
+              fontSize: "3rem",
+              fontWeight: "400",
+              color: "#020079",
+              margin: 0,
+              padding: 0,
+              lineHeight: "1",
+              fontFamily: "var(--font-bebas, sans-serif)",
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
             }}
-        >
-            {/* Left: Welcome Text */}
-            <div>
-                <h2
-                    style={{
-                        fontSize: '1.25rem',
-                        fontWeight: '600',
-                        color: '#1f2937',
-                        margin: 0,
-                    }}
-                >
-                    Welcome back, Kethmi!
-                </h2>
-                <p
-                    style={{
-                        fontSize: '0.875rem',
-                        color: '#6b7280',
-                        margin: 0,
-                    }}
-                >
-                    Here&apos;s your service overview
-                </p>
-            </div>
+          >
+            Customer Portal
+          </h1>
+        </div>
 
-            {/* Right Side */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-                {/* Notification Button */}
-                <button
-                    onClick={handleNotificationsClick}
-                    style={{
-                        position: 'relative',
-                        padding: '0.5rem',
-                        color: '#4b5563',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease-in-out',
-                        borderRadius: '0.5rem',
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.color = '#2563eb';
-                        e.currentTarget.style.backgroundColor = '#f3f4f6';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.color = '#4b5563';
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
-                >
-                    <Bell size={22} strokeWidth={1.8} />
-                    {/* Notification Dot */}
-                    <span
-                        style={{
-                            position: 'absolute',
-                            top: '6px',
-                            right: '6px',
-                            width: '8px',
-                            height: '8px',
-                            background: '#ef4444',
-                            borderRadius: '50%',
-                            border: '1px solid white',
-                        }}
-                    ></span>
-                </button>
+        {/* Right Side - User Actions */}
+        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+          {/* Notification Button */}
+          <button
+            onClick={handleNotificationsClick}
+            style={{
+              position: "relative",
+              width: "2.5rem",
+              height: "2.5rem",
+              color: "#020079",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(2, 0, 121, 0.1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            <Bell size={20} strokeWidth={2} />
+            {/* Notification Badge */}
+            <span
+              style={{
+                position: "absolute",
+                top: "-0.25rem",
+                right: "-0.25rem",
+                minWidth: "1.25rem",
+                height: "1.25rem",
+                background: "#E6C200",
+                borderRadius: "50%",
+                border: "2px solid white",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0 4px",
+                fontSize: "0.75rem",
+                fontWeight: "700",
+                color: "#020079",
+                fontFamily: "var(--font-roboto, sans-serif)",
+              }}
+            >
+              2
+            </span>
+          </button>
 
-                {/* Profile Section - Clickable */}
-                <button
-                    onClick={handleProfileClick}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.75rem',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        padding: '0.5rem',
-                        borderRadius: '0.75rem',
-                        transition: 'all 0.2s ease-in-out',
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#f3f4f6';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
-                >
-                    {/* Profile Circle */}
-                    <div
-                        style={{
-                            width: '2.5rem',
-                            height: '2.5rem',
-                            background: 'linear-gradient(to right, #3b82f6, #8b5cf6)',
-                            borderRadius: '50%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            transition: 'transform 0.2s ease-in-out',
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                        onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-                    >
-                        <span
-                            style={{
-                                fontSize: '0.875rem',
-                                fontWeight: '600',
-                                color: 'white',
-                            }}
-                        >
-                            KP
-                        </span>
-                    </div>
-
-                    {/* Profile Info */}
-                    <div style={{ textAlign: 'left' }}>
-                        <p
-                            style={{
-                                fontSize: '0.875rem',
-                                fontWeight: '500',
-                                color: '#374151',
-                                margin: 0,
-                            }}
-                        >
-                            Kethmi Pujani
-                        </p>
-                        <p
-                            style={{
-                                fontSize: '0.75rem',
-                                color: '#6b7280',
-                                margin: 0,
-                            }}
-                        >
-                            Premium Member
-                        </p>
-                    </div>
-                </button>
-            </div>
-        </header>
-    );
+          {/* Profile Button */}
+          <button
+            onClick={handleProfileClick}
+            style={{
+              width: "2.5rem",
+              height: "2.5rem",
+              color: "#020079",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "rgba(2, 0, 121, 0.1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+            }}
+          >
+            <User size={20} strokeWidth={2} />
+          </button>
+        </div>
+      </div>
+    </header>
+  );
 }

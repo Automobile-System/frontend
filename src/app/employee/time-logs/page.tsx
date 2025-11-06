@@ -338,31 +338,33 @@ export default function TimeLogs() {
 
   return (
     <EmployeeLayout>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/40 p-6 space-y-6">
+      <div className="min-h-screen bg-white p-6 space-y-6">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Time Logs</h1>
+            <h1 className="text-4xl font-bold text-[#020079] mb-2">
+              Time Logs
+            </h1>
             <p className="text-gray-600 flex items-center gap-2">
               <Clock className="h-4 w-4" />
               Automatically recorded work sessions
             </p>
           </div>
 
-          <div className="flex items-center gap-2 bg-white rounded-xl shadow-sm border border-gray-200">
+          <div className="flex items-center gap-2 bg-white rounded-xl shadow-sm border border-[#020079]/20">
             <Button
               variant="ghost"
               size="icon"
               onClick={goToPreviousWeek}
               disabled={isLoading}
-              className="hover:bg-blue-50 transition-colors"
+              className="hover:bg-[#0200791F] transition-colors"
             >
-              <ChevronLeft className="h-5 w-5 text-gray-700" />
+              <ChevronLeft className="h-5 w-5 text-[#020079]" />
             </Button>
             <button
               onClick={goToCurrentWeek}
               disabled={isLoading}
-              className="px-4 py-2 text-sm font-semibold text-gray-900 min-w-[220px] text-center hover:text-blue-600 transition-colors"
+              className="px-4 py-2 text-sm font-semibold text-[#020079] min-w-[220px] text-center hover:text-[#03009B] transition-colors"
             >
               Week of {formatWeekRange()}
             </button>
@@ -371,75 +373,73 @@ export default function TimeLogs() {
               size="icon"
               onClick={goToNextWeek}
               disabled={isLoading}
-              className="hover:bg-blue-50 transition-colors"
+              className="hover:bg-[#0200791F] transition-colors"
             >
-              <ChevronRight className="h-5 w-5 text-gray-700" />
+              <ChevronRight className="h-5 w-5 text-[#020079]" />
             </Button>
           </div>
         </div>
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-gradient-to-br from-blue-50 to-blue-100/50 hover:shadow-xl transition-shadow">
+          <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-800 mb-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">
                   Total Hours
                 </p>
-                <p className="text-3xl font-bold text-blue-900">
+                <p className="text-3xl font-bold text-[#020079]">
                   {totalHours.toFixed(1)}
                 </p>
-                <p className="text-xs text-blue-600 mt-1">This week</p>
+                <p className="text-xs text-gray-500 mt-1">This week</p>
               </div>
-              <div className="p-3 bg-blue-600 rounded-xl">
-                <Clock className="h-6 w-6 text-white" />
+              <div className="p-3 bg-[#FFD70029] rounded-xl">
+                <Clock className="h-6 w-6 text-[#020079]" />
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-gradient-to-br from-emerald-50 to-emerald-100/50 hover:shadow-xl transition-shadow">
+          <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-emerald-800 mb-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">
                   Tasks Completed
                 </p>
-                <p className="text-3xl font-bold text-emerald-900">
-                  {totalLogs}
-                </p>
-                <p className="text-xs text-emerald-600 mt-1">This week</p>
+                <p className="text-3xl font-bold text-[#020079]">{totalLogs}</p>
+                <p className="text-xs text-gray-500 mt-1">This week</p>
               </div>
-              <div className="p-3 bg-emerald-600 rounded-xl">
-                <CheckCircle2 className="h-6 w-6 text-white" />
+              <div className="p-3 bg-[#FFD70029] rounded-xl">
+                <CheckCircle2 className="h-6 w-6 text-[#020079]" />
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-gradient-to-br from-purple-50 to-purple-100/50 hover:shadow-xl transition-shadow">
+          <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-purple-800 mb-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">
                   Avg Hours/Task
                 </p>
-                <p className="text-3xl font-bold text-purple-900">
+                <p className="text-3xl font-bold text-[#020079]">
                   {avgHoursPerTask.toFixed(1)}
                 </p>
-                <p className="text-xs text-purple-600 mt-1">This week</p>
+                <p className="text-xs text-gray-500 mt-1">This week</p>
               </div>
-              <div className="p-3 bg-purple-600 rounded-xl">
-                <TrendingUp className="h-6 w-6 text-white" />
+              <div className="p-3 bg-[#FFD70029] rounded-xl">
+                <TrendingUp className="h-6 w-6 text-[#020079]" />
               </div>
             </div>
           </Card>
         </div>
 
         {/* Filters */}
-        <Card className="p-4 rounded-2xl shadow-lg border-gray-200 bg-white">
+        <Card className="p-4 rounded-2xl shadow-lg border-[#020079]/20 hover:border-[#020079] bg-white hover:shadow-xl transition-all duration-300">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <Input
                 placeholder="Search by task, vehicle, plate number, or customer..."
-                className="pl-10 h-11 border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-gray-900 placeholder:text-gray-500"
+                className="pl-10 h-11 border-[#020079]/20 focus:border-[#020079] focus:ring-[#020079] text-gray-900 placeholder:text-gray-500"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -450,7 +450,7 @@ export default function TimeLogs() {
                 type="date"
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
-                className="pl-10 h-11 border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-gray-900 [color-scheme:light]"
+                className="pl-10 h-11 border-[#020079]/20 focus:border-[#020079] focus:ring-[#020079] text-gray-900 [color-scheme:light]"
               />
             </div>
             {(searchQuery || dateFilter) && (
@@ -460,7 +460,7 @@ export default function TimeLogs() {
                   setSearchQuery("");
                   setDateFilter("");
                 }}
-                className="h-11"
+                className="h-11 border-[#020079]/30 hover:bg-[#0200791F] text-[#020079]"
               >
                 Clear Filters
               </Button>
@@ -472,17 +472,17 @@ export default function TimeLogs() {
         {isLoading ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#020079] mx-auto mb-4"></div>
               <p className="text-gray-600 font-medium">Loading time logs...</p>
             </div>
           </div>
         ) : filteredLogs.length === 0 ? (
-          <Card className="p-12 rounded-2xl shadow-lg border-gray-200 bg-white text-center">
+          <Card className="p-12 rounded-2xl shadow-lg border-[#020079]/20 bg-white text-center">
             <div className="flex flex-col items-center">
-              <div className="p-4 bg-gray-100 rounded-full mb-4">
-                <FileText className="h-12 w-12 text-gray-400" />
+              <div className="p-4 bg-[#0200791F] rounded-full mb-4">
+                <FileText className="h-12 w-12 text-[#020079]" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl font-bold text-[#020079] mb-2">
                 No Time Logs Found
               </h3>
               <p className="text-gray-600 mb-4">
@@ -493,10 +493,10 @@ export default function TimeLogs() {
             </div>
           </Card>
         ) : (
-          <Card className="rounded-2xl shadow-lg border-gray-200 bg-white overflow-hidden">
+          <Card className="rounded-2xl shadow-lg border-[#020079]/20 hover:border-[#020079] bg-white overflow-hidden hover:shadow-2xl transition-all duration-300">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gradient-to-r from-gray-700 to-gray-800">
+                <thead className="bg-gradient-to-r from-[#020079] to-[#01024D]">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-bold text-white uppercase tracking-wider">
                       Date
@@ -528,7 +528,7 @@ export default function TimeLogs() {
                   {filteredLogs.map((log, index) => (
                     <tr
                       key={log.id}
-                      className={`hover:bg-blue-50 transition-colors ${
+                      className={`hover:bg-[#0200791F] transition-colors ${
                         index % 2 === 0 ? "bg-white" : "bg-gray-50"
                       }`}
                     >
@@ -579,14 +579,14 @@ export default function TimeLogs() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-emerald-600" />
+                          <Clock className="h-4 w-4 text-[#E6C200]" />
                           <span className="text-sm font-medium text-gray-900">
                             {log.endTime}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-3 py-1 inline-flex text-sm font-bold leading-5 rounded-full bg-blue-100 text-blue-800">
+                        <span className="px-3 py-1 inline-flex text-sm font-bold leading-5 rounded-full bg-[#FFD70029] text-[#020079] border border-[#E6C200]">
                           {log.totalHours.toFixed(2)} hrs
                         </span>
                       </td>
@@ -604,7 +604,7 @@ export default function TimeLogs() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleEdit(log)}
-                          className="hover:bg-blue-100 text-blue-600"
+                          className="hover:bg-[#0200791F] text-[#020079]"
                         >
                           <Edit2 className="h-4 w-4 mr-1" />
                           Edit
@@ -619,16 +619,16 @@ export default function TimeLogs() {
         )}
 
         {/* Info Note */}
-        <Card className="p-5 rounded-2xl shadow-lg border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <Card className="p-5 rounded-2xl shadow-lg border-[#020079]/20 bg-[#0200791F]">
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-blue-600 rounded-lg">
+            <div className="p-2 bg-[#020079] rounded-lg">
               <FileText className="h-5 w-5 text-white" />
             </div>
             <div className="flex-1">
-              <p className="font-bold text-blue-900 mb-1">
+              <p className="font-bold text-[#020079] mb-1">
                 Automatic Time Tracking
               </p>
-              <p className="text-sm text-blue-800">
+              <p className="text-sm text-gray-700">
                 Time logs are automatically recorded when you start and complete
                 tasks in the Tasks page. You can add remarks to any log entry by
                 clicking the Edit button.
@@ -642,13 +642,13 @@ export default function TimeLogs() {
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <Card className="w-full max-w-2xl rounded-2xl shadow-2xl bg-white overflow-hidden animate-in fade-in zoom-in duration-200">
               {/* Modal Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+              <div className="bg-gradient-to-r from-[#020079] to-[#01024D] px-6 py-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-2xl font-bold text-white mb-1">
                       Edit Remarks
                     </h2>
-                    <p className="text-blue-100 text-sm">
+                    <p className="text-white/80 text-sm">
                       Update notes for this time log
                     </p>
                   </div>
@@ -666,11 +666,11 @@ export default function TimeLogs() {
               {/* Modal Body */}
               <div className="p-6 space-y-4">
                 {/* Task Info */}
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                <div className="bg-[#0200791F] rounded-xl p-4 border border-[#020079]/20">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Task</p>
-                      <p className="font-bold text-gray-900">
+                      <p className="font-bold text-[#020079]">
                         {editingLog.taskName}
                       </p>
                     </div>
@@ -702,13 +702,13 @@ export default function TimeLogs() {
 
                 {/* Remarks Input */}
                 <div>
-                  <label className="block text-sm font-bold text-gray-900 mb-2">
+                  <label className="block text-sm font-bold text-[#020079] mb-2">
                     Remarks / Notes
                   </label>
                   <textarea
                     value={editRemarks}
                     onChange={(e) => setEditRemarks(e.target.value)}
-                    className="w-full px-4 py-3 text-sm text-gray-900 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none"
+                    className="w-full px-4 py-3 text-sm text-gray-900 border-2 border-[#020079]/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#020079] focus:border-[#020079] transition-all resize-none"
                     rows={6}
                     placeholder="Add any notes, observations, or important details about this work session..."
                   />
@@ -723,14 +723,14 @@ export default function TimeLogs() {
                 <Button
                   variant="outline"
                   onClick={handleCancelEdit}
-                  className="h-11 px-6 border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold"
+                  className="h-11 px-6 border-[#020079]/30 hover:bg-[#0200791F] text-[#020079] font-semibold"
                 >
                   <X className="h-4 w-4 mr-2" />
                   Cancel
                 </Button>
                 <Button
                   onClick={handleSaveRemarks}
-                  className="h-11 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold shadow-lg"
+                  className="h-11 px-6 bg-gradient-to-r from-[#020079] to-[#01024D] hover:from-[#03009B] hover:to-[#020079] text-white font-semibold shadow-lg"
                 >
                   <Save className="h-4 w-4 mr-2" />
                   Save Remarks

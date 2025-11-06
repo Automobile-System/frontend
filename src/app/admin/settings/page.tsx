@@ -215,6 +215,7 @@ export default function SettingsPage() {
                   <Input 
                     type="number" 
                     value={taskLimits.maxTasksPerDay} 
+                    onChange={() => {}}
                     className="border-[#020079]/20 font-roboto"
                   />
                 </div>
@@ -222,7 +223,8 @@ export default function SettingsPage() {
                   <Label className="font-roboto text-[#020079] font-semibold">Overload Warning Threshold:</Label>
                   <Input 
                     type="number" 
-                    value={taskLimits.overloadThreshold} 
+                    value={taskLimits.overloadThreshold}
+                    onChange={() => {}}
                     className="border-[#020079]/20 font-roboto"
                   />
                 </div>
@@ -249,7 +251,8 @@ export default function SettingsPage() {
                   <Label className="font-roboto text-[#020079] font-semibold">Base Salary (LKR/month):</Label>
                   <Input 
                     type="number" 
-                    value={compensation.baseSalary} 
+                    value={compensation.baseSalary}
+                    onChange={() => {}}
                     className="border-[#020079]/20 font-roboto"
                   />
                 </div>
@@ -257,7 +260,8 @@ export default function SettingsPage() {
                   <Label className="font-roboto text-[#020079] font-semibold">Demand-Based Bonus (% of base):</Label>
                   <Input 
                     type="number" 
-                    value={compensation.demandBonusPercentage} 
+                    value={compensation.demandBonusPercentage}
+                    onChange={() => {}}
                     className="border-[#020079]/20 font-roboto"
                   />
                 </div>

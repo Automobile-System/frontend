@@ -1,6 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import ProjectFormModal from "@/components/modals/ProjectFormModal";
 import SubTaskModal from "@/components/modals/SubTaskModal";
@@ -124,16 +126,22 @@ export default function ProjectsManagement() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-white min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-3">
-          <span className="text-4xl">📋</span>
-          <h1 className="text-3xl font-bold text-gray-800">Projects Management</h1>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-4xl font-bebas text-[#020079] mb-2">
+          Projects Management
+        </h1>
+        <p className="font-roboto text-[#020079]/70">
+          Manage project workflow across different stages
+        </p>
+      </div>
+
+      {/* Action Button */}
+      <div className="mb-6">
         <Button 
           size="lg"
-          className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold"
+          className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold"
           onClick={() => setShowProjectModal(true)}
         >
           + Create New Project
@@ -143,164 +151,160 @@ export default function ProjectsManagement() {
       {/* Project Columns */}
       <div className="grid grid-cols-4 gap-6">
         {/* Discussion Column */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-gray-400">💭</span>
-            <h2 className="text-lg font-semibold text-gray-800">Discussion</h2>
-          </div>
-          <div className="space-y-3">
-            {getColumnProjects("Discussion").map((project) => (
-              <div key={project.title} className="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-gray-800 mb-3">{project.title}</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span>👤</span>
-                    <span className="text-sm text-gray-600">Customer:</span>
-                    <span className="text-sm text-black font-medium">{project.customer}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span>💰</span>
-                    <span className="text-sm text-gray-600">Est. Cost:</span>
-                    <span className="text-sm text-black font-medium">{project.estimatedCost}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span>📅</span>
-                    <span className="text-sm text-gray-600">Started:</span>
-                    <span className="text-sm text-black">{project.startDate}</span>
-                  </div>
-                  {project.requirements && (
-                    <div className="flex items-center gap-2 text-emerald-600">
-                      <span>✓</span>
-                      <span className="text-sm font-medium">Requirements Gathered</span>
+        <Card className="border-[#020079]/20">
+          <CardHeader className="border-b border-[#020079]/20">
+            <CardTitle className="font-bebas text-xl text-[#020079]">
+              Discussion
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="space-y-4">
+              {getColumnProjects("Discussion").map((project) => (
+                <div key={project.title} className="border border-[#020079]/20 rounded-lg p-4 hover:border-[#020079] hover:shadow-md transition-all">
+                  <h3 className="font-bebas text-lg text-[#020079] mb-3">{project.title}</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Customer:</span>
+                      <span className="text-sm font-roboto text-[#020079] font-semibold">{project.customer}</span>
                     </div>
-                  )}
-                  <Button 
-                    className="w-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 mt-2"
-                    size="sm"
-                    onClick={() => {
-                      setSelectedProject(project);
-                      setShowSubTaskModal(true);
-                    }}
-                  >
-                    📋 Create Sub-Tasks
-                  </Button>
+                    <div className="flex items-start gap-2">
+                      <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Est. Cost:</span>
+                      <span className="text-sm font-roboto text-[#020079] font-semibold">{project.estimatedCost}</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Started:</span>
+                      <span className="text-sm font-roboto text-[#020079]">{project.startDate}</span>
+                    </div>
+                    {project.requirements && (
+                      <Badge className="bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30 font-roboto text-xs mt-2">
+                        Requirements Gathered
+                      </Badge>
+                    )}
+                    <Button 
+                      className="w-full bg-[#FFD700]/20 text-[#020079] hover:bg-[#FFD700]/30 font-roboto mt-3 border border-[#FFD700]/30"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedProject(project);
+                        setShowSubTaskModal(true);
+                      }}
+                    >
+                      Create Sub-Tasks
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* In Progress Column */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-blue-500">⚡</span>
-            <h2 className="text-lg font-semibold text-gray-800">In Progress</h2>
-          </div>
-          <div className="space-y-3">
-            {getColumnProjects("In Progress").map((project) => (
-              <div key={project.title} className="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-gray-800 mb-3">{project.title}</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span>👤</span>
-                    <span className="text-sm text-gray-600">Customer:</span>
-                    <span className="text-sm text-black  font-medium">{project.customer}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span>💰</span>
-                    <span className="text-sm text-gray-600">Est. Cost:</span>
-                    <span className="text-sm text-black font-medium">{project.estimatedCost}</span>
-                  </div>
-                  {project.team && (
-                    <div className="flex items-center gap-2">
-                      <span>👥</span>
-                      <span className="text-sm text-gray-600">Team:</span>
-                      <span className="text-sm text-black  font-medium">{project.team.join(", ")}</span>
+        <Card className="border-[#020079]/20">
+          <CardHeader className="border-b border-[#020079]/20">
+            <CardTitle className="font-bebas text-xl text-[#020079]">
+              In Progress
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="space-y-4">
+              {getColumnProjects("In Progress").map((project) => (
+                <div key={project.title} className="border border-[#020079]/20 rounded-lg p-4 hover:border-[#020079] hover:shadow-md transition-all">
+                  <h3 className="font-bebas text-lg text-[#020079] mb-3">{project.title}</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Customer:</span>
+                      <span className="text-sm font-roboto text-[#020079] font-semibold">{project.customer}</span>
                     </div>
-                  )}
-                  {project.timeline && (
-                    <div className="flex items-center gap-2">
-                      <span>⏱</span>
-                      <span className="text-sm text-gray-600">Timeline:</span>
-                      <span className="text-sm text-black ">{project.timeline}</span>
+                    <div className="flex items-start gap-2">
+                      <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Est. Cost:</span>
+                      <span className="text-sm font-roboto text-[#020079] font-semibold">{project.estimatedCost}</span>
                     </div>
-                  )}
+                    {project.team && (
+                      <div className="flex items-start gap-2">
+                        <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Team:</span>
+                        <span className="text-sm font-roboto text-[#020079] font-semibold">{project.team.join(", ")}</span>
+                      </div>
+                    )}
+                    {project.timeline && (
+                      <div className="flex items-start gap-2">
+                        <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Timeline:</span>
+                        <span className="text-sm font-roboto text-[#020079]">{project.timeline}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Waiting for Parts Column */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-amber-500">⚠</span>
-            <h2 className="text-lg font-semibold text-gray-800">Waiting for Parts</h2>
-          </div>
-          <div className="space-y-3">
-            {getColumnProjects("Waiting for Parts").map((project) => (
-              <div key={project.title} className="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-gray-800 mb-3">{project.title}</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span>👤</span>
-                    <span className="text-sm text-gray-600">Customer:</span>
-                    <span className="text-sm text-black  font-medium">{project.customer}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span>💰</span>
-                    <span className="text-sm text-gray-600">Est. Cost:</span>
-                    <span className="text-sm text-black font-medium">{project.estimatedCost}</span>
-                  </div>
-                  {project.onHold && (
-                    <div className="flex items-center gap-2">
-                      <span>⏳</span>
-                      <span className="text-sm text-gray-600">On Hold:</span>
-                      <span className="text-sm text-black font-medium">{project.onHold}</span>
+        <Card className="border-[#020079]/20">
+          <CardHeader className="border-b border-[#020079]/20">
+            <CardTitle className="font-bebas text-xl text-[#020079]">
+              Waiting for Parts
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="space-y-4">
+              {getColumnProjects("Waiting for Parts").map((project) => (
+                <div key={project.title} className="border border-[#020079]/20 rounded-lg p-4 hover:border-[#020079] hover:shadow-md transition-all">
+                  <h3 className="font-bebas text-lg text-[#020079] mb-3">{project.title}</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Customer:</span>
+                      <span className="text-sm font-roboto text-[#020079] font-semibold">{project.customer}</span>
                     </div>
-                  )}
-                  <div className="flex items-center gap-2">
-                    <span>📅</span>
-                    <span className="text-sm text-gray-600">Started:</span>
-                    <span className="text-sm text-black ">{project.startDate}</span>
+                    <div className="flex items-start gap-2">
+                      <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Est. Cost:</span>
+                      <span className="text-sm font-roboto text-[#020079] font-semibold">{project.estimatedCost}</span>
+                    </div>
+                    {project.onHold && (
+                      <div className="flex items-start gap-2">
+                        <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">On Hold:</span>
+                        <span className="text-sm font-roboto text-[#020079] font-semibold">{project.onHold}</span>
+                      </div>
+                    )}
+                    <div className="flex items-start gap-2">
+                      <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Started:</span>
+                      <span className="text-sm font-roboto text-[#020079]">{project.startDate}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Completed Column */}
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-emerald-500">✓</span>
-            <h2 className="text-lg font-semibold text-gray-800">Completed</h2>
-          </div>
-          <div className="space-y-3">
-            {getColumnProjects("Completed").map((project) => (
-              <div key={project.title} className="bg-white border rounded-lg p-4 hover:shadow-md transition-shadow">
-                <h3 className="font-semibold text-gray-800 mb-3">{project.title}</h3>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <span>👤</span>
-                    <span className="text-sm text-gray-600">Customer:</span>
-                    <span className="text-sm text-black font-medium">{project.customer}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span>💰</span>
-                    <span className="text-sm text-gray-600">Final Cost:</span>
-                    <span className="text-sm text-black font-medium">{project.estimatedCost}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-emerald-600">
-                    <span>✓</span>
-                    <span className="text-sm">Completed:</span>
-                    <span className="text-sm font-medium">{project.startDate}</span>
+        <Card className="border-[#020079]/20">
+          <CardHeader className="border-b border-[#020079]/20">
+            <CardTitle className="font-bebas text-xl text-[#020079]">
+              Completed
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="space-y-4">
+              {getColumnProjects("Completed").map((project) => (
+                <div key={project.title} className="border border-[#020079]/20 rounded-lg p-4 hover:border-[#020079] hover:shadow-md transition-all">
+                  <h3 className="font-bebas text-lg text-[#020079] mb-3">{project.title}</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-start gap-2">
+                      <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Customer:</span>
+                      <span className="text-sm font-roboto text-[#020079] font-semibold">{project.customer}</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-sm font-roboto text-[#020079]/60 min-w-[70px]">Final Cost:</span>
+                      <span className="text-sm font-roboto text-[#020079] font-semibold">{project.estimatedCost}</span>
+                    </div>
+                    <Badge className="bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30 font-roboto text-xs mt-2">
+                      Completed: {project.startDate}
+                    </Badge>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Project Form Modal */}

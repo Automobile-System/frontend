@@ -402,9 +402,9 @@ export default function Calendar() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
-        return "bg-emerald-100 border-emerald-300 text-emerald-800";
+        return "bg-[#FFD70029] border-[#E6C200] text-gray-900";
       case "in_progress":
-        return "bg-blue-100 border-blue-300 text-blue-800";
+        return "bg-[#0200791F] border-[#020079] text-gray-900";
       default:
         return "bg-gray-100 border-gray-300 text-gray-800";
     }
@@ -423,11 +423,11 @@ export default function Calendar() {
 
   return (
     <EmployeeLayout>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/40 p-6 space-y-6">
+      <div className="min-h-screen bg-white p-6 space-y-6">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl font-bold text-[#020079] mb-2">
               My Schedule
             </h1>
             <p className="text-gray-600 flex items-center gap-2">
@@ -440,13 +440,15 @@ export default function Calendar() {
           </div>
 
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="flex items-center gap-2 bg-white rounded-xl p-1 shadow-sm border border-gray-200">
+            <div className="flex items-center gap-2 bg-white rounded-xl p-1 shadow-sm border border-[#020079]/20">
               <Button
                 variant={selectedView === "week" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setSelectedView("week")}
                 className={
-                  selectedView === "week" ? "bg-blue-600 hover:bg-blue-700" : ""
+                  selectedView === "week"
+                    ? "bg-[#020079] hover:bg-[#03009B]"
+                    : ""
                 }
               >
                 Week
@@ -457,7 +459,7 @@ export default function Calendar() {
                 onClick={() => setSelectedView("month")}
                 className={
                   selectedView === "month"
-                    ? "bg-blue-600 hover:bg-blue-700"
+                    ? "bg-[#020079] hover:bg-[#03009B]"
                     : ""
                 }
               >
@@ -465,20 +467,20 @@ export default function Calendar() {
               </Button>
             </div>
 
-            <div className="flex items-center gap-2 bg-white rounded-xl shadow-sm border border-gray-200">
+            <div className="flex items-center gap-2 bg-white rounded-xl shadow-sm border border-[#020079]/20">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={goToPreviousWeek}
                 disabled={isLoading}
-                className="hover:bg-blue-50 transition-colors"
+                className="hover:bg-[#0200791F] transition-colors"
               >
-                <ChevronLeft className="h-5 w-5 text-gray-700" />
+                <ChevronLeft className="h-5 w-5 text-[#020079]" />
               </Button>
               <button
                 onClick={goToCurrentWeek}
                 disabled={isLoading}
-                className="px-4 py-2 text-sm font-semibold text-gray-900 min-w-[220px] text-center hover:text-blue-600 transition-colors"
+                className="px-4 py-2 text-sm font-semibold text-gray-900 min-w-[220px] text-center hover:text-[#020079] transition-colors"
               >
                 Week of {formatWeekRange()}
               </button>
@@ -487,9 +489,9 @@ export default function Calendar() {
                 size="icon"
                 onClick={goToNextWeek}
                 disabled={isLoading}
-                className="hover:bg-blue-50 transition-colors"
+                className="hover:bg-[#0200791F] transition-colors"
               >
-                <ChevronRight className="h-5 w-5 text-gray-700" />
+                <ChevronRight className="h-5 w-5 text-[#020079]" />
               </Button>
             </div>
           </div>
@@ -497,64 +499,66 @@ export default function Calendar() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-gradient-to-br from-blue-50 to-blue-100/50 hover:shadow-xl transition-shadow">
+          <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-800 mb-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">
                   Total Tasks
                 </p>
-                <p className="text-3xl font-bold text-blue-900">{totalTasks}</p>
+                <p className="text-3xl font-bold text-[#020079]">
+                  {totalTasks}
+                </p>
               </div>
-              <div className="p-3 bg-blue-600 rounded-xl">
-                <Wrench className="h-6 w-6 text-white" />
+              <div className="p-3 bg-[#FFD70029] rounded-xl">
+                <Wrench className="h-6 w-6 text-[#020079]" />
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-gradient-to-br from-emerald-50 to-emerald-100/50 hover:shadow-xl transition-shadow">
+          <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-emerald-800 mb-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">
                   Completed
                 </p>
-                <p className="text-3xl font-bold text-emerald-900">
+                <p className="text-3xl font-bold text-[#020079]">
                   {completedTasks}
                 </p>
               </div>
-              <div className="p-3 bg-emerald-600 rounded-xl">
-                <CheckCircle2 className="h-6 w-6 text-white" />
+              <div className="p-3 bg-[#FFD70029] rounded-xl">
+                <CheckCircle2 className="h-6 w-6 text-[#020079]" />
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-gradient-to-br from-orange-50 to-orange-100/50 hover:shadow-xl transition-shadow">
+          <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-orange-800 mb-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">
                   Urgent Tasks
                 </p>
-                <p className="text-3xl font-bold text-orange-900">
+                <p className="text-3xl font-bold text-[#020079]">
                   {urgentTasks}
                 </p>
               </div>
-              <div className="p-3 bg-orange-600 rounded-xl">
-                <AlertTriangle className="h-6 w-6 text-white" />
+              <div className="p-3 bg-[#FFD70029] rounded-xl">
+                <AlertTriangle className="h-6 w-6 text-[#020079]" />
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-gradient-to-br from-purple-50 to-purple-100/50 hover:shadow-xl transition-shadow">
+          <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white hover:shadow-2xl hover:scale-105 transition-all duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-purple-800 mb-1">
+                <p className="text-sm font-medium text-gray-600 mb-1">
                   Workload
                 </p>
-                <p className="text-3xl font-bold text-purple-900">
+                <p className="text-3xl font-bold text-[#020079]">
                   {workloadStatus}%
                 </p>
               </div>
-              <div className="p-3 bg-purple-600 rounded-xl">
-                <TrendingUp className="h-6 w-6 text-white" />
+              <div className="p-3 bg-[#FFD70029] rounded-xl">
+                <TrendingUp className="h-6 w-6 text-[#020079]" />
               </div>
             </div>
           </Card>
@@ -562,16 +566,16 @@ export default function Calendar() {
 
         {/* Workload Alert */}
         {workloadStatus >= 75 && (
-          <Card className="p-5 rounded-2xl shadow-lg border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50">
+          <Card className="p-5 rounded-2xl shadow-lg border-[#E6C200] bg-[#FFD70029]">
             <div className="flex items-start gap-3">
-              <div className="p-2 bg-orange-600 rounded-lg">
-                <AlertTriangle className="h-5 w-5 text-white" />
+              <div className="p-2 bg-[#E6C200] rounded-lg">
+                <AlertTriangle className="h-5 w-5 text-[#020079]" />
               </div>
               <div className="flex-1">
-                <p className="font-bold text-orange-900 mb-1">
+                <p className="font-bold text-[#020079] mb-1">
                   High Workload Alert: {workloadStatus}% Capacity
                 </p>
-                <p className="text-sm text-orange-800">
+                <p className="text-sm text-gray-700">
                   You are currently operating at {workloadStatus}% capacity.
                   {workloadStatus >= 80 &&
                     " New assignments are paused until workload decreases."}
@@ -587,7 +591,7 @@ export default function Calendar() {
         {isLoading ? (
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#020079] mx-auto mb-4"></div>
               <p className="text-gray-600 font-medium">Loading schedule...</p>
             </div>
           </div>
@@ -598,18 +602,18 @@ export default function Calendar() {
                 key={`${dayData.date.toISOString()}-${index}`}
                 className={`rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl overflow-hidden ${
                   dayData.isToday
-                    ? "ring-2 ring-blue-500 shadow-blue-200"
-                    : "border-gray-200"
+                    ? "ring-2 ring-[#020079] shadow-lg"
+                    : "border-[#FFD700]/30"
                 } ${dayData.isWeekend ? "bg-gray-50" : "bg-white"}`}
               >
                 {/* Day Header */}
                 <div
                   className={`p-4 ${
                     dayData.isToday
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600"
+                      ? "bg-gradient-to-r from-[#020079] to-[#01024D]"
                       : dayData.isWeekend
                       ? "bg-gray-200"
-                      : "bg-gradient-to-r from-gray-700 to-gray-800"
+                      : "bg-gradient-to-r from-[#020079] to-[#01024D]"
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -634,7 +638,7 @@ export default function Calendar() {
                       </p>
                     </div>
                     {dayData.isToday && (
-                      <div className="px-2 py-1 bg-white/20 rounded-lg text-xs font-semibold text-white">
+                      <div className="px-2 py-1 bg-[#E6C200] rounded-lg text-xs font-semibold text-[#020079]">
                         Today
                       </div>
                     )}
@@ -653,8 +657,8 @@ export default function Calendar() {
                     </div>
                   ) : dayData.tasks.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-center py-8">
-                      <div className="p-4 bg-green-100 rounded-full mb-3">
-                        <CheckCircle2 className="h-8 w-8 text-green-600" />
+                      <div className="p-4 bg-[#FFD70029] rounded-full mb-3">
+                        <CheckCircle2 className="h-8 w-8 text-[#020079]" />
                       </div>
                       <p className="text-gray-600 font-medium">No Tasks</p>
                       <p className="text-sm text-gray-500">Free day</p>
@@ -675,7 +679,7 @@ export default function Calendar() {
                               className={`h-4 w-4 ${
                                 task.type === "urgent"
                                   ? "text-red-600"
-                                  : "text-gray-600"
+                                  : "text-[#020079]"
                               }`}
                             />
                             <span

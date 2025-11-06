@@ -9,29 +9,20 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-// import { Spinner } from "@/components/ui/spinner" // Keep Spinner import if it's styled for dark theme, otherwise use mock
 import { User, Mail, Phone, Briefcase } from "lucide-react"
 
 
-// --- MOCK SPINNER COMPONENT ---
-// This is a placeholder for your "@/components/ui/spinner"
+// --- Lightweight inline spinner ---
 const Spinner = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
     viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
     className={`animate-spin ${className || 'h-5 w-5'}`}
   >
-    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    <circle cx="12" cy="12" r="10" stroke="#020079" strokeWidth="4" fill="none" opacity="0.2" />
+    <path d="M22 12a10 10 0 0 1-10 10" stroke="#020079" strokeWidth="4" fill="none" />
   </svg>
 );
-// --- END MOCK SPINNER ---
 
 
 // --- MOCK useProfile HOOK ---
@@ -147,10 +138,10 @@ export default function ProfilePage() {
   // Show a spinner while the page is first loading
   if (isPageLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-900 p-4"> {/* Dark background */}
-        <div className="flex flex-col justify-center items-center gap-4">
-          <Spinner className="h-10 w-10 text-white" /> {/* White spinner */}
-          <span className="text-gray-400">Loading Profile...</span> {/* Lighter text */}
+      <div className="flex min-h-screen items-center justify-center bg-white p-8">
+        <div className="flex flex-col justify-center items-center gap-3">
+          <Spinner className="h-10 w-10" />
+          <span className="text-[#020079]/70 font-roboto">Loading Profile...</span>
         </div>
       </div>
     )
@@ -158,37 +149,29 @@ export default function ProfilePage() {
 
   // --- Main Content (View or Edit) ---
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-900 p-4 md:p-8 text-white">
-      <div className="w-full max-w-4xl space-y-8"> {/* Added wrapper div for header and card */}
-        <div className="text-center md:text-left">
-          <h1 className="text-4xl font-extrabold text-white">Profile Management</h1>
-          <p className="text-gray-400 mt-2">Manage your account details.</p>
+    <div className="min-h-screen bg-white p-8">
+      <div className="w-full max-w-5xl mx-auto space-y-6">
+        <div>
+          <h1 className="text-4xl font-bebas text-[#020079] tracking-wide">PROFILE MANAGEMENT</h1>
+          <p className="font-roboto text-[#020079]/70 mt-1">Manage your account details.</p>
         </div>
 
         {isEditing ? (
 
           // --- EDITING MODE (THE FORM) ---
           <>
-            <Card className="w-full max-w-md mx-auto shadow-xl bg-gray-800 text-white border border-gray-700">
-              <CardHeader className="space-y-1 text-center bg-gray-700 border-b border-gray-600 py-6">
-                <div className="flex items-center justify-center mb-4">
-                  <div className="rounded-full bg-[#e21e25] p-3">
-                    <User className="h-6 w-6 text-white" />
-                  </div>
-                </div>
-                <CardTitle className="text-3xl font-extrabold text-white">Manage Your Profile</CardTitle>
-                <CardDescription className="text-gray-400">
-                  Update your personal details below.
-                </CardDescription>
+            <Card className="w-full max-w-2xl mx-auto bg-white border border-[#020079]/20 shadow-sm">
+              <CardHeader className="border-b-2 border-[#020079]/20 pb-4">
+                <CardTitle className="text-2xl font-bebas text-[#020079] tracking-wide font-normal">MANAGE YOUR PROFILE</CardTitle>
+                <CardDescription className="font-roboto text-[#020079]/70">Update your personal details below.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4 p-6">
-                <form onSubmit={handleSubmit} className="space-y-4">
+              <CardContent className="space-y-5 p-6">
+                <form onSubmit={handleSubmit} className="space-y-5">
 
 
                   <div className="space-y-2">
-                    <Label htmlFor="firstName" className="flex items-center gap-2 text-gray-300 font-semibold">
-                      <User className="h-4 w-4 text-gray-400" />
-                      First Name
+                    <Label htmlFor="firstName" className="text-sm font-roboto text-[#020079]/70 font-semibold uppercase tracking-wide">
+                      First Name <span className="text-[#FFD700]">*</span>
                     </Label>
                     <Input
                       id="firstName"
@@ -199,16 +182,15 @@ export default function ProfilePage() {
                       onChange={handleChange}
                       disabled={loading}
                       autoComplete="given-name"
-                      className={`bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-offset-gray-700 ${fieldErrors.firstName ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      className={`h-12 border-[#020079]/20 bg-white font-roboto text-[#020079] placeholder:text-[#020079]/40 focus:border-[#020079] focus:ring-[#020079]/20 ${fieldErrors.firstName ? 'border-red-500' : ''}`}
                     />
-                    {fieldErrors.firstName && <p className="text-sm text-destructive">{fieldErrors.firstName}</p>}
+                    {fieldErrors.firstName && <p className="text-sm text-red-600">{fieldErrors.firstName}</p>}
                   </div>
 
 
                   <div className="space-y-2">
-                    <Label htmlFor="lastName" className="flex items-center gap-2 text-gray-300 font-semibold">
-                      <User className="h-4 w-4 text-gray-400" />
-                      Last Name
+                    <Label htmlFor="lastName" className="text-sm font-roboto text-[#020079]/70 font-semibold uppercase tracking-wide">
+                      Last Name <span className="text-[#FFD700]">*</span>
                     </Label>
                     <Input
                       id="lastName"
@@ -219,16 +201,15 @@ export default function ProfilePage() {
                       onChange={handleChange}
                       disabled={loading}
                       autoComplete="family-name"
-                      className={`bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-offset-gray-700 ${fieldErrors.lastName ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      className={`h-12 border-[#020079]/20 bg-white font-roboto text-[#020079] placeholder:text-[#020079]/40 focus:border-[#020079] focus:ring-[#020079]/20 ${fieldErrors.lastName ? 'border-red-500' : ''}`}
                     />
-                    {fieldErrors.lastName && <p className="text-sm text-destructive">{fieldErrors.lastName}</p>}
+                    {fieldErrors.lastName && <p className="text-sm text-red-600">{fieldErrors.lastName}</p>}
                   </div>
 
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="flex items-center gap-2 text-gray-300 font-semibold">
-                      <Mail className="h-4 w-4 text-gray-400" />
-                      Email address
+                    <Label htmlFor="email" className="text-sm font-roboto text-[#020079]/70 font-semibold uppercase tracking-wide">
+                      Email Address <span className="text-[#FFD700]">*</span>
                     </Label>
                     <Input
                       id="email"
@@ -239,14 +220,13 @@ export default function ProfilePage() {
                       onChange={handleChange}
                       disabled={loading}
                       autoComplete="email"
-                      className={`bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-offset-gray-700 ${fieldErrors.email ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      className={`h-12 border-[#020079]/20 bg-white font-roboto text-[#020079] placeholder:text-[#020079]/40 focus:border-[#020079] focus:ring-[#020079]/20 ${fieldErrors.email ? 'border-red-500' : ''}`}
                     />
-                    {fieldErrors.email && <p className="text-sm text-destructive">{fieldErrors.email}</p>}
+                    {fieldErrors.email && <p className="text-sm text-red-600">{fieldErrors.email}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="phone" className="flex items-center gap-2 text-gray-300 font-semibold">
-                      <Phone className="h-4 w-4 text-gray-400" />
+                    <Label htmlFor="phone" className="text-sm font-roboto text-[#020079]/70 font-semibold uppercase tracking-wide">
                       Phone Number
                     </Label>
                     <Input
@@ -258,14 +238,13 @@ export default function ProfilePage() {
                       onChange={handleChange}
                       disabled={loading}
                       autoComplete="tel"
-                      className={`bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-offset-gray-700 ${fieldErrors.phone ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      className={`h-12 border-[#020079]/20 bg-white font-roboto text-[#020079] placeholder:text-[#020079]/40 focus:border-[#020079] focus:ring-[#020079]/20 ${fieldErrors.phone ? 'border-red-500' : ''}`}
                     />
-                    {fieldErrors.phone && <p className="text-sm text-destructive">{fieldErrors.phone}</p>}
+                    {fieldErrors.phone && <p className="text-sm text-red-600">{fieldErrors.phone}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="role" className="flex items-center gap-2 text-gray-300 font-semibold">
-                      <Briefcase className="h-4 w-4 text-gray-400" />
+                    <Label htmlFor="role" className="text-sm font-roboto text-[#020079]/70 font-semibold uppercase tracking-wide">
                       Role / Position
                     </Label>
                     <Input
@@ -277,26 +256,26 @@ export default function ProfilePage() {
                       onChange={handleChange}
                       disabled={loading}
                       autoComplete="organization-title"
-                      className={`bg-gray-700 border-gray-600 text-white placeholder:text-gray-400 focus-visible:ring-offset-gray-700 ${fieldErrors.role ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                      className={`h-12 border-[#020079]/20 bg-white font-roboto text-[#020079] placeholder:text-[#020079]/40 focus:border-[#020079] focus:ring-[#020079]/20 ${fieldErrors.role ? 'border-red-500' : ''}`}
                     />
-                    {fieldErrors.role && <p className="text-sm text-destructive">{fieldErrors.role}</p>}
+                    {fieldErrors.role && <p className="text-sm text-red-600">{fieldErrors.role}</p>}
                   </div>
 
-                  {/* --- MODIFIED BUTTONS LAYOUT --- */}
-                  <div className="flex gap-4 pt-4"> {/* Use flex and gap-4 */}
+                  {/* --- ACTIONS --- */}
+                  <div className="flex gap-4 pt-2">
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="flex-1 bg-[#e21e25] text-white hover:bg-[#c0191f] text-lg py-2 h-auto" // Added flex-1 and adjusted padding
+                      className="flex-1 h-12 bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold"
                     >
-                      {loading ? <Spinner className="h-5 w-5" /> : "Save Changes"} {/* Adjusted spinner size */}
+                      {loading ? <Spinner className="h-5 w-5" /> : "Save Changes"}
                     </Button>
                     <Button
                       type="button"
                       onClick={handleCancel}
                       disabled={loading}
                       variant="outline"
-                      className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700 text-lg py-2 h-auto" // Added flex-1 and adjusted padding
+                      className="flex-1 h-12 border-[#020079]/30 text-[#020079] hover:bg-[#020079]/10"
                     >
                       Cancel
                     </Button>
@@ -308,26 +287,26 @@ export default function ProfilePage() {
           </>
         ) : (
           // --- VIEW MODE ---
-          <Card className="w-full shadow-xl bg-gray-800 text-white border border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between p-6 bg-gray-700 border-b border-gray-600 rounded-t-lg">
+          <Card className="w-full bg-white border border-[#020079]/20 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between p-6 border-b border-[#020079]/15">
               <div className="flex items-center gap-4">
-                <Avatar className="h-12 w-12 text-xl bg-[#e21e25] text-white">
-                  <AvatarFallback className="bg-[#e21e25] text-white text-xl font-bold">
+                <Avatar className="h-12 w-12">
+                  <AvatarFallback className="bg-[#020079] text-white text-lg font-bold">
                     {getInitials(originalData.firstName, originalData.lastName)}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <CardTitle className="text-2xl font-bold text-white">
+                  <CardTitle className="text-2xl font-bebas text-[#020079] tracking-wide">
                     {originalData.firstName} {originalData.lastName}
                   </CardTitle>
-                  <CardDescription className="text-gray-400 text-sm">
+                  <CardDescription className="font-roboto text-[#020079]/70 text-sm">
                     {originalData.role || "No role specified"}
                   </CardDescription>
                 </div>
               </div>
               <Button
                 onClick={handleEditClick}
-                className="bg-gray-600 text-white hover:bg-gray-500 px-4 py-2"
+                className="h-10 bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
               >
                 Edit Profile
               </Button>
@@ -335,34 +314,34 @@ export default function ProfilePage() {
             <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <User className="h-5 w-5 text-gray-500" />
+                  <User className="h-5 w-5 text-[#020079]/60" />
                   <div>
-                    <h3 className="text-sm font-medium text-gray-400">Full Name</h3>
-                    <p className="text-white text-base">{originalData.firstName} {originalData.lastName}</p>
+                    <h3 className="text-sm font-roboto text-[#020079]/60">Full Name</h3>
+                    <p className="text-base font-roboto text-[#020079]">{originalData.firstName} {originalData.lastName}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <Phone className="h-5 w-5 text-gray-500" />
+                  <Phone className="h-5 w-5 text-[#020079]/60" />
                   <div>
-                    <h3 className="text-sm font-medium text-gray-400">Phone</h3>
-                    <p className="text-white text-base">{originalData.phone || "N/A"}</p>
+                    <h3 className="text-sm font-roboto text-[#020079]/60">Phone</h3>
+                    <p className="text-base font-roboto text-[#020079]">{originalData.phone || "N/A"}</p>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <Mail className="h-5 w-5 text-gray-500" />
+                  <Mail className="h-5 w-5 text-[#020079]/60" />
                   <div>
-                    <h3 className="text-sm font-medium text-gray-400">Email</h3>
-                    <p className="text-white text-base">{originalData.email}</p>
+                    <h3 className="text-sm font-roboto text-[#020079]/60">Email</h3>
+                    <p className="text-base font-roboto text-[#020079]">{originalData.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <Briefcase className="h-5 w-5 text-gray-500" />
+                  <Briefcase className="h-5 w-5 text-[#020079]/60" />
                   <div>
-                    <h3 className="text-sm font-medium text-gray-400">Role</h3>
-                    <p className="text-white text-base">{originalData.role || "N/A"}</p>
+                    <h3 className="text-sm font-roboto text-[#020079]/60">Role</h3>
+                    <p className="text-base font-roboto text-[#020079]">{originalData.role || "N/A"}</p>
                   </div>
                 </div>
               </div>
