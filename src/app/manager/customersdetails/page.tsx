@@ -356,7 +356,6 @@ export default function CustomerDetailsPage() {
     applyFilters();
   }, [applyFilters]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const loadCustomerDetails = async (customerId: string) => {
     try {
       setDetailsLoading(true);
