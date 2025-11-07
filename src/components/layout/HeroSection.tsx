@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from "react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { HeroAuthButtons } from "@/components/layout/HeroAuthButtons"
+import { User } from "@/hooks/useAuth"
 import { ChevronLeft, ChevronRight, Play, Zap, Award, Globe2 } from "lucide-react"
 
 export interface HeroSlide {
@@ -25,6 +26,7 @@ interface HeroSectionProps {
   slides?: HeroSlide[]
   autoPlayInterval?: number
   className?: string
+  initialUser?: User | null
 }
 
 const defaultSlides: HeroSlide[] = [
@@ -114,9 +116,9 @@ const defaultSlides: HeroSlide[] = [
 export function HeroSection({ 
   slides = defaultSlides, 
   autoPlayInterval = 7000,
-  className = ""
+  className = "",
+  initialUser
 }: HeroSectionProps) {
-  const router = useRouter()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
 
@@ -191,24 +193,7 @@ export function HeroSection({
                   {slide.subtitle}
                 </p>
                 
-                <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-600">
-                  <Button 
-                    size="lg"
-                    onClick={() => router.push('/login')}
-                    className="btn-accent text-black px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-accent-glow group"
-                  >
-                    LOG IN
-                  </Button>
-                  
-                  <Button 
-                    variant="outline"
-                    size="lg"
-                    onClick={() => router.push('/signup')}
-                    className="btn-accent-outline backdrop-blur-sm px-8 py-4 text-lg font-medium transition-all duration-300"
-                  >
-                    SIGN UP
-                  </Button>
-                </div>
+                <HeroAuthButtons user={initialUser ?? null} />
               </div>
 
               {/* Right Stats */}
