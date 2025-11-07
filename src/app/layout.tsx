@@ -30,7 +30,8 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "Automobile Management System",
   description:
-    "Enterprise automobile management application developed by Team Nemmi",
+    "Enterprise automobile management application developed by Team Tenx",
+  viewport: "width=device-width, initial-scale=1.0",
 };
 
 export default function RootLayout({
