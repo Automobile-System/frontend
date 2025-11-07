@@ -5,6 +5,8 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { AuthButtons } from "@/components/layout/AuthButtons"
+import { User } from "@/hooks/useAuth"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -47,9 +49,10 @@ import {
 
 interface NavigationProps {
   className?: string
+  initialUser?: User | null
 }
 
-export function Navigation({ className }: NavigationProps) {
+export function Navigation({ className, initialUser }: NavigationProps) {
   const pathname = usePathname()
 
   // Auto Miraj style: larger font, normal weight, bottom border on active
@@ -241,16 +244,29 @@ export function Navigation({ className }: NavigationProps) {
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Book Now Button - Desktop */}
-        <div className="hidden md:flex flex-shrink-0 min-w-[160px] justify-end">
-          <Link href="/booking">
-            <Button 
-              className="btn-accent text-black font-teko uppercase tracking-[0.15em] rounded-md px-5 py-3 text-[16px] shadow-accent-glow transition-all"
-              size="lg"
-            >
-              BOOK NOW
-            </Button>
-          </Link>
+        {/* Right side - Auth Buttons or User Menu */}
+        <div className="hidden md:flex flex-shrink-0 min-w-[200px] justify-end items-center gap-3">
+          {initialUser ? (
+            <AuthButtons user={initialUser} />
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link href="/login">
+                <Button 
+                  variant="outline"
+                  className="border-brand text-brand hover:bg-brand hover:text-white font-teko uppercase tracking-[0.15em] text-[15px] transition-all"
+                >
+                  LOG IN
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button 
+                  className="btn-accent text-black font-teko uppercase tracking-[0.15em] text-[15px] shadow-accent-glow transition-all"
+                >
+                  SIGN UP
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu */}
