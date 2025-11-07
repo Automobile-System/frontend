@@ -16,20 +16,21 @@ export default function SignupForm() {
     const [showPassword, setShowPassword] = useState(false)
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-slate-100 p-4 py-12">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#020079] via-[#03009B] to-black p-4 py-12">
             <div className="w-full max-w-2xl">
                 {/* Brand Header */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-600 mb-4 shadow-lg">
-                        <Car className="h-8 w-8 text-white" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#020079] mb-4 shadow-lg border-2 border-[#FFD700]">
+                        <Car className="h-8 w-8 text-[#FFD700]" />
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">CarVeo</h1>
-                    <p className="text-gray-600">Create Your Account</p>
+                    <h1 className="text-3xl font-bold text-white mb-2 tracking-wider">NITROLINE</h1>
+                    <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#FFD700] to-transparent mx-auto mb-3"></div>
+                    <p className="text-white/80">Create Your Account</p>
                 </div>
 
-                <Card className="shadow-2xl border-gray-200">
+                <Card className="shadow-2xl border border-[#FFD700]/30 bg-white/95 backdrop-blur-md">
                     <CardHeader className="space-y-1 pb-6">
-                        <CardTitle className="text-2xl font-bold text-gray-900 text-center">
+                        <CardTitle className="text-2xl font-bold text-[#020079] text-center">
                             Sign Up
                         </CardTitle>
                         <CardDescription className="text-center text-gray-600">
@@ -55,7 +56,7 @@ export default function SignupForm() {
                                             value={formData.firstName}
                                             onChange={handleChange}
                                             disabled={loading}
-                                            className={`pl-11 h-12 bg-white border-gray-300 focus:border-red-600 focus:ring-red-600 text-gray-900 text-base placeholder:text-gray-400 ${
+                                            className={`pl-11 h-12 bg-white border-gray-300 focus:border-[#020079] focus:ring-[#020079] text-gray-900 text-base placeholder:text-gray-400 ${
                                                 fieldErrors.firstName ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                                             }`}
                                             autoComplete="given-name"
@@ -84,7 +85,7 @@ export default function SignupForm() {
                                             value={formData.lastName}
                                             onChange={handleChange}
                                             disabled={loading}
-                                            className={`pl-11 h-12 bg-white border-gray-300 focus:border-red-600 focus:ring-red-600 text-gray-900 text-base placeholder:text-gray-400 ${
+                                            className={`pl-11 h-12 bg-white border-gray-300 focus:border-[#020079] focus:ring-[#020079] text-gray-900 text-base placeholder:text-gray-400 ${
                                                 fieldErrors.lastName ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                                             }`}
                                             autoComplete="family-name"
@@ -114,7 +115,7 @@ export default function SignupForm() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         disabled={loading}
-                                        className={`pl-11 h-12 bg-white border-gray-300 focus:border-red-600 focus:ring-red-600 text-gray-900 text-base placeholder:text-gray-400 ${
+                                        className={`pl-11 h-12 bg-white border-gray-300 focus:border-[#020079] focus:ring-[#020079] text-gray-900 text-base placeholder:text-gray-400 ${
                                             fieldErrors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                                         }`}
                                         autoComplete="email"
@@ -145,7 +146,7 @@ export default function SignupForm() {
                                             value={formData.nationalId}
                                             onChange={handleChange}
                                             disabled={loading}
-                                            className={`pl-11 h-12 bg-white border-gray-300 focus:border-red-600 focus:ring-red-600 text-gray-900 text-base placeholder:text-gray-400 ${
+                                            className={`pl-11 h-12 bg-white border-gray-300 focus:border-[#020079] focus:ring-[#020079] text-gray-900 text-base placeholder:text-gray-400 ${
                                                 fieldErrors.nationalId ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                                             }`}
                                             required
@@ -173,7 +174,7 @@ export default function SignupForm() {
                                             value={formData.phoneNumber}
                                             onChange={handleChange}
                                             disabled={loading}
-                                            className={`pl-11 h-12 bg-white border-gray-300 focus:border-red-600 focus:ring-red-600 text-gray-900 text-base placeholder:text-gray-400 ${
+                                            className={`pl-11 h-12 bg-white border-gray-300 focus:border-[#020079] focus:ring-[#020079] text-gray-900 text-base placeholder:text-gray-400 ${
                                                 fieldErrors.phoneNumber ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                                             }`}
                                             autoComplete="tel"
@@ -203,7 +204,7 @@ export default function SignupForm() {
                                         value={formData.password}
                                         onChange={handleChange}
                                         disabled={loading}
-                                        className={`pl-11 pr-12 h-12 bg-white border-gray-300 focus:border-red-600 focus:ring-red-600 text-gray-900 text-base placeholder:text-gray-400 ${
+                                        className={`pl-11 pr-12 h-12 bg-white border-gray-300 focus:border-[#020079] focus:ring-[#020079] text-gray-900 text-base placeholder:text-gray-400 ${
                                             fieldErrors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                                         }`}
                                         autoComplete="new-password"
@@ -235,7 +236,7 @@ export default function SignupForm() {
                             {/* Submit Button */}
                             <Button 
                                 type="submit" 
-                                className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-200" 
+                                className="w-full h-12 bg-[#020079] hover:bg-[#FFD700] hover:text-[#020079] text-white font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-200" 
                                 disabled={loading}
                             >
                                 {loading ? (
@@ -259,7 +260,7 @@ export default function SignupForm() {
                             Already have an account?{" "}
                             <Link 
                                 href="/login"
-                                className="text-red-600 hover:text-red-700 font-semibold"
+                                className="text-[#020079] hover:text-[#FFD700] font-semibold transition-colors"
                             >
                                 Sign In
                             </Link>
@@ -269,7 +270,7 @@ export default function SignupForm() {
 
                 {/* Security Notice */}
                 <div className="mt-6 text-center">
-                    <p className="text-xs text-gray-500 flex items-center justify-center gap-1">
+                    <p className="text-xs text-white/60 flex items-center justify-center gap-1">
                         <ShieldCheck className="h-3 w-3" />
                         Secure connection • Your data is protected
                     </p>

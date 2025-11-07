@@ -1,17 +1,15 @@
-"use client"
-
 import React from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { getCurrentUser } from "@/lib/auth"
 import { Navigation } from "@/components/layout/Navigation"
 import { HeroSection } from "@/components/layout/HeroSection"
 import { ContactBar } from "@/components/layout/ContactBar" 
 import { ServicesGrid } from "@/components/layout/ServicesGrid"
+import { ClientWidgets } from "@/components/layout/ClientWidgets"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ChatWidget } from "@/components/chat/ChatWidget"
-import { AIChatWidget } from "@/components/chat/AIChatWidget"
 import {
   Car,
   Wrench,
@@ -27,19 +25,18 @@ import {
   Globe2
 } from "lucide-react"
 
-const LandingPage = () => {
+const LandingPage = async () => {
+  const user = await getCurrentUser()
+  
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
       {/* Navigation Header */}
-      <Navigation />
+      <Navigation initialUser={user} />
 
-      <div className="fixed top-24 right-4 z-50 space-y-4">
-        <ChatWidget />
-        <AIChatWidget />
-      </div>
+      <ClientWidgets />
 
       {/* Hero Section */}
-      <HeroSection />
+      <HeroSection initialUser={user} />
 
       {/* Contact Bar */}
   <ContactBar />
