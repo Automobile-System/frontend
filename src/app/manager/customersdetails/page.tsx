@@ -41,8 +41,6 @@ import {
   Phone, 
   Mail, 
   Car, 
-  Wrench, 
-  FolderKanban,
   Calendar,
   DollarSign,
   TrendingUp,
@@ -358,7 +356,8 @@ export default function CustomerDetailsPage() {
     applyFilters();
   }, [applyFilters]);
 
-  const loadCustomerDetails = async (_customerId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const loadCustomerDetails = async (customerId: string) => {
     try {
       setDetailsLoading(true);
       setIsDetailsOpen(true);
