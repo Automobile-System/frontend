@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import EmployeeLayout from "@/components/layout/EmployeeLayout";
 import { Card } from "@/components/ui/card";
@@ -52,99 +52,84 @@ interface Task {
   notes?: string[];
 }
 
-// Mock data - in production, this would come from API
-const mockTasks: Record<string, Task> = {
-  "1": {
-    id: "1",
-    title: "Oil Change",
-    vehicle: "Toyota Corolla",
-    plateNumber: "KA-1234",
-    deadline: "2024-12-10 17:00",
-    customer: "John Doe",
-    status: "in_progress",
-    timeElapsedSeconds: 5025,
-    description:
-      "Complete oil change service including oil filter replacement. Check all fluid levels and perform basic inspection.",
-    customerPhone: "+1 (555) 123-4567",
-    customerEmail: "john.doe@email.com",
-    customerAddress: "123 Main Street, Springfield, IL 62701",
-    assignedDate: "2024-12-08 09:00",
-    priority: "high",
-    vehicleModel: "Toyota Corolla LE",
-    vehicleYear: 2020,
-    vehicleMileage: 45230,
-    estimatedCost: 75.0,
-    parts: [
-      { name: "Synthetic Oil (5W-30)", cost: 45.0, quantity: 5 },
-      { name: "Oil Filter", cost: 15.0, quantity: 1 },
-      { name: "Drain Plug Gasket", cost: 5.0, quantity: 1 },
-    ],
-    notes: [
-      "Customer mentioned slight engine noise - investigate during oil change",
-      "Previous service: 6 months ago at 38,500 miles",
-      "Customer prefers synthetic oil",
-    ],
-  },
-  "2": {
-    id: "2",
-    title: "Brake Check",
-    vehicle: "Honda Civic",
-    plateNumber: "KA-5678",
-    deadline: "2024-12-11 12:00",
-    customer: "Jane Smith",
-    status: "not_started",
-    timeElapsedSeconds: 0,
-    description:
-      "Comprehensive brake system inspection. Check brake pads, rotors, calipers, and brake fluid condition.",
-    customerPhone: "+1 (555) 234-5678",
-    customerEmail: "jane.smith@email.com",
-    customerAddress: "456 Oak Avenue, Springfield, IL 62702",
-    assignedDate: "2024-12-09 14:00",
-    priority: "medium",
-    vehicleModel: "Honda Civic EX",
-    vehicleYear: 2019,
-    vehicleMileage: 62100,
-    estimatedCost: 120.0,
-    parts: [
-      { name: "Brake Pads (Front)", cost: 80.0, quantity: 1 },
-      { name: "Brake Fluid", cost: 25.0, quantity: 1 },
-    ],
-    notes: [
-      "Customer reports squeaking noise when braking",
-      "Schedule for test drive after service",
-    ],
-  },
-  "3": {
-    id: "3",
-    title: "Tire Rotation",
-    vehicle: "Ford F-150",
-    plateNumber: "KA-9012",
-    deadline: "2024-12-09 15:00",
-    customer: "Mike Johnson",
-    status: "completed",
-    timeElapsedSeconds: 7200,
-    description:
-      "Rotate all four tires and check tire pressure. Inspect for unusual wear patterns.",
-    customerPhone: "+1 (555) 345-6789",
-    customerEmail: "mike.johnson@email.com",
-    customerAddress: "789 Pine Road, Springfield, IL 62703",
-    assignedDate: "2024-12-07 10:00",
-    priority: "low",
-    vehicleModel: "Ford F-150 XLT",
-    vehicleYear: 2021,
-    vehicleMileage: 28450,
-    estimatedCost: 50.0,
-    notes: [
-      "Service completed successfully",
-      "All tires in good condition",
-      "Recommended next rotation at 35,000 miles",
-    ],
-  },
-};
 
 export default function TaskDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const task = mockTasks[params.id];
+  const [task, setTask] = useState<Task | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadTask = async () => {
+      setIsLoading(true);
+      try {
+        const { getTaskById } = await import("@/services/employeeService");
+        const taskData = await getTaskById(params.id);
+        
+        // Transform API response to match Task interface
+        // Note: Backend may return different structure, adjust as needed
+        const transformedTask: Task = {
+          id: taskData.id?.toString() || params.id,
+          title: taskData.title || "",
+          vehicle: taskData.vehicleRegNo || taskData.vehicle || "Unknown Vehicle",
+          plateNumber: taskData.vehicleRegNo || taskData.plateNumber || "",
+          deadline: taskData.deadline
+            ? new Date(taskData.deadline).toLocaleString("en-US", {
+                month: "2-digit",
+                day: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "",
+          customer: taskData.customerName || taskData.customer,
+          status: (taskData.status?.toLowerCase() || "not_started") as TaskStatus,
+          timeElapsedSeconds: taskData.timeSpent ? Math.round(taskData.timeSpent * 3600) : 0,
+          description: taskData.description,
+          customerPhone: taskData.customerPhone,
+          customerEmail: taskData.customerEmail,
+          customerAddress: taskData.customerAddress,
+          assignedDate: taskData.assignedDate
+            ? new Date(taskData.assignedDate).toLocaleString("en-US", {
+                month: "2-digit",
+                day: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : undefined,
+          priority: taskData.priority,
+          vehicleModel: taskData.vehicleModel,
+          vehicleYear: taskData.vehicleYear,
+          vehicleMileage: taskData.vehicleMileage,
+          estimatedCost: taskData.estimatedCost,
+          parts: taskData.parts,
+          notes: taskData.notes,
+        };
+        
+        setTask(transformedTask);
+      } catch (error) {
+        console.error("Error loading task:", error);
+        setTask(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadTask();
+  }, [params.id]);
+
+  if (isLoading) {
+    return (
+      <EmployeeLayout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#020079] mx-auto mb-4"></div>
+            <p className="text-gray-600 font-medium">Loading task details...</p>
+          </div>
+        </div>
+      </EmployeeLayout>
+    );
+  }
 
   if (!task) {
     return (
