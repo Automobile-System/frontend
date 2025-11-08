@@ -1,4 +1,6 @@
-﻿interface ServiceFrequency {
+﻿'use client'
+
+interface ServiceFrequency {
     month: string;
     jobs: number;
 }

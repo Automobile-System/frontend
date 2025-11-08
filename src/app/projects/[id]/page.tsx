@@ -5,8 +5,13 @@ import { getProjectById } from "@/data/projects"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 
-export default function ProjectDetails({ params }: { params: { id: string } }) {
-  const project = getProjectById(params.id)
+export default async function ProjectDetails({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
+  const { id } = await params;
+  const project = getProjectById(id);
   if (!project) return notFound()
 
   return (

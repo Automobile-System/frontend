@@ -63,7 +63,7 @@ export function useLoginForm() {
           router.push("/manager/dashboard");
         } else if (response.roles.includes("CUSTOMER")) {
           // Redirect customers to home page or customer dashboard
-          router.push("/customer/dashboard");
+          router.push("/");
         } else {
           // Default redirect
           router.push("/");

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { use } from "react";
 import { useRouter } from "next/navigation";
 import EmployeeLayout from "@/components/layout/EmployeeLayout";
 import { Card } from "@/components/ui/card";
@@ -142,9 +142,14 @@ const mockTasks: Record<string, Task> = {
   },
 };
 
-export default function TaskDetailPage({ params }: { params: { id: string } }) {
+export default function TaskDetailPage({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
   const router = useRouter();
-  const task = mockTasks[params.id];
+  const { id } = use(params);
+  const task = mockTasks[id];
 
   if (!task) {
     return (
