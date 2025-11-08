@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { use } from "react";
 import { useRouter } from "next/navigation";
 import EmployeeLayout from "@/components/layout/EmployeeLayout";
 import { Card } from "@/components/ui/card";
@@ -142,9 +142,14 @@ const mockTasks: Record<string, Task> = {
   },
 };
 
-export default function TaskDetailPage({ params }: { params: { id: string } }) {
+export default function TaskDetailPage({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
   const router = useRouter();
-  const task = mockTasks[params.id];
+  const { id } = use(params);
+  const task = mockTasks[id];
 
   if (!task) {
     return (
@@ -169,9 +174,9 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
   const getStatusColor = (status: TaskStatus) => {
     switch (status) {
       case "completed":
-        return "bg-emerald-500";
+        return "bg-[#E6C200]";
       case "in_progress":
-        return "bg-blue-500";
+        return "bg-[#020079]";
       case "paused":
         return "bg-orange-500";
       default:
@@ -197,7 +202,7 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
       case "high":
         return "bg-red-100 text-red-800 border-red-200";
       case "medium":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return "bg-[#FFD70029] text-gray-900 border-[#E6C200]";
       case "low":
         return "bg-green-100 text-green-800 border-green-200";
       default:
@@ -217,13 +222,13 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
 
   return (
     <EmployeeLayout>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/40 p-6">
+      <div className="min-h-screen bg-white p-6">
         {/* Header */}
         <div className="mb-6">
           <Button
             variant="outline"
             onClick={() => router.push("/employee/tasks")}
-            className="mb-4 bg-white border-gray-300 text-gray-700 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 transition-all shadow-sm font-medium"
+            className="mb-4 bg-white border-[#020079]/30 text-[#020079] hover:bg-[#0200791F] hover:border-[#020079] transition-all shadow-sm font-medium"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Tasks
@@ -231,7 +236,7 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
 
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-4xl font-bold text-[#020079] mb-2">
                 {task.title}
               </h1>
               <div className="flex items-center gap-3 flex-wrap">
@@ -263,12 +268,12 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
           {/* Main Content - Left Column */}
           <div className="lg:col-span-2 space-y-6">
             {/* Task Description */}
-            <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
+            <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white transition-all duration-300">
               <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Clipboard className="h-5 w-5 text-blue-600" />
+                <div className="p-2 bg-[#0200791F] rounded-lg">
+                  <Clipboard className="h-5 w-5 text-[#020079]" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-[#020079]">
                   Task Description
                 </h2>
               </div>
@@ -278,30 +283,30 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
             </Card>
 
             {/* Vehicle Information */}
-            <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
+            <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white transition-all duration-300">
               <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Car className="h-5 w-5 text-purple-600" />
+                <div className="p-2 bg-[#FFD70029] rounded-lg">
+                  <Car className="h-5 w-5 text-[#020079]" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-[#020079]">
                   Vehicle Information
                 </h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <div className="p-4 bg-[#0200791F] rounded-xl border border-[#020079]/20">
                   <p className="text-sm text-gray-600 mb-1">Vehicle</p>
                   <p className="font-semibold text-gray-900">
                     {task.vehicleModel || task.vehicle}
                   </p>
                 </div>
-                <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <div className="p-4 bg-[#0200791F] rounded-xl border border-[#020079]/20">
                   <p className="text-sm text-gray-600 mb-1">Plate Number</p>
                   <p className="font-semibold text-gray-900">
                     {task.plateNumber}
                   </p>
                 </div>
                 {task.vehicleYear && (
-                  <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <div className="p-4 bg-[#0200791F] rounded-xl border border-[#020079]/20">
                     <p className="text-sm text-gray-600 mb-1">Year</p>
                     <p className="font-semibold text-gray-900">
                       {task.vehicleYear}
@@ -309,7 +314,7 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
                   </div>
                 )}
                 {task.vehicleMileage && (
-                  <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <div className="p-4 bg-[#0200791F] rounded-xl border border-[#020079]/20">
                     <p className="text-sm text-gray-600 mb-1">Mileage</p>
                     <p className="font-semibold text-gray-900">
                       {task.vehicleMileage.toLocaleString()} miles
@@ -321,12 +326,12 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
 
             {/* Parts & Materials */}
             {task.parts && task.parts.length > 0 && (
-              <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
+              <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white transition-all duration-300">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <Wrench className="h-5 w-5 text-green-600" />
+                  <div className="p-2 bg-[#FFD70029] rounded-lg">
+                    <Wrench className="h-5 w-5 text-[#020079]" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-xl font-bold text-[#020079]">
                     Parts & Materials
                   </h2>
                 </div>
@@ -334,7 +339,7 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
                   {task.parts.map((part, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-green-200 transition-colors"
+                      className="flex items-center justify-between p-4 bg-[#0200791F] rounded-xl border border-[#020079]/20 hover:border-[#E6C200] transition-colors"
                     >
                       <div>
                         <p className="font-semibold text-gray-900">
@@ -344,7 +349,7 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
                           Quantity: {part.quantity}
                         </p>
                       </div>
-                      <p className="text-lg font-bold text-green-600">
+                      <p className="text-lg font-bold text-[#020079]">
                         Rs {part.cost.toFixed(2)}
                       </p>
                     </div>
@@ -352,7 +357,7 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
                   <div className="pt-3 border-t border-gray-200">
                     <div className="flex items-center justify-between">
                       <p className="font-bold text-gray-900">Estimated Total</p>
-                      <p className="text-2xl font-bold text-green-600">
+                      <p className="text-2xl font-bold text-[#E6C200]">
                         Rs {task.estimatedCost?.toFixed(2)}
                       </p>
                     </div>
@@ -363,12 +368,12 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
 
             {/* Notes */}
             {task.notes && task.notes.length > 0 && (
-              <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
+              <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white transition-all duration-300">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="p-2 bg-orange-100 rounded-lg">
-                    <AlertCircle className="h-5 w-5 text-orange-600" />
+                  <div className="p-2 bg-[#FFD70029] rounded-lg">
+                    <AlertCircle className="h-5 w-5 text-[#020079]" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900">
+                  <h2 className="text-xl font-bold text-[#020079]">
                     Notes & Remarks
                   </h2>
                 </div>
@@ -376,9 +381,9 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
                   {task.notes.map((note, index) => (
                     <li
                       key={index}
-                      className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg border border-orange-100"
+                      className="flex items-start gap-3 p-3 bg-[#FFD70029] rounded-lg border border-[#E6C200]"
                     >
-                      <div className="h-2 w-2 bg-orange-500 rounded-full mt-2 flex-shrink-0" />
+                      <div className="h-2 w-2 bg-[#E6C200] rounded-full mt-2 flex-shrink-0" />
                       <p className="text-gray-700">{note}</p>
                     </li>
                   ))}
@@ -390,12 +395,12 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
           {/* Sidebar - Right Column */}
           <div className="space-y-6">
             {/* Customer Information */}
-            <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50">
+            <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-[#0200791F] transition-all duration-300">
               <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-blue-600 rounded-lg">
+                <div className="p-2 bg-[#020079] rounded-lg">
                   <User className="h-5 w-5 text-white" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-[#020079]">
                   Customer Details
                 </h2>
               </div>
@@ -407,8 +412,8 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
                   </p>
                 </div>
                 {task.customerPhone && (
-                  <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-blue-200">
-                    <Phone className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#020079]/20">
+                    <Phone className="h-4 w-4 text-[#020079] flex-shrink-0" />
                     <div className="min-w-0">
                       <p className="text-xs text-gray-600">Phone</p>
                       <p className="font-medium text-gray-900 truncate">
@@ -418,8 +423,8 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
                   </div>
                 )}
                 {task.customerEmail && (
-                  <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-blue-200">
-                    <Mail className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                  <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-[#020079]/20">
+                    <Mail className="h-4 w-4 text-[#020079] flex-shrink-0" />
                     <div className="min-w-0">
                       <p className="text-xs text-gray-600">Email</p>
                       <p className="font-medium text-gray-900 truncate">
@@ -429,8 +434,8 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
                   </div>
                 )}
                 {task.customerAddress && (
-                  <div className="flex items-start gap-3 p-3 bg-white rounded-xl border border-blue-200">
-                    <MapPin className="h-4 w-4 text-blue-600 flex-shrink-0 mt-1" />
+                  <div className="flex items-start gap-3 p-3 bg-white rounded-xl border border-[#020079]/20">
+                    <MapPin className="h-4 w-4 text-[#020079] flex-shrink-0 mt-1" />
                     <div>
                       <p className="text-xs text-gray-600">Address</p>
                       <p className="font-medium text-gray-900">
@@ -443,18 +448,18 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
             </Card>
 
             {/* Timeline */}
-            <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
+            <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white transition-all duration-300">
               <div className="flex items-center gap-2 mb-4">
-                <div className="p-2 bg-indigo-100 rounded-lg">
-                  <Calendar className="h-5 w-5 text-indigo-600" />
+                <div className="p-2 bg-[#0200791F] rounded-lg">
+                  <Calendar className="h-5 w-5 text-[#020079]" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900">Timeline</h2>
+                <h2 className="text-xl font-bold text-[#020079]">Timeline</h2>
               </div>
               <div className="space-y-4">
                 {task.assignedDate && (
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-gray-100 rounded-lg mt-1">
-                      <Clock className="h-4 w-4 text-gray-600" />
+                    <div className="p-2 bg-[#0200791F] rounded-lg mt-1">
+                      <Clock className="h-4 w-4 text-[#020079]" />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-gray-900">
@@ -479,8 +484,8 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
                 </div>
                 {task.status === "completed" && (
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-green-100 rounded-lg mt-1">
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <div className="p-2 bg-[#FFD70029] rounded-lg mt-1">
+                      <CheckCircle2 className="h-4 w-4 text-[#E6C200]" />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-gray-900">
@@ -496,38 +501,38 @@ export default function TaskDetailPage({ params }: { params: { id: string } }) {
             </Card>
 
             {/* Action Buttons */}
-            <Card className="p-6 rounded-2xl shadow-lg border-gray-200 bg-white">
-              <h3 className="font-bold text-gray-900 mb-4">Quick Actions</h3>
+            <Card className="p-6 rounded-2xl shadow-lg border-[#FFD700]/30 hover:border-[#E6C200] bg-white transition-all duration-300">
+              <h3 className="font-bold text-[#020079] mb-4">Quick Actions</h3>
               <div className="space-y-3">
                 {task.status === "not_started" && (
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button className="w-full bg-gradient-to-r from-[#020079] to-[#01024D] hover:from-[#03009B] hover:to-[#020079] text-white">
                     Start Task
                   </Button>
                 )}
                 {task.status === "in_progress" && (
                   <>
-                    <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+                    <Button className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white">
                       Pause Task
                     </Button>
-                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
+                    <Button className="w-full bg-gradient-to-r from-[#E6C200] to-[#E6C200] hover:from-[#E6C200]/90 hover:to-[#E6C200]/90 text-[#020079] font-semibold">
                       Mark as Complete
                     </Button>
                   </>
                 )}
                 {task.status === "paused" && (
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button className="w-full bg-gradient-to-r from-[#020079] to-[#01024D] hover:from-[#03009B] hover:to-[#020079] text-white">
                     Resume Task
                   </Button>
                 )}
                 <Button
                   variant="outline"
-                  className="w-full border-gray-300 hover:bg-gray-50 text-gray-700"
+                  className="w-full border-[#020079]/30 hover:bg-[#0200791F] hover:border-[#020079] text-[#020079]"
                 >
                   Contact Customer
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full border-gray-300 hover:bg-gray-50 text-gray-700"
+                  className="w-full border-[#020079]/30 hover:bg-[#0200791F] hover:border-[#020079] text-[#020079]"
                 >
                   Add Note
                 </Button>

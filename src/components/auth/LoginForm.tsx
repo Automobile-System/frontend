@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Spinner } from "@/components/ui/spinner"
-import { Eye, EyeOff, Mail, Lock, Car, ShieldCheck } from "lucide-react"
+import { Eye, EyeOff, Mail, Lock, ShieldCheck } from "lucide-react"
 import { useState } from "react"
 
 export default function LoginForm() {
@@ -16,20 +16,23 @@ export default function LoginForm() {
     const [showPassword, setShowPassword] = useState(false)
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-slate-100 p-4">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#020079] via-[#03009B] to-black p-4">
             <div className="w-full max-w-md">
                 {/* Brand Header */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-600 mb-4 shadow-lg">
-                        <Car className="h-8 w-8 text-white" />
+                    <div className="inline-flex flex-col items-center mb-4">
+                        <div className="text-5xl font-bold font-roboto mb-2">
+                            <span className="text-white">NITRO</span>
+                            <span className="text-[#FFD700] glow-accent">LINE</span>
+                        </div>
+                        <div className="w-24 h-1 bg-[#FFD700]"></div>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">CarVeo</h1>
-                    <p className="text-gray-600">Automobile Service</p>
+                    <p className="text-white/80 font-inter">Premium Automotive Services</p>
                 </div>
 
-                <Card className="shadow-2xl border-gray-200">
+                <Card className="shadow-2xl border-[#FFD700]/20 bg-white/95 backdrop-blur-sm">
                     <CardHeader className="space-y-1 pb-6">
-                        <CardTitle className="text-2xl font-bold text-gray-900 text-center">
+                        <CardTitle className="text-2xl font-bold text-[#020079] text-center font-roboto">
                             Sign In
                         </CardTitle>
                         <CardDescription className="text-center text-gray-600">
@@ -53,7 +56,7 @@ export default function LoginForm() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         disabled={loading}
-                                        className={`pl-11 h-12 bg-white border-gray-300 focus:border-red-600 focus:ring-red-600 text-gray-900 text-base placeholder:text-gray-400 ${
+                                        className={`pl-11 h-12 bg-white border-gray-300 focus:border-[#020079] focus:ring-[#020079] text-gray-900 text-base placeholder:text-gray-400 ${
                                             fieldErrors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                                         }`}
                                         autoComplete="email"
@@ -82,7 +85,7 @@ export default function LoginForm() {
                                         value={formData.password}
                                         onChange={handleChange}
                                         disabled={loading}
-                                        className={`pl-11 pr-12 h-12 bg-white border-gray-300 focus:border-red-600 focus:ring-red-600 text-gray-900 text-base placeholder:text-gray-400 ${
+                                        className={`pl-11 pr-12 h-12 bg-white border-gray-300 focus:border-[#020079] focus:ring-[#020079] text-gray-900 text-base placeholder:text-gray-400 ${
                                             fieldErrors.password ? "border-red-500 focus:border-red-500 focus:ring-red-500" : ""
                                         }`}
                                         autoComplete="current-password"
@@ -136,7 +139,7 @@ export default function LoginForm() {
                                 <Button 
                                     type="button"
                                     variant="link" 
-                                    className="p-0 h-auto text-red-600 hover:text-red-700 text-sm font-semibold"
+                                    className="p-0 h-auto text-[#020079] hover:text-[#FFD700] text-sm font-semibold"
                                 >
                                     Forgot password?
                                 </Button>
@@ -145,7 +148,7 @@ export default function LoginForm() {
                             {/* Submit Button */}
                             <Button 
                                 type="submit" 
-                                className="w-full h-12 bg-red-600 hover:bg-red-700 text-white font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-200" 
+                                className="w-full h-12 bg-[#020079] hover:bg-[#03009B] text-white font-semibold text-base shadow-lg hover:shadow-xl transition-all duration-200 font-roboto uppercase tracking-wider" 
                                 disabled={loading}
                             >
                                 {loading ? (
@@ -164,6 +167,14 @@ export default function LoginForm() {
 
                         <Separator className="bg-gray-200" />
 
+                        {/* Sign Up Link */}
+                        <div className="text-center text-sm text-gray-600">
+                            Don&apos;t have an account?{" "}
+                            <a href="/signup" className="text-[#020079] hover:text-[#FFD700] font-semibold transition-colors">
+                                Sign Up
+                            </a>
+                        </div>
+
                         {/* Help Section */}
                         <div className="bg-gray-50 -mx-6 -mb-6 px-6 py-4 rounded-b-lg border-t border-gray-200">
                             <div className="text-center text-sm text-gray-600">
@@ -171,7 +182,7 @@ export default function LoginForm() {
                                 <Button 
                                     type="button"
                                     variant="link" 
-                                    className="p-0 h-auto text-red-600 hover:text-red-700 font-semibold"
+                                    className="p-0 h-auto text-[#020079] hover:text-[#FFD700] font-semibold"
                                 >
                                     Contact Support
                                 </Button>
@@ -182,7 +193,7 @@ export default function LoginForm() {
 
                 {/* Security Notice */}
                 <div className="mt-6 text-center">
-                    <p className="text-xs text-gray-500 flex items-center justify-center gap-1">
+                    <p className="text-xs text-white/60 flex items-center justify-center gap-1">
                         <ShieldCheck className="h-3 w-3" />
                         Secure connection • Your data is protected
                     </p>

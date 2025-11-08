@@ -214,12 +214,10 @@ export default function AssignedTasks() {
   useEffect(() => {
     const timers = timersRef.current;
     const approvalTimeouts = approvalTimeoutsRef.current;
-    
+
     return () => {
       Object.values(timers).forEach((id) => id && clearInterval(id));
-      Object.values(approvalTimeouts).forEach(
-        (id) => id && clearTimeout(id)
-      );
+      Object.values(approvalTimeouts).forEach((id) => id && clearTimeout(id));
     };
   }, []);
 
@@ -228,9 +226,9 @@ export default function AssignedTasks() {
       case "not_started":
         return "bg-gray-100 text-gray-800";
       case "in_progress":
-        return "bg-blue-100 text-blue-700";
+        return "bg-[#0200791F] text-[#020079]";
       case "completed":
-        return "bg-green-100 text-green-700";
+        return "bg-[#FFD70029] text-gray-900";
       case "paused":
         return "bg-amber-100 text-amber-700";
       default:
@@ -255,20 +253,20 @@ export default function AssignedTasks() {
       <div className="max-w-7xl mx-auto py-8 px-6">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Tasks</h1>
+          <h1 className="text-3xl font-bold text-[#020079] mb-2">My Tasks</h1>
           <p className="text-gray-600">
             Manage your assigned tasks and track progress in real-time
           </p>
         </div>
 
         {/* Description box */}
-        <div className="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-100 p-6 backdrop-blur-sm">
+        <div className="mb-6 bg-[#0200791F] rounded-xl shadow-sm border border-[#020079]/20 p-6">
           <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+            <div className="flex-shrink-0 w-10 h-10 bg-[#020079] rounded-lg flex items-center justify-center">
               <AlertCircle className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">
+              <h3 className="text-sm font-semibold text-[#020079] mb-1">
                 Task Management Guide
               </h3>
               <p className="text-sm text-gray-700 leading-relaxed">
@@ -283,20 +281,20 @@ export default function AssignedTasks() {
         </div>
 
         {/* Search & Filter box */}
-        <div className="mb-8 bg-white rounded-xl shadow-md border border-gray-200 p-5">
+        <div className="mb-8 bg-white rounded-xl shadow-md border border-[#FFD700]/30 p-5">
           <div className="flex gap-4 items-center flex-wrap">
             <div className="relative flex-1 min-w-[280px]">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <Input
                 placeholder="Search by task, vehicle, or plate number..."
-                className="pl-12 h-12 text-base bg-gray-50 border-gray-200 text-gray-900 rounded-xl w-full placeholder:text-gray-500 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
+                className="pl-12 h-12 text-base bg-gray-50 border-[#020079]/20 text-gray-900 rounded-xl w-full placeholder:text-gray-500 focus:border-[#020079] focus:ring-2 focus:ring-[#0200791F] transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
 
             <select
-              className="h-12 px-5 text-base bg-gray-50 border-gray-200 text-gray-900 rounded-xl focus:ring-2 focus:ring-blue-100 focus:border-blue-400 cursor-pointer transition-all font-medium"
+              className="h-12 px-5 text-base bg-gray-50 border-[#020079]/20 text-gray-900 rounded-xl focus:ring-2 focus:ring-[#0200791F] focus:border-[#020079] cursor-pointer transition-all font-medium"
               value={statusFilter}
               onChange={(e) =>
                 setStatusFilter(e.target.value as TaskStatus | "all")
@@ -317,16 +315,16 @@ export default function AssignedTasks() {
             <Card
               key={task.id}
               onClick={() => router.push(`/employee/tasks/${task.id}`)}
-              className="bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 overflow-hidden group cursor-pointer"
+              className="bg-white border border-[#FFD700]/30 hover:border-[#E6C200] rounded-2xl shadow-md hover:shadow-2xl transform hover:-translate-y-2 hover:scale-105 transition-all duration-300 overflow-hidden group cursor-pointer"
             >
               <div className="p-6 relative">
                 {/* Status indicator line */}
                 <div
                   className={`absolute top-0 left-0 right-0 h-1 ${
                     task.status === "in_progress"
-                      ? "bg-blue-500"
+                      ? "bg-[#020079]"
                       : task.status === "completed"
-                      ? "bg-green-500"
+                      ? "bg-[#E6C200]"
                       : task.status === "paused"
                       ? "bg-amber-500"
                       : "bg-gray-300"
@@ -335,7 +333,7 @@ export default function AssignedTasks() {
 
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#020079] transition-colors">
                       {task.title}
                     </h3>
                     <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
@@ -424,12 +422,12 @@ export default function AssignedTasks() {
                 {/* Stats section */}
                 <div className="mt-5 pt-4 border-t border-gray-100">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl">
-                      <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shadow-sm">
-                        <Timer className="h-5 w-5 text-white" />
+                    <div className="flex items-center gap-3 p-3 bg-[#0200791F] rounded-xl border border-[#020079]/20">
+                      <div className="flex-shrink-0 w-10 h-10 bg-[#FFD70029] rounded-lg flex items-center justify-center shadow-sm">
+                        <Timer className="h-5 w-5 text-[#020079]" />
                       </div>
                       <div>
-                        <div className="text-xs text-blue-600 font-medium uppercase tracking-wide">
+                        <div className="text-xs text-[#020079] font-medium uppercase tracking-wide">
                           Time
                         </div>
                         <div className="text-lg font-bold text-gray-900">
@@ -437,9 +435,9 @@ export default function AssignedTasks() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-red-50 rounded-xl">
-                      <div className="flex-shrink-0 w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center shadow-sm">
-                        <AlertCircle className="h-5 w-5 text-white" />
+                    <div className="flex items-center gap-3 p-3 bg-red-50 rounded-xl border border-red-200">
+                      <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center shadow-sm">
+                        <AlertCircle className="h-5 w-5 text-red-600" />
                       </div>
                       <div>
                         <div className="text-xs text-red-600 font-medium uppercase tracking-wide">
@@ -461,7 +459,7 @@ export default function AssignedTasks() {
                           e.stopPropagation();
                           handleStart(task.id);
                         }}
-                        className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 h-11 rounded-xl"
+                        className="flex-1 bg-gradient-to-r from-[#020079] to-[#01024D] hover:from-[#03009B] hover:to-[#020079] text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 h-11 rounded-xl"
                       >
                         <svg
                           className="w-4 h-4 mr-2"
@@ -538,7 +536,7 @@ export default function AssignedTasks() {
                           e.stopPropagation();
                           handleComplete(task.id);
                         }}
-                        className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 h-11 rounded-xl"
+                        className="flex-1 bg-gradient-to-r from-[#E6C200] to-[#E6C200] hover:from-[#E6C200]/90 hover:to-[#E6C200]/90 text-[#020079] font-semibold shadow-md hover:shadow-lg transition-all duration-200 h-11 rounded-xl"
                       >
                         <svg
                           className="w-4 h-4 mr-2"
@@ -565,7 +563,7 @@ export default function AssignedTasks() {
                           e.stopPropagation();
                           handleStart(task.id);
                         }}
-                        className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 h-11 rounded-xl"
+                        className="flex-1 bg-gradient-to-r from-[#020079] to-[#01024D] hover:from-[#03009B] hover:to-[#020079] text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 h-11 rounded-xl"
                       >
                         <svg
                           className="w-4 h-4 mr-2"
@@ -593,7 +591,7 @@ export default function AssignedTasks() {
                           e.stopPropagation();
                           handleComplete(task.id);
                         }}
-                        className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 h-11 rounded-xl"
+                        className="flex-1 bg-gradient-to-r from-[#E6C200] to-[#E6C200] hover:from-[#E6C200]/90 hover:to-[#E6C200]/90 text-[#020079] font-semibold shadow-md hover:shadow-lg transition-all duration-200 h-11 rounded-xl"
                       >
                         <svg
                           className="w-4 h-4 mr-2"
@@ -621,7 +619,7 @@ export default function AssignedTasks() {
         {showPauseModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl transform transition-all">
-              <div className="bg-gradient-to-r from-orange-500 to-red-500 p-6 rounded-t-2xl">
+              <div className="bg-gradient-to-r from-[#020079] to-[#01024D] p-6 rounded-t-2xl">
                 <h3 className="text-2xl font-bold text-white flex items-center gap-2">
                   <svg
                     className="w-6 h-6"
@@ -638,19 +636,19 @@ export default function AssignedTasks() {
                   </svg>
                   Pause Task
                 </h3>
-                <p className="text-orange-100 text-sm mt-1">
+                <p className="text-white/80 text-sm mt-1">
                   Provide details about why this task needs to be paused
                 </p>
               </div>
 
               <div className="p-6">
-                <label className="block text-sm font-semibold mb-2 text-gray-900">
+                <label className="block text-sm font-semibold mb-2 text-[#020079]">
                   Reason for Pausing
                 </label>
                 <select
                   value={pauseReasonSelect}
                   onChange={(e) => setPauseReasonSelect(e.target.value)}
-                  className="w-full border-2 border-gray-200 rounded-xl p-3 mb-4 text-gray-900 bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all font-medium"
+                  className="w-full border-2 border-[#020079]/20 rounded-xl p-3 mb-4 text-gray-900 bg-white focus:border-[#020079] focus:ring-2 focus:ring-[#0200791F] transition-all font-medium"
                 >
                   <option value="Need Manager Assistance">
                     Need Manager Assistance
@@ -664,7 +662,7 @@ export default function AssignedTasks() {
                   <option value="Other">Other</option>
                 </select>
 
-                <label className="block text-sm font-semibold mb-2 text-gray-900">
+                <label className="block text-sm font-semibold mb-2 text-[#020079]">
                   Additional Notes
                 </label>
                 <textarea
@@ -672,16 +670,16 @@ export default function AssignedTasks() {
                   onChange={(e) => setPauseReasonNotes(e.target.value)}
                   rows={4}
                   placeholder="Add any additional details about why you're pausing this task..."
-                  className="w-full border-2 border-gray-200 rounded-xl p-3 mb-4 text-gray-900 bg-white focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all resize-none"
+                  className="w-full border-2 border-[#020079]/20 rounded-xl p-3 mb-4 text-gray-900 bg-white focus:border-[#020079] focus:ring-2 focus:ring-[#0200791F] transition-all resize-none"
                 />
 
-                <div className="flex items-start gap-3 mb-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                <div className="flex items-start gap-3 mb-4 p-4 bg-[#0200791F] rounded-xl border border-[#020079]/20">
                   <input
                     id="reqApproval"
                     type="checkbox"
                     checked={pauseRequiresApproval}
                     onChange={(e) => setPauseRequiresApproval(e.target.checked)}
-                    className="w-5 h-5 mt-0.5 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                    className="w-5 h-5 mt-0.5 text-[#020079] border-gray-300 rounded focus:ring-[#020079]"
                   />
                   <label
                     htmlFor="reqApproval"
@@ -691,10 +689,10 @@ export default function AssignedTasks() {
                   </label>
                 </div>
 
-                <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-4 rounded-xl text-sm text-yellow-900 border-l-4 border-yellow-400 mb-6">
+                <div className="bg-[#FFD70029] p-4 rounded-xl text-sm text-gray-900 border-l-4 border-[#E6C200] mb-6">
                   <div className="flex items-start gap-2">
                     <svg
-                      className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5"
+                      className="w-5 h-5 text-[#E6C200] flex-shrink-0 mt-0.5"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -720,7 +718,7 @@ export default function AssignedTasks() {
                   </button>
                   <button
                     onClick={confirmPause}
-                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700 font-semibold shadow-lg hover:shadow-xl transition-all"
+                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#020079] to-[#01024D] text-white hover:from-[#03009B] hover:to-[#020079] font-semibold shadow-lg hover:shadow-xl transition-all"
                   >
                     Confirm Pause
                   </button>

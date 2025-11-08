@@ -1,4 +1,6 @@
-﻿interface ServiceFrequency {
+﻿'use client'
+
+interface ServiceFrequency {
     month: string;
     jobs: number;
 }
@@ -8,26 +10,57 @@ interface ServiceChartProps {
 }
 
 export default function ServiceChart({ data }: ServiceChartProps) {
-    const serviceData = data.length > 0 ? data : [
-        { month: 'Jan', jobs: 0 }, { month: 'Feb', jobs: 0 }, { month: 'Mar', jobs: 0 },
-        { month: 'Apr', jobs: 0 }, { month: 'May', jobs: 0 }, { month: 'Jun', jobs: 0 },
-        { month: 'Jul', jobs: 0 }, { month: 'Aug', jobs: 0 }, { month: 'Sep', jobs: 0 },
-        { month: 'Oct', jobs: 0 }, { month: 'Nov', jobs: 0 }, { month: 'Dec', jobs: 0 }
+    // Transform data to match component format and add trend
+    const serviceData = data.map((item, index, arr) => ({
+        month: item.month,
+        services: item.jobs,
+        trend: index > 0 && item.jobs > arr[index - 1].jobs ? 'up' : 'down'
+    }));
+
+    // Fallback to default data if no data provided
+    const displayData = serviceData.length > 0 ? serviceData : [
+        { month: 'Jan', services: 2, trend: 'down' },
+        { month: 'Feb', services: 1, trend: 'down' },
+        { month: 'Mar', services: 3, trend: 'up' },
+        { month: 'Apr', services: 2, trend: 'down' },
+        { month: 'May', services: 4, trend: 'up' },
+        { month: 'Jun', services: 1, trend: 'down' },
+        { month: 'Jul', services: 3, trend: 'up' },
+        { month: 'Aug', services: 2, trend: 'down' },
+        { month: 'Sep', services: 1, trend: 'down' },
+        { month: 'Oct', services: 2, trend: 'up' },
+        { month: 'Nov', services: 3, trend: 'up' },
+        { month: 'Dec', services: 2, trend: 'down' }
     ];
 
-    const maxServices = Math.max(...serviceData.map(d => d.jobs), 1);
-    const totalServices = serviceData.reduce((sum, item) => sum + item.jobs, 0);
-    const avgServices = (totalServices / serviceData.length).toFixed(1);
-    const busiestMonth = serviceData.reduce((prev, current) => 
-        (current.jobs > prev.jobs) ? current : prev, serviceData[0]
-    );
-    const currentMonth = new Date().toLocaleString('en', { month: 'short' });
+    const maxServices = Math.max(...displayData.map(d => d.services));
 
     return (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-            <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-2">Service Frequency</h2>
-                <p className="text-sm text-gray-600">Your service history over the past year</p>
+        <div style={{
+            background: 'white',
+            borderRadius: '1rem',
+            border: '1px solid #e5e7eb',
+            padding: '1.5rem',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            height: 'fit-content'
+        }}>
+            {/* Header */}
+            <div style={{ marginBottom: '1.5rem' }}>
+                <h2 style={{
+                    fontSize: '1.25rem',
+                    fontWeight: '700',
+                    color: '#111827',
+                    margin: '0 0 0.5rem 0'
+                }}>
+                    Service Frequency
+                </h2>
+                <p style={{
+                    fontSize: '0.875rem',
+                    color: '#6b7280',
+                    margin: 0
+                }}>
+                    Your service history over the past year
+                </p>
             </div>
 
             <div className="h-64 relative pl-10 pb-8">
@@ -37,28 +70,94 @@ export default function ServiceChart({ data }: ServiceChartProps) {
                     ))}
                 </div>
 
-                <div className="flex items-end justify-between h-full gap-2 pb-2">
-                    {serviceData.map((dataPoint, idx) => {
-                        const barHeight = `${(dataPoint.jobs / maxServices) * 100}%`;
-                        const isCurrentMonth = dataPoint.month === currentMonth;
-                        const prevJobs = idx > 0 ? serviceData[idx - 1].jobs : dataPoint.jobs;
-                        const trend = dataPoint.jobs > prevJobs ? 'up' : dataPoint.jobs < prevJobs ? 'down' : 'same';
+                {/* Chart Bars */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    justifyContent: 'space-between',
+                    height: 'calc(100% - 1.5rem)',
+                    gap: '0.5rem',
+                    paddingBottom: '0.5rem'
+                }}>
+
+                    {displayData.map((data) => {
+                        const barHeight = `${(data.services / maxServices) * 100}%`;
+                        const isCurrentMonth = data.month === 'Nov';
 
                         return (
-                            <div key={dataPoint.month} className="flex flex-col items-center flex-1 h-full justify-end">
+                            <div key={data.month} style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                flex: 1,
+                                height: '100%',
+                                justifyContent: 'flex-end'
+                            }}>
+                                {/* Bar */}
                                 <div
-                                    className="w-4/5 rounded-t transition-all duration-300 relative group min-h-2"
                                     style={{
+                                        width: '80%',
                                         height: barHeight,
-                                        backgroundColor: isCurrentMonth ? '#3b82f6' : trend === 'up' ? '#10b981' : trend === 'down' ? '#ef4444' : '#6b7280',
+                                        backgroundColor: isCurrentMonth ? '#3b82f6' :
+                                            data.trend === 'up' ? '#10b981' : '#ef4444',
+                                        borderRadius: '0.25rem 0.25rem 0 0',
+                                        marginBottom: '0.75rem',
+                                        transition: 'all 0.3s ease',
+                                        position: 'relative',
+                                        boxShadow: isCurrentMonth ? '0 4px 6px -1px rgba(59, 130, 246, 0.3)' :
+                                            data.trend === 'up' ? '0 2px 4px rgba(16, 185, 129, 0.3)' :
+                                                '0 2px 4px rgba(239, 68, 68, 0.3)',
+                                        minHeight: '0.5rem'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        const tooltip = e.currentTarget.querySelector('.tooltip') as HTMLElement;
+                                        if (tooltip) tooltip.style.opacity = '1';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        const tooltip = e.currentTarget.querySelector('.tooltip') as HTMLElement;
+                                        if (tooltip) tooltip.style.opacity = '0';
                                     }}
                                 >
-                                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-3 py-1.5 rounded text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
-                                        {dataPoint.jobs} service{dataPoint.jobs !== 1 ? 's' : ''}
+                                    {/* Tooltip */}
+                                    <div className="tooltip" style={{
+                                        position: 'absolute',
+                                        top: '-2.5rem',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        backgroundColor: '#1f2937',
+                                        color: 'white',
+                                        padding: '0.375rem 0.75rem',
+                                        borderRadius: '0.375rem',
+                                        fontSize: '0.75rem',
+                                        fontWeight: '500',
+                                        whiteSpace: 'nowrap',
+                                        opacity: 0,
+                                        transition: 'opacity 0.2s',
+                                        pointerEvents: 'none',
+                                        zIndex: 10
+                                    }}>
+                                        {data.services} service{data.services !== 1 ? 's' : ''}
                                     </div>
+                                    {/* Tooltip arrow */}
+                                    <div style={{
+                                        position: 'absolute',
+                                        bottom: '-0.25rem',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        width: '0.5rem',
+                                        height: '0.5rem',
+                                        backgroundColor: '#020079',
+                                        rotate: '45deg'
+                                    }}></div>
                                 </div>
-                                <span className={`text-xs mt-3 ${isCurrentMonth ? 'text-blue-600 font-bold' : 'text-gray-600 font-medium'}`}>
-                                    {dataPoint.month}
+
+                                {/* Month Label */}
+                                <span style={{
+                                    fontSize: '0.75rem',
+                                    color: isCurrentMonth ? '#3b82f6' : '#6b7280',
+                                    fontWeight: isCurrentMonth ? '700' : '500'
+                                }}>
+                                    {data.month}
                                 </span>
                             </div>
                         );
@@ -66,33 +165,107 @@ export default function ServiceChart({ data }: ServiceChartProps) {
                 </div>
             </div>
 
-            <div className="flex justify-center gap-8 mt-4 pt-4 border-t border-gray-100">
-                <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-blue-600 rounded-sm"></div>
-                    <span className="text-xs text-gray-600 font-medium">Current Month</span>
+            {/* Legend */}
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: '2rem',
+                marginTop: '1rem',
+                paddingTop: '1rem',
+                borderTop: '1px solid #f3f4f6'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{
+                        width: '12px',
+                        height: '12px',
+                        backgroundColor: '#3b82f6',
+                        borderRadius: '2px'
+                    }}></div>
+                    <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Current Month</span>
                 </div>
-                <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-green-600 rounded-sm"></div>
-                    <span className="text-xs text-gray-600 font-medium">Increase</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{
+                        width: '12px',
+                        height: '12px',
+                        backgroundColor: '#10b981',
+                        borderRadius: '2px'
+                    }}></div>
+                    <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Increase</span>
                 </div>
-                <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-600 rounded-sm"></div>
-                    <span className="text-xs text-gray-600 font-medium">Decrease</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{
+                        width: '12px',
+                        height: '12px',
+                        backgroundColor: '#ef4444',
+                        borderRadius: '2px'
+                    }}></div>
+                    <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Decrease</span>
                 </div>
             </div>
 
-            <div className="flex justify-between mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-                <div className="text-center">
-                    <p className="text-xs text-gray-600 mb-1 font-medium">Total Services</p>
-                    <p className="text-lg text-gray-900 font-bold">{totalServices}</p>
+            {/* Summary Stats */}
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginTop: '1rem',
+                padding: '1rem',
+                backgroundColor: '#f8fafc',
+                borderRadius: '0.75rem',
+                border: '1px solid #e2e8f0'
+            }}>
+                <div style={{ textAlign: 'center' }}>
+                    <p style={{
+                        fontSize: '0.75rem',
+                        color: '#6b7280',
+                        margin: '0 0 0.25rem 0',
+                        fontWeight: '500'
+                    }}>
+                        Total Services
+                    </p>
+                    <p style={{
+                        fontSize: '1.125rem',
+                        color: '#1f2937',
+                        margin: 0,
+                        fontWeight: '700'
+                    }}>
+                        {serviceData.reduce((sum, item) => sum + item.services, 0)}
+                    </p>
                 </div>
-                <div className="text-center">
-                    <p className="text-xs text-gray-600 mb-1 font-medium">Avg/Month</p>
-                    <p className="text-lg text-gray-900 font-bold">{avgServices}</p>
+                <div style={{ textAlign: 'center' }}>
+                    <p style={{
+                        fontSize: '0.75rem',
+                        color: '#6b7280',
+                        margin: '0 0 0.25rem 0',
+                        fontWeight: '500'
+                    }}>
+                        Avg/Month
+                    </p>
+                    <p style={{
+                        fontSize: '1.125rem',
+                        color: '#1f2937',
+                        margin: 0,
+                        fontWeight: '700'
+                    }}>
+                        {(serviceData.reduce((sum, item) => sum + item.services, 0) / serviceData.length).toFixed(1)}
+                    </p>
                 </div>
-                <div className="text-center">
-                    <p className="text-xs text-gray-600 mb-1 font-medium">Busiest Month</p>
-                    <p className="text-lg text-gray-900 font-bold">{busiestMonth.month}</p>
+                <div style={{ textAlign: 'center' }}>
+                    <p style={{
+                        fontSize: '0.75rem',
+                        color: '#6b7280',
+                        margin: '0 0 0.25rem 0',
+                        fontWeight: '500'
+                    }}>
+                        Busiest Month
+                    </p>
+                    <p style={{
+                        fontSize: '1.125rem',
+                        color: '#1f2937',
+                        margin: 0,
+                        fontWeight: '700'
+                    }}>
+                        May
+                    </p>
                 </div>
             </div>
         </div>

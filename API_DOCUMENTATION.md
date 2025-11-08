@@ -1,8 +1,8 @@
 # API Documentation
 
 **Complete API Reference for Admin Panel**  
-**Last Updated**: November 5, 2025  
-**Version**: 1.0
+**Last Updated**: November 6, 2025  
+**Version**: 1.1
 
 ---
 
@@ -17,7 +17,8 @@
    - [Workforce Overview](#page-3-workforce-overview)
    - [Services Analytics](#page-4-services-analytics)
    - [AI Insights](#page-5-ai-insights)
-   - [Security](#page-6-settings)
+   - [Settings](#page-6-settings)
+   - [Customer Details](#page-7-customer-details)
 5. [Data Types & Schemas](#data-types--schemas)
 6. [Error Handling](#error-handling)
 7. [Backend Integration Guide](#backend-integration-guide)
@@ -2116,6 +2117,424 @@ const totalCompensation = baseSalary + bonusAmount  // 84,500
 
 ---
 
+### Page 7: Customer Details
+
+**Path**: `/admin/customerdetails`  
+**Component**: `CustomerDetailsPage`  
+**Endpoints**: 7 total
+
+---
+
+#### 7.1 Fetch Customer Overview
+
+**Function**: `fetchCustomerOverview()`  
+**Endpoint**: `GET /api/customers/overview`  
+**Description**: Get basic customer statistics
+
+**Request**: No body required
+
+**Response**:
+```json
+{
+  "totalCustomers": 1247,
+  "newThisMonth": 89,
+  "activeCustomers": 1103,
+  "activityRate": 88.5,
+  "topCustomer": {
+    "name": "Nimal Perera",
+    "email": "nimal.perera@email.com",
+    "totalSpent": 45780,
+    "servicesUsed": 24
+  }
+}
+```
+
+**SQL Query**:
+```sql
+SELECT 
+  COUNT(*) as total_customers,
+  COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH) THEN 1 END) as new_this_month,
+  COUNT(CASE WHEN status = 'Active' THEN 1 END) as active_customers,
+  (COUNT(CASE WHEN status = 'Active' THEN 1 END) * 100.0 / COUNT(*)) as activity_rate
+FROM customers;
+
+-- Top spending customer
+SELECT 
+  name, email, 
+  SUM(total_amount) as total_spent,
+  COUNT(DISTINCT booking_id) as services_used
+FROM customers c
+LEFT JOIN bookings b ON c.customer_id = b.customer_id
+GROUP BY c.customer_id
+ORDER BY total_spent DESC
+LIMIT 1;
+
+-- Top spending customer
+SELECT 
+  name, email, total_spent, 
+  COUNT(DISTINCT booking_id) as services_used
+FROM customers c
+LEFT JOIN bookings b ON c.customer_id = b.customer_id
+GROUP BY c.customer_id
+ORDER BY total_spent DESC
+LIMIT 1;
+
+-- Rating distribution
+SELECT 
+  SUM(CASE WHEN rating = 5 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as five,
+  SUM(CASE WHEN rating = 4 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as four,
+  SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as three,
+  SUM(CASE WHEN rating < 3 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as below
+FROM customer_ratings;
+```
+
+**Response Codes**:
+- **200**: Success - Returns customer overview data
+- **401**: Unauthorized - Admin access required
+- **500**: Internal server error
+
+**Usage**:
+```typescript
+const overview = await fetchCustomerOverview()
+console.log(`Total customers: ${overview.totalCustomers}`)
+console.log(`Top customer: ${overview.topCustomer.name}`)
+```
+
+---
+
+#### 7.2 Fetch Customer List
+
+**Function**: `fetchCustomerList()`  
+**Endpoint**: `GET /api/customers/list`  
+**Description**: Get detailed list of all customers with their information
+
+**Request**: No body required
+
+**Response**:
+```json
+[
+  {
+    "id": "CUST001",
+    "name": "Nimal Perera",
+    "email": "nimal.perera@email.com",
+    "phone": "+94 77 123 4567",
+    "vehicleCount": 2,
+    "totalSpent": 45780,
+    "lastServiceDate": "2024-10-28",
+    "status": "Active"
+  },
+  {
+    "id": "CUST002",
+    "name": "Saman Silva",
+    "email": "saman.silva@email.com",
+    "phone": "+94 71 234 5678",
+    "vehicleCount": 1,
+    "totalSpent": 12450,
+    "lastServiceDate": "2024-10-25",
+    "status": "Active"
+  }
+]
+```
+
+**SQL Query**:
+```sql
+SELECT 
+  c.customer_id as id,
+  c.name,
+  c.email,
+  c.phone,
+  COUNT(DISTINCT v.vehicle_id) as vehicle_count,
+  COALESCE(SUM(b.total_amount), 0) as total_spent,
+  MAX(b.service_date) as last_service_date,
+  c.status
+FROM customers c
+LEFT JOIN vehicles v ON c.customer_id = v.customer_id
+LEFT JOIN bookings b ON c.customer_id = b.customer_id
+GROUP BY c.customer_id, c.name, c.email, c.phone, c.status
+ORDER BY c.name ASC;
+```
+
+**Filtering (Frontend)**:
+- Search by name, email, or phone
+- Filter by status: All, Active, Inactive
+
+**Response Codes**:
+- **200**: Success - Returns array of customers
+- **401**: Unauthorized - Admin access required
+- **500**: Internal server error
+
+**Usage**:
+```typescript
+const customers = await fetchCustomerList()
+const activeCustomers = customers.filter(c => c.status === 'Active')
+console.log(`${activeCustomers.length} active customers`)
+```
+
+---
+
+#### 7.3 Add New Customer
+
+**Function**: `addCustomer(customerData: AddCustomerRequest)`  
+**Endpoint**: `POST /api/customers`  
+**Description**: Create a new customer record
+
+**Request Body**:
+```json
+{
+  "name": "New Customer",
+  "email": "new@email.com",
+  "phone": "+94 77 000 0000"
+}
+```
+
+**Response**:
+```json
+{
+  "id": "CUST013",
+  "name": "New Customer",
+  "email": "new@email.com",
+  "phone": "+94 77 000 0000",
+  "vehicleCount": 0,
+  "totalSpent": 0,
+  "lastServiceDate": "N/A",
+  "status": "Active"
+}
+```
+
+**SQL Query**:
+```sql
+INSERT INTO customers (name, email, phone, status, created_at)
+VALUES (?, ?, ?, 'Active', NOW())
+RETURNING customer_id as id, name, email, phone, status;
+```
+
+**Response Codes**:
+- **201**: Success - Customer created
+- **400**: Bad request - Invalid data or duplicate email
+- **401**: Unauthorized - Admin access required
+- **500**: Internal server error
+
+**Usage**:
+```typescript
+const newCustomer: AddCustomerRequest = {
+  name: "John Doe",
+  email: "john@example.com",
+  phone: "+94 77 123 4567"
+}
+await addCustomer(newCustomer)
+```
+
+---
+
+#### 7.4 Update Customer Status
+
+**Function**: `updateCustomerStatus(customerId: string, newStatus: string)`  
+**Endpoint**: `PUT /api/customers/:id/status`  
+**Description**: Toggle customer status between Active and Inactive
+
+**Request Body**:
+```json
+{
+  "status": "Inactive"
+}
+```
+
+**Response**:
+```json
+{
+  "id": "CUST001",
+  "name": "Nimal Perera",
+  "email": "nimal.perera@email.com",
+  "phone": "+94 77 123 4567",
+  "vehicleCount": 2,
+  "totalSpent": 45780,
+  "lastServiceDate": "2024-10-28",
+  "status": "Inactive"
+}
+```
+
+**SQL Query**:
+```sql
+UPDATE customers
+SET status = ?, updated_at = NOW()
+WHERE customer_id = ?
+RETURNING customer_id as id, name, email, phone, status;
+```
+
+**Response Codes**:
+- **200**: Success - Status updated
+- **400**: Bad request - Invalid status value
+- **401**: Unauthorized - Admin access required
+- **404**: Not found - Customer ID does not exist
+- **500**: Internal server error
+
+**Usage**:
+```typescript
+await updateCustomerStatus('CUST001', 'Inactive')
+// Reload customer data after update
+await loadCustomerData()
+```
+
+---
+
+#### 7.5 Delete Customer
+
+**Function**: `deleteCustomer(customerId: string)`  
+**Endpoint**: `DELETE /api/customers/:id`  
+**Description**: Permanently delete a customer record
+
+**Request**: No body required (customer ID in URL)
+
+**Response**:
+```json
+{
+  "message": "Customer deleted successfully"
+}
+```
+
+**SQL Query**:
+```sql
+DELETE FROM customers
+WHERE customer_id = ?;
+```
+
+**Response Codes**:
+- **200**: Success - Customer deleted
+- **401**: Unauthorized - Admin access required
+- **404**: Not found - Customer ID does not exist
+- **409**: Conflict - Customer has active bookings
+- **500**: Internal server error
+
+**Usage**:
+```typescript
+if (confirm('Are you sure you want to delete this customer?')) {
+  await deleteCustomer('CUST001')
+  // Reload customer data after deletion
+  await loadCustomerData()
+}
+```
+
+**Business Rules**:
+- Customer deletion should check for active bookings
+- Consider soft delete (status = 'Deleted') instead of hard delete
+- Archive customer data before permanent deletion
+- Update related tables (vehicles, bookings) accordingly
+
+**Related Operations**:
+- **GET /api/customers/:id** - Get single customer details
+- **PUT /api/customers/:id** - Update customer information
+- **GET /api/customers/:id/vehicles** - Get customer vehicles
+- **GET /api/customers/:id/history** - Get customer service history
+
+---
+
+#### 7.6 Activate Customer
+
+**Function**: `activateCustomer(customerId: string)`  
+**Endpoint**: `PUT /api/customers/:id/activate`  
+**Description**: Activate a customer account (set status to Active)
+
+**Request**: No body required (customer ID in URL)
+
+**Response**:
+```json
+{
+  "id": "CUST001",
+  "name": "Nimal Perera",
+  "email": "nimal.perera@email.com",
+  "phone": "+94 77 123 4567",
+  "status": "Active",
+  "vehicleCount": 2,
+  "totalSpent": 45780,
+  "lastServiceDate": "2024-10-28"
+}
+```
+
+**SQL Query**:
+```sql
+UPDATE customers
+SET status = 'Active', updated_at = NOW()
+WHERE customer_id = ?
+RETURNING customer_id as id, name, email, phone, status;
+```
+
+**Response Codes**:
+- **200**: Success - Customer activated
+- **401**: Unauthorized - Admin access required
+- **404**: Not found - Customer ID does not exist
+- **500**: Internal server error
+
+**Usage**:
+```typescript
+await activateCustomer('CUST001')
+await loadCustomerData() // Refresh data
+alert('Customer activated successfully!')
+```
+
+**Business Rules**:
+- Only admin users can activate customers
+- Activation logs should be maintained for audit trail
+- Send notification email to customer upon activation
+- Update activity timestamp
+
+---
+
+#### 7.7 Deactivate Customer
+
+**Function**: `deactivateCustomer(customerId: string)`  
+**Endpoint**: `PUT /api/customers/:id/deactivate`  
+**Description**: Deactivate a customer account (set status to Inactive)
+
+**Request**: No body required (customer ID in URL)
+
+**Response**:
+```json
+{
+  "id": "CUST001",
+  "name": "Nimal Perera",
+  "email": "nimal.perera@email.com",
+  "phone": "+94 77 123 4567",
+  "status": "Inactive",
+  "vehicleCount": 2,
+  "totalSpent": 45780,
+  "lastServiceDate": "2024-10-28"
+}
+```
+
+**SQL Query**:
+```sql
+UPDATE customers
+SET status = 'Inactive', updated_at = NOW()
+WHERE customer_id = ?
+RETURNING customer_id as id, name, email, phone, status;
+```
+
+**Response Codes**:
+- **200**: Success - Customer deactivated
+- **401**: Unauthorized - Admin access required
+- **404**: Not found - Customer ID does not exist
+- **409**: Conflict - Customer has active bookings (should complete/cancel first)
+- **500**: Internal server error
+
+**Usage**:
+```typescript
+if (confirm('Are you sure you want to deactivate this customer?')) {
+  await deactivateCustomer('CUST001')
+  await loadCustomerData() // Refresh data
+  alert('Customer deactivated successfully!')
+}
+```
+
+**Business Rules**:
+- Only admin users can deactivate customers
+- Check for active bookings before deactivation
+- Deactivation logs should be maintained for audit trail
+- Send notification email to customer upon deactivation
+- Deactivated customers cannot make new bookings
+- Existing bookings should be completed or cancelled
+
+---
+
 ## Data Types & Schemas
 
 All TypeScript interfaces are defined in `/src/services/adminService.ts`
@@ -2178,6 +2597,40 @@ interface AIInsight {
   description: string
   category: 'forecast' | 'projection' | 'warning' | 'recommendation'
   icon: string
+}
+```
+
+### Customer Types
+
+```typescript
+interface CustomerOverview {
+  totalCustomers: number
+  newThisMonth: number
+  activeCustomers: number
+  activityRate: number
+  topCustomer: {
+    name: string
+    email: string
+    totalSpent: number
+    servicesUsed: number
+  }
+}
+
+interface Customer {
+  id: string
+  name: string
+  email: string
+  phone: string
+  vehicleCount: number
+  totalSpent: number
+  lastServiceDate: string
+  status: "Active" | "Inactive"
+}
+
+interface AddCustomerRequest {
+  name: string
+  email: string
+  phone: string
 }
 ```
 
@@ -2305,6 +2758,7 @@ app.use(cors({
 ├── Page 4: Services Analytics
 ├── Page 5: AI Insights
 ├── Page 6: Settings
+├── Page 7: Customer Details
 ```
 
 ### Adding New Endpoints
