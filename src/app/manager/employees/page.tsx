@@ -107,9 +107,8 @@ export default function EmployeesPage() {
   const [selectedEmployeeForTask, setSelectedEmployeeForTask] = useState<typeof EMPLOYEES[0] | null>(null);
 
   const handleTaskAssignment = (formData: Record<string, string>) => {
-    // Here you would typically send this data to your backend
+    
     console.log('Task Assignment Data:', formData);
-    // TODO: Implement the API call to save the task
     setShowAssignModal(false);
     setSelectedEmployeeForTask(null);
   };
