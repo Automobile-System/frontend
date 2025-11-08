@@ -101,3 +101,53 @@ export interface AddVehicleRequest {
     model: string;
     capacity: number;
 }
+
+// Manager Dashboard Types
+export interface ManagerDashboardOverview {
+    activeEmployees: {
+        total: number;
+        available: number;
+    };
+    ongoingServices: {
+        total: number;
+        status: string;
+    };
+    projectsPending: {
+        total: number;
+        status: string;
+    };
+    avgCompletionTime: {
+        value: number;
+        unit: string;
+    };
+    systemAlerts?: Array<{
+        message: string;
+        employee: string;
+        reason: string;
+    }>;
+    taskDistribution?: Record<string, string>;
+    completionRateTrend?: Record<string, string>;
+}
+
+// Reports Types
+export interface ReportsResponse {
+    data?: Record<string, number>; // Map of employee name -> task count
+    dataList?: Array<{
+        name: string;
+        requests?: number;
+        month?: string;
+        delays?: number;
+        type?: string;
+        value?: number;
+    }>;
+    averageDelayDays?: number;
+    mostCommonReason?: string;
+    type?: string;
+}
+
+// Pie Chart Data Format (for recharts)
+export interface PieChartData {
+    name: string;
+    value: number;
+    [key: string]: string | number; // Allow additional properties for recharts
+}
