@@ -151,3 +151,14 @@ export interface PieChartData {
     value: number;
     [key: string]: string | number; // Allow additional properties for recharts
 }
+
+export interface CompletionRateTrendResponse {
+    chartType: string;
+    title: string;
+    data: Array<{
+        month: string;
+        rate: number;
+        completedTasks: number;
+        totalTasks: number;
+    }>;
+}

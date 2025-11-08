@@ -12,14 +12,34 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
-import { getOverview, getEmployeeEfficiency } from "@/services/api";
-import { ManagerDashboardOverview, PieChartData } from "@/types/authTypes";
+import type { Payload } from "recharts/types/component/DefaultTooltipContent";
+import {
+  getOverview,
+  getEmployeeEfficiency,
+  getCompletionRateTrend,
+} from "@/services/api";
+import {
+  ManagerDashboardOverview,
+  PieChartData,
+  ReportsResponse,
+  CompletionRateTrendResponse,
+} from "@/types/authTypes";
+
+interface CompletionRateChartPoint {
+  month: string;
+  rate: number;
+  completedTasks: number;
+  totalTasks: number;
+}
 
 export default function ManagerDashboardPage() {
   const [dashboardData, setDashboardData] =
     useState<ManagerDashboardOverview | null>(null);
   const [taskDistributionData, setTaskDistributionData] = useState<
     PieChartData[]
+  >([]);
+  const [completionRateData, setCompletionRateData] = useState<
+    CompletionRateChartPoint[]
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,10 +54,16 @@ export default function ManagerDashboardPage() {
       setError(null);
 
       // Fetch both dashboard overview and task distribution
-      const [overviewData, efficiencyReport] = await Promise.all([
-        getOverview(),
-        getEmployeeEfficiency(),
-      ]);
+      const [overviewData, efficiencyReport, completionRateReport] =
+        (await Promise.all([
+          getOverview(),
+          getEmployeeEfficiency(),
+          getCompletionRateTrend(),
+        ])) as [
+          ManagerDashboardOverview,
+          ReportsResponse,
+          CompletionRateTrendResponse
+        ];
 
       setDashboardData(overviewData);
 
@@ -50,6 +76,20 @@ export default function ManagerDashboardPage() {
           value: value as number,
         }));
         setTaskDistributionData(chartData);
+      }
+
+      if (completionRateReport && completionRateReport.data) {
+        const normalized: CompletionRateChartPoint[] = completionRateReport.data
+          .filter((point) => point && point.month)
+          .map((point) => ({
+            month: point.month,
+            rate: Number(point.rate ?? 0),
+            completedTasks: point.completedTasks ?? 0,
+            totalTasks: point.totalTasks ?? 0,
+          }));
+        setCompletionRateData(normalized);
+      } else {
+        setCompletionRateData([]);
       }
     } catch (err) {
       console.error("Failed to fetch dashboard data:", err);
@@ -218,30 +258,61 @@ export default function ManagerDashboardPage() {
           </CardHeader>
           <CardContent className="pt-6">
             <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={[
-                    { month: "Jan", rate: 83 },
-                    { month: "Feb", rate: 88 },
-                    { month: "Mar", rate: 92 },
-                    { month: "Apr", rate: 90 },
-                    { month: "May", rate: 94 },
-                  ]}
-                >
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="rate"
-                    stroke="#020079"
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              {completionRateData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={completionRateData}>
+                    <XAxis dataKey="month" />
+                    <YAxis
+                      domain={[0, 100]}
+                      tickFormatter={(value) => `${value}%`}
+                    />
+                    <Tooltip
+                      formatter={(value: number, name: string) => {
+                        if (name === "rate") {
+                          return [`${value.toFixed(1)}%`, "Completion Rate"];
+                        }
+                        return value;
+                      }}
+                      labelFormatter={(
+                        label: string,
+                        payload: ReadonlyArray<Payload<number, string>>
+                      ) => {
+                        const firstPoint = payload?.[0]?.payload as
+                          | CompletionRateChartPoint
+                          | undefined;
+                        if (firstPoint) {
+                          const { completedTasks, totalTasks } = firstPoint;
+                          return `${label} • ${completedTasks}/${totalTasks} jobs completed`;
+                        }
+                        return label;
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="rate"
+                      stroke="#020079"
+                      strokeWidth={2}
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-500">
+                  No completion data available
+                </div>
+              )}
             </div>
             <div className="text-xs font-roboto text-[#020079]/60 mt-2 text-center">
-              Monthly service completion rate (%)
+              {completionRateData.length > 0
+                ? completionRateData
+                    .map(
+                      (point) =>
+                        `${point.month}: ${point.rate.toFixed(1)}% (${
+                          point.completedTasks
+                        }/${point.totalTasks})`
+                    )
+                    .join(" • ")
+                : "Monthly service completion rate (%)"}
             </div>
           </CardContent>
         </Card>
