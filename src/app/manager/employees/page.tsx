@@ -34,7 +34,7 @@ interface EmployeeRow {
   tasks: string; // formatted "x / y"
   rating: number;
   status: string;
-  serviceHistory: any[]; // placeholder - real history loaded via modal call later
+  serviceHistory: ServiceHistory[]; // placeholder - real history loaded via modal call later
 }
 
 // Helper convert a backend record to a row with graceful fallbacks
@@ -123,7 +123,7 @@ export default function EmployeesPage() {
         const rows = Array.isArray(data) ? data.map(mapEmployee) : [];
         setEmployees(rows);
       })
-      .catch((err: any) => setError(err?.message || "Failed to load employees"))
+      .catch((err: unknown) => setError(err instanceof Error ? err.message : "Failed to load employees"))
       .finally(() => setLoading(false));
   }, []);
 
@@ -135,12 +135,17 @@ export default function EmployeesPage() {
     setSelectedEmployeeForTask(null);
   };
 
-  const mapHistoryItem = (item: any): ServiceHistory => {
-    const vehicleNumber =
-      item?.registrationNo || item?.vehicleNumber || item?.vehicleRegNo || "-";
-    const vehicleModel = item?.vehicleModel || item?.model || "-";
-    const serviceType = item?.serviceType || item?.type || item?.jobType || "-";
-    const date = item?.date || item?.completedAt || item?.endDate || "-";
+  const mapHistoryItem = (item: Record<string, unknown>): ServiceHistory => {
+    const vehicleNumber = String(
+      item?.registrationNo || item?.vehicleNumber || item?.vehicleRegNo || "-"
+    );
+    const vehicleModel = String(item?.vehicleModel || item?.model || "-");
+    const serviceType = String(
+      item?.serviceType || item?.type || item?.jobType || "-"
+    );
+    const date = String(
+      item?.date || item?.completedAt || item?.endDate || "-"
+    );
     const ratingRaw = item?.rating ?? item?.customerRating ?? 0;
     const rating = Number(ratingRaw) || 0;
     return { vehicleNumber, vehicleModel, serviceType, date, rating };
@@ -158,8 +163,8 @@ export default function EmployeesPage() {
         ? list.map(mapHistoryItem)
         : [];
       setSelectedEmployee({ ...emp, serviceHistory: history });
-    } catch (err: any) {
-      showToast.error(err?.message || "Failed to load employee history");
+    } catch (err: unknown) {
+      showToast.error(err instanceof Error ? err.message : "Failed to load employee history");
     } finally {
       setLoadingHistoryId(null);
     }
