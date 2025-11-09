@@ -2,8 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type {
+  NameType,
+  Payload,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
+import type { TooltipProps } from "recharts/types/component/Tooltip";
 
-import type { Payload } from "recharts/types/component/DefaultTooltipContent";
 import {
   getOverview,
   getEmployeeEfficiency,
@@ -18,18 +23,34 @@ import {
 import dynamic from "next/dynamic";
 
 // Dynamically import Recharts components to reduce initial bundle size
-const PieChart = dynamic(() => import('recharts').then(mod => mod.PieChart), {
+const PieChart = dynamic(() => import("recharts").then((mod) => mod.PieChart), {
   ssr: false,
-  loading: () => <div className="h-80 bg-gray-100 animate-pulse rounded-lg" />
+  loading: () => <div className="h-80 bg-gray-100 animate-pulse rounded-lg" />,
 });
 
-const Pie = dynamic(() => import('recharts').then(mod => mod.Pie), { ssr: false });
-const LineChart = dynamic(() => import('recharts').then(mod => mod.LineChart), { ssr: false });
-const Line = dynamic(() => import('recharts').then(mod => mod.Line), { ssr: false });
-const XAxis = dynamic(() => import('recharts').then(mod => mod.XAxis), { ssr: false });
-const YAxis = dynamic(() => import('recharts').then(mod => mod.YAxis), { ssr: false });
-const Tooltip = dynamic(() => import('recharts').then(mod => mod.Tooltip), { ssr: false });
-const ResponsiveContainer = dynamic(() => import('recharts').then(mod => mod.ResponsiveContainer), { ssr: false });
+const Pie = dynamic(() => import("recharts").then((mod) => mod.Pie), {
+  ssr: false,
+});
+const LineChart = dynamic(
+  () => import("recharts").then((mod) => mod.LineChart),
+  { ssr: false }
+);
+const Line = dynamic(() => import("recharts").then((mod) => mod.Line), {
+  ssr: false,
+});
+const XAxis = dynamic(() => import("recharts").then((mod) => mod.XAxis), {
+  ssr: false,
+});
+const YAxis = dynamic(() => import("recharts").then((mod) => mod.YAxis), {
+  ssr: false,
+});
+const Tooltip = dynamic(() => import("recharts").then((mod) => mod.Tooltip), {
+  ssr: false,
+});
+const ResponsiveContainer = dynamic(
+  () => import("recharts").then((mod) => mod.ResponsiveContainer),
+  { ssr: false }
+);
 
 interface CompletionRateChartPoint {
   month: string;
@@ -37,6 +58,34 @@ interface CompletionRateChartPoint {
   completedTasks: number;
   totalTasks: number;
 }
+
+type CompletionTooltipProps = TooltipProps<ValueType, NameType>;
+
+const completionTooltipFormatter: CompletionTooltipProps["formatter"] = (
+  value,
+  name
+) => {
+  if (name === "rate" && typeof value === "number") {
+    return [`${value.toFixed(1)}%`, "Completion Rate"];
+  }
+
+  if (Array.isArray(value)) {
+    return [value.join(", "), String(name ?? "")];
+  }
+
+  return [String(value ?? ""), String(name ?? "")];
+};
+
+const completionTooltipLabelFormatter: CompletionTooltipProps["labelFormatter"] =
+  (label, payload) => {
+    const firstPoint = (
+      payload?.[0] as Payload<ValueType, NameType> | undefined
+    )?.payload as CompletionRateChartPoint | undefined;
+    if (firstPoint) {
+      return `${label} • ${firstPoint.completedTasks}/${firstPoint.totalTasks} jobs completed`;
+    }
+    return label;
+  };
 
 export default function ManagerDashboardPage() {
   const [dashboardData, setDashboardData] =
@@ -273,25 +322,8 @@ export default function ManagerDashboardPage() {
                       tickFormatter={(value) => `${value}%`}
                     />
                     <Tooltip
-                      formatter={(value: number, name: string) => {
-                        if (name === "rate") {
-                          return [`${value.toFixed(1)}%`, "Completion Rate"];
-                        }
-                        return value;
-                      }}
-                      labelFormatter={(
-                        label: string,
-                        payload: ReadonlyArray<Payload<number, string>>
-                      ) => {
-                        const firstPoint = payload?.[0]?.payload as
-                          | CompletionRateChartPoint
-                          | undefined;
-                        if (firstPoint) {
-                          const { completedTasks, totalTasks } = firstPoint;
-                          return `${label} • ${completedTasks}/${totalTasks} jobs completed`;
-                        }
-                        return label;
-                      }}
+                      formatter={completionTooltipFormatter}
+                      labelFormatter={completionTooltipLabelFormatter}
                     />
                     <Line
                       type="monotone"
