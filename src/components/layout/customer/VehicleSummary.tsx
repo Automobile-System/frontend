@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import AddVehicleModal from './AddVehicleModal';
 import VehicleDetailsModal from './VehicleDetailsModal';
-import { Car } from 'lucide-react';
+import { Car, Trash2 } from 'lucide-react';
 import { CustomerVehicle } from '@/types/authTypes';
 import { deleteCustomerVehicle } from '@/services/api';
+import { showToast } from '@/lib/toast';
 
 interface VehicleSummaryProps {
     vehicles: CustomerVehicle[];
@@ -34,113 +35,58 @@ export default function VehicleSummary({ vehicles, onVehicleAdded }: VehicleSumm
         try {
             setDeletingVehicleId(vehicleId);
             await deleteCustomerVehicle(vehicleId);
+            showToast.success('Vehicle deleted successfully');
             if (onVehicleAdded) {
                 onVehicleAdded(); // Refresh the list
             }
         } catch (error) {
             console.error('Failed to delete vehicle:', error);
-            alert('Failed to delete vehicle. Please try again.');
+            showToast.error(error instanceof Error ? error.message : 'Failed to delete vehicle');
         } finally {
             setDeletingVehicleId(null);
         }
     };
 
     return (
-        <div style={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            padding: '1.5rem',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-            border: '1px solid #e5e7eb'
-        }}>
-            <h2 style={{
-                fontSize: '1.25rem',
-                fontWeight: '600',
-                color: '#111827',
-                margin: '0 0 1.5rem 0',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-            }}>
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                 <Car size={20} /> My Vehicles
             </h2>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div className="flex flex-col gap-4">
                 {vehicles.length === 0 ? (
-                    <div style={{
-                        textAlign: 'center',
-                        padding: '2rem 1rem',
-                        backgroundColor: '#f9fafb',
-                        borderRadius: '0.75rem',
-                        border: '2px dashed #d1d5db'
-                    }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🚗</div>
-                        <p style={{ color: '#6b7280', margin: 0, fontSize: '0.875rem' }}>
+                    <div className="text-center py-8 px-4 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                        <div className="text-4xl mb-2">🚗</div>
+                        <p className="text-gray-600 text-sm">
                             No vehicles added yet
                         </p>
                     </div>
                 ) : (
                     vehicles.map((vehicle, index) => (
                         <div key={vehicle.vehicleId}>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'flex-start',
-                                gap: '1rem'
-                            }}>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                        <h3 style={{
-                                            fontSize: '1rem',
-                                            fontWeight: '600',
-                                            color: '#111827',
-                                            margin: 0
-                                        }}>
+                            <div className="flex justify-between items-start gap-4">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <h3 className="text-base font-semibold text-gray-900">
                                             {vehicle.brandName} {vehicle.model}
                                         </h3>
-                                        <span style={{
-                                            padding: '0.25rem 0.5rem',
-                                            backgroundColor: '#f3f4f6',
-                                            color: '#374151',
-                                            borderRadius: '0.375rem',
-                                            fontSize: '0.75rem',
-                                            fontWeight: '500'
-                                        }}>
+                                        <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded-md text-xs font-medium">
                                             {vehicle.registrationNo}
                                         </span>
                                     </div>
 
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <span style={{ color: '#6b7280', fontSize: '0.75rem' }}>Engine Capacity:</span>
-                                        <span style={{ color: '#111827', fontSize: '0.75rem', fontWeight: '500' }}>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-gray-600 text-xs">Engine Capacity:</span>
+                                        <span className="text-gray-900 text-xs font-medium">
                                             {vehicle.capacity} CC
                                         </span>
                                     </div>
                                 </div>
 
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                <div className="flex gap-2">
                                     <button
                                         onClick={() => handleViewDetails(vehicle)}
-                                        style={{
-                                            padding: '0.5rem 1rem',
-                                            border: '1px solid #03009B',
-                                            borderRadius: '0.5rem',
-                                            backgroundColor: 'transparent',
-                                            color: '#03009B',
-                                            fontSize: '0.75rem',
-                                            fontWeight: '500',
-                                            cursor: 'pointer',
-                                            whiteSpace: 'nowrap',
-                                            transition: 'all 0.2s'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.backgroundColor = '#03009B';
-                                            e.currentTarget.style.color = 'white';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.backgroundColor = 'transparent';
-                                            e.currentTarget.style.color = '#03009B';
-                                        }}
+                                        className="px-4 py-2 border border-[#020079] rounded-lg bg-transparent text-[#020079] text-xs font-medium hover:bg-[#020079] hover:text-white transition-all whitespace-nowrap"
                                     >
                                         View
                                     </button>
@@ -148,43 +94,20 @@ export default function VehicleSummary({ vehicles, onVehicleAdded }: VehicleSumm
                                     <button
                                         onClick={() => handleDeleteVehicle(vehicle.vehicleId)}
                                         disabled={deletingVehicleId === vehicle.vehicleId}
-                                        style={{
-                                            padding: '0.5rem',
-                                            border: '1px solid #dc2626',
-                                            borderRadius: '0.5rem',
-                                            backgroundColor: 'transparent',
-                                            color: '#dc2626',
-                                            fontSize: '0.75rem',
-                                            fontWeight: '500',
-                                            cursor: deletingVehicleId === vehicle.vehicleId ? 'not-allowed' : 'pointer',
-                                            whiteSpace: 'nowrap',
-                                            transition: 'all 0.2s',
-                                            opacity: deletingVehicleId === vehicle.vehicleId ? 0.5 : 1
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            if (deletingVehicleId !== vehicle.vehicleId) {
-                                                e.currentTarget.style.backgroundColor = '#dc2626';
-                                                e.currentTarget.style.color = 'white';
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            if (deletingVehicleId !== vehicle.vehicleId) {
-                                                e.currentTarget.style.backgroundColor = 'transparent';
-                                                e.currentTarget.style.color = '#dc2626';
-                                            }
-                                        }}
+                                        className="p-2 border border-red-600 rounded-lg bg-transparent text-red-600 hover:bg-red-600 hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                        title="Delete vehicle"
                                     >
-                                        {deletingVehicleId === vehicle.vehicleId ? '...' : '🗑️'}
+                                        {deletingVehicleId === vehicle.vehicleId ? (
+                                            <span className="text-xs">...</span>
+                                        ) : (
+                                            <Trash2 size={14} />
+                                        )}
                                     </button>
                                 </div>
                             </div>
 
                             {index < vehicles.length - 1 && (
-                                <div style={{
-                                    height: '1px',
-                                    backgroundColor: '#f3f4f6',
-                                    marginTop: '1rem'
-                                }} />
+                                <div className="h-px bg-gray-100 mt-4" />
                             )}
                         </div>
                     ))
@@ -194,29 +117,7 @@ export default function VehicleSummary({ vehicles, onVehicleAdded }: VehicleSumm
             {/* Add Vehicle Button */}
             <button
                 onClick={() => setIsAddModalOpen(true)}
-                style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '2px dashed #d1d5db',
-                    borderRadius: '0.75rem',
-                    backgroundColor: '#f9fafb',
-                    color: '#6b7280',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    marginTop: '1rem',
-                    transition: 'all 0.2s'
-                }}
-                onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#9ca3af';
-                    e.currentTarget.style.backgroundColor = '#f3f4f6';
-                    e.currentTarget.style.color = '#374151';
-                }}
-                onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#d1d5db';
-                    e.currentTarget.style.backgroundColor = '#f9fafb';
-                    e.currentTarget.style.color = '#6b7280';
-                }}
+                className="w-full mt-4 py-3 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 text-gray-600 text-sm font-medium hover:border-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-all"
             >
                 + Add New Vehicle
             </button>

@@ -2,365 +2,273 @@
 
 import { useState } from "react";
 import { addCustomerVehicle } from "@/services/api";
+import { showToast } from "@/lib/toast";
+import { X, AlertCircle, Loader2 } from "lucide-react";
 
 interface AddVehicleModalProps {
   onClose: () => void;
   onVehicleAdded?: () => void;
 }
 
+interface FormErrors {
+  brandName?: string;
+  model?: string;
+  capacity?: string;
+  registrationNo?: string;
+}
+
 export default function AddVehicleModal({ onClose, onVehicleAdded }: AddVehicleModalProps) {
   const [formData, setFormData] = useState({
-    make: "",
+    brandName: "",
     model: "",
-    plateNumber: "",
+    registrationNo: "",
     capacity: "",
   });
+  const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    // Brand Name validation
+    if (!formData.brandName.trim()) {
+      newErrors.brandName = "Brand name is required";
+    } else if (formData.brandName.trim().length < 2) {
+      newErrors.brandName = "Brand name must be at least 2 characters";
+    }
+
+    // Model validation
+    if (!formData.model.trim()) {
+      newErrors.model = "Model is required";
+    } else if (formData.model.trim().length < 1) {
+      newErrors.model = "Model must be at least 1 character";
+    }
+
+    // Capacity validation
+    if (!formData.capacity) {
+      newErrors.capacity = "Engine capacity is required";
+    } else {
+      const capacityNum = parseInt(formData.capacity);
+      if (isNaN(capacityNum)) {
+        newErrors.capacity = "Capacity must be a number";
+      } else if (capacityNum < 50) {
+        newErrors.capacity = "Capacity must be at least 50 CC";
+      } else if (capacityNum > 10000) {
+        newErrors.capacity = "Capacity seems too high (max 10000 CC)";
+      }
+    }
+
+    // Registration Number validation
+    if (!formData.registrationNo.trim()) {
+      newErrors.registrationNo = "Registration number is required";
+    } else if (formData.registrationNo.trim().length < 3) {
+      newErrors.registrationNo = "Registration number must be at least 3 characters";
+    } else if (!/^[A-Z0-9-]+$/.test(formData.registrationNo.trim())) {
+      newErrors.registrationNo = "Registration number can only contain letters, numbers, and hyphens";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      showToast.error("Please fix the form errors before submitting");
+      return;
+    }
+
     setIsSubmitting(true);
-    setError(null);
     
     try {
       await addCustomerVehicle({
-        registrationNo: formData.plateNumber.toUpperCase(),
-        brandName: formData.make,
-        model: formData.model,
+        registrationNo: formData.registrationNo.toUpperCase().trim(),
+        brandName: formData.brandName.trim(),
+        model: formData.model.trim(),
         capacity: parseInt(formData.capacity)
       });
       
-      // Call the callback to refresh the vehicle list
+      showToast.success("Vehicle added successfully!");
+      
       if (onVehicleAdded) {
         onVehicleAdded();
       }
       onClose();
     } catch (err: unknown) {
       console.error("Failed to add vehicle:", err);
-      setError(err instanceof Error ? err.message : "Failed to add vehicle. Please try again.");
+      const errorMessage = err instanceof Error ? err.message : "Failed to add vehicle. Please try again.";
+      showToast.error(errorMessage);
       setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (field: keyof typeof formData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear error for this field when user starts typing
+    if (errors[field as keyof FormErrors]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
 
   return (
     <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: "rgba(0, 0, 0, 0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 1000,
-        padding: "1rem",
-      }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
-        style={{
-          background: "white",
-          borderRadius: "0.75rem",
-          padding: "2rem",
-          width: "90%",
-          maxWidth: "500px",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-        }}
+        className="bg-white rounded-xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{ marginBottom: "1.5rem" }}>
-          <h2
-            style={{
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              color: "#111827",
-              margin: "0 0 0.5rem 0",
-            }}
-          >
-            Add New Vehicle
-          </h2>
-          <p style={{ color: "#6b7280", margin: 0 }}>
-            Enter your vehicle details
-          </p>
-        </div>
-
-        {/* Error Message */}
-        {error && (
-          <div style={{
-            padding: '1rem',
-            backgroundColor: '#fee2e2',
-            border: '1px solid #fecaca',
-            borderRadius: '0.5rem',
-            marginBottom: '1.5rem'
-          }}>
-            <p style={{ color: '#991b1b', margin: 0, fontSize: '0.875rem' }}>
-              {error}
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-1">
+              Add New Vehicle
+            </h2>
+            <p className="text-gray-600 text-sm">
+              Enter your vehicle details
             </p>
           </div>
-        )}
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Close modal"
+          >
+            <X size={20} className="text-gray-500" />
+          </button>
+        </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit}>
-          {/* Vehicle Make */}
-          <div style={{ marginBottom: "1rem" }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                color: "#374151",
-                marginBottom: "0.5rem",
-              }}
-            >
-              Vehicle Make *
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Vehicle Make/Brand */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Brand Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              required
-              placeholder="e.g., Toyota"
-              value={formData.make}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, make: e.target.value }))
-              }
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "0.5rem",
-                fontSize: "0.875rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#03009B";
-                e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#d1d5db";
-                e.target.style.boxShadow = "none";
-              }}
+              placeholder="e.g., Toyota, Honda, Bajaj"
+              value={formData.brandName}
+              onChange={(e) => handleInputChange('brandName', e.target.value)}
+              className={`w-full px-4 py-3 border rounded-lg text-sm text-gray-900 placeholder-gray-400 outline-none transition-all ${
+                errors.brandName
+                  ? 'border-red-500 focus:ring-2 focus:ring-red-200'
+                  : 'border-gray-300 focus:border-[#020079] focus:ring-2 focus:ring-[#020079]/20'
+              }`}
             />
+            {errors.brandName && (
+              <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                <AlertCircle size={12} />
+                <span>{errors.brandName}</span>
+              </div>
+            )}
           </div>
 
           {/* Vehicle Model */}
-          <div style={{ marginBottom: "1rem" }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                color: "#374151",
-                marginBottom: "0.5rem",
-              }}
-            >
-              Vehicle Model *
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Model <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              required
-              placeholder="e.g., Corolla"
+              placeholder="e.g., Corolla, Civic, Discover"
               value={formData.model}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, model: e.target.value }))
-              }
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "0.5rem",
-                fontSize: "0.875rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#03009B";
-                e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#d1d5db";
-                e.target.style.boxShadow = "none";
-              }}
+              onChange={(e) => handleInputChange('model', e.target.value)}
+              className={`w-full px-4 py-3 border rounded-lg text-sm text-gray-900 placeholder-gray-400 outline-none transition-all ${
+                errors.model
+                  ? 'border-red-500 focus:ring-2 focus:ring-red-200'
+                  : 'border-gray-300 focus:border-[#020079] focus:ring-2 focus:ring-[#020079]/20'
+              }`}
             />
+            {errors.model && (
+              <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                <AlertCircle size={12} />
+                <span>{errors.model}</span>
+              </div>
+            )}
           </div>
 
-          {/* Capacity */}
-          <div style={{ marginBottom: "1rem" }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                color: "#374151",
-                marginBottom: "0.5rem",
-              }}
-            >
-              Engine Capacity (CC) *
+          {/* Engine Capacity */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Engine Capacity (CC) <span className="text-red-500">*</span>
             </label>
             <input
               type="number"
-              required
-              placeholder="e.g., 1500"
-              min="1"
+              placeholder="e.g., 100, 1500, 2000"
+              min="50"
+              max="10000"
+              step="1"
               value={formData.capacity}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, capacity: e.target.value }))
-              }
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "0.5rem",
-                fontSize: "0.875rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#03009B";
-                e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#d1d5db";
-                e.target.style.boxShadow = "none";
-              }}
+              onChange={(e) => handleInputChange('capacity', e.target.value)}
+              className={`w-full px-4 py-3 border rounded-lg text-sm text-gray-900 placeholder-gray-400 outline-none transition-all ${
+                errors.capacity
+                  ? 'border-red-500 focus:ring-2 focus:ring-red-200'
+                  : 'border-gray-300 focus:border-[#020079] focus:ring-2 focus:ring-[#020079]/20'
+              }`}
             />
+            {errors.capacity && (
+              <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                <AlertCircle size={12} />
+                <span>{errors.capacity}</span>
+              </div>
+            )}
+            <p className="text-xs text-gray-500 mt-1">
+              Enter the engine capacity in cubic centimeters (50-10000)
+            </p>
           </div>
 
-          {/* Plate Number */}
-          <div style={{ marginBottom: "2rem" }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                color: "#374151",
-                marginBottom: "0.5rem",
-              }}
-            >
-              Registration/Plate Number *
+          {/* Registration Number */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Registration Number <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              required
-              placeholder="e.g., KA-1234"
-              value={formData.plateNumber}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  plateNumber: e.target.value.toUpperCase(),
-                }))
-              }
-              style={{
-                width: "100%",
-                padding: "0.75rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "0.5rem",
-                fontSize: "0.875rem",
-                outline: "none",
-                transition: "border-color 0.2s",
-                textTransform: "uppercase",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#03009B";
-                e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#d1d5db";
-                e.target.style.boxShadow = "none";
-              }}
+              placeholder="e.g., KA-1234, BCI-3276"
+              value={formData.registrationNo}
+              onChange={(e) => handleInputChange('registrationNo', e.target.value.toUpperCase())}
+              className={`w-full px-4 py-3 border rounded-lg text-sm text-gray-900 placeholder-gray-400 outline-none transition-all uppercase ${
+                errors.registrationNo
+                  ? 'border-red-500 focus:ring-2 focus:ring-red-200'
+                  : 'border-gray-300 focus:border-[#020079] focus:ring-2 focus:ring-[#020079]/20'
+              }`}
             />
+            {errors.registrationNo && (
+              <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                <AlertCircle size={12} />
+                <span>{errors.registrationNo}</span>
+              </div>
+            )}
+            <p className="text-xs text-gray-500 mt-1">
+              Enter your vehicle&apos;s registration/plate number
+            </p>
           </div>
 
           {/* Buttons */}
-          <div
-            style={{ display: "flex", gap: "1rem", justifyContent: "flex-end" }}
-          >
+          <div className="flex gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              style={{
-                padding: "0.75rem 1.5rem",
-                border: "1px solid #d1d5db",
-                background: "white",
-                color: "#374151",
-                borderRadius: "0.5rem",
-                cursor: "pointer",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                transition: "all 0.2s ease",
-                outline: "none",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#f9fafb";
-                e.currentTarget.style.borderColor = "#9ca3af";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "white";
-                e.currentTarget.style.borderColor = "#d1d5db";
-              }}
+              disabled={isSubmitting}
+              className="flex-1 px-4 py-3 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              style={{
-                padding: "0.75rem 1.5rem",
-                background: isSubmitting ? "#9ca3af" : "#03009B",
-                color: "white",
-                border: "none",
-                borderRadius: "0.5rem",
-                cursor: isSubmitting ? "not-allowed" : "pointer",
-                fontSize: "0.875rem",
-                fontWeight: "600",
-                transition: "all 0.2s ease",
-                outline: "none",
-                boxShadow: "0 2px 8px rgba(3, 0, 155, 0.2)",
-                opacity: isSubmitting ? 0.6 : 1,
-              }}
-              onMouseEnter={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.background = "#020079";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(3, 0, 155, 0.3)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.background = "#03009B";
-                  e.currentTarget.style.boxShadow =
-                    "0 2px 8px rgba(3, 0, 155, 0.2)";
-                }
-              }}
-              onMouseDown={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.background = "#01024D";
-                  e.currentTarget.style.transform = "scale(0.98)";
-                }
-              }}
-              onMouseUp={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.background = "#020079";
-                  e.currentTarget.style.transform = "scale(1)";
-                }
-              }}
-              onFocus={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.boxShadow =
-                    "0 0 0 3px rgba(3, 0, 155, 0.3)";
-                }
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.boxShadow =
-                  "0 2px 8px rgba(3, 0, 155, 0.2)";
-              }}
+              className="flex-1 px-4 py-3 bg-[#020079] text-white rounded-lg hover:bg-[#03009B] transition-all font-semibold text-sm shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {isSubmitting ? "Adding Vehicle..." : "Add Vehicle"}
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  Adding...
+                </>
+              ) : (
+                "Add Vehicle"
+              )}
             </button>
           </div>
         </form>

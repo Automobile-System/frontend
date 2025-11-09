@@ -1,230 +1,99 @@
 import { StepProps, Service } from "../../../types/booking";
 
+interface ServiceTypeProps extends StepProps {
+  services: Service[];
+}
+
 export default function ServiceType({
   data,
+  services,
   onUpdate,
   onNext,
   onBack,
-}: StepProps) {
-  const services: Service[] = [
-    {
-      id: 1,
-      name: "Oil Change",
-      duration: "45 min",
-      price: "Rs. 12,000",
-      description: "Complete oil and filter change",
-    },
-    {
-      id: 2,
-      name: "Brake Service",
-      duration: "90 min",
-      price: "Rs. 28,000",
-      description: "Brake inspection and pad replacement",
-    },
-    {
-      id: 3,
-      name: "Engine Diagnosis",
-      duration: "60 min",
-      price: "Rs. 18,000",
-      description: "Complete engine diagnostic check",
-    },
-    {
-      id: 4,
-      name: "Battery Check",
-      duration: "30 min",
-      price: "Rs. 7,000",
-      description: "Battery health and charging system check",
-    },
-    {
-      id: 5,
-      name: "Tire Rotation",
-      duration: "40 min",
-      price: "Rs. 9,000",
-      description: "Tire rotation and pressure check",
-    },
-    {
-      id: 6,
-      name: "Custom Project",
-      duration: "Varies",
-      price: "Custom Quote",
-      description: "Request custom service or modification",
-    },
-  ];
-
-  const handleSelect = (serviceTypeId: number) => {
-    onUpdate({ serviceTypeId });
+}: ServiceTypeProps) {
+  const handleSelect = (serviceId: number) => {
+    onUpdate({ serviceTypeId: serviceId });
   };
+
+  // Group services by category
+  const groupedServices = services.reduce((acc, service) => {
+    if (!acc[service.category]) {
+      acc[service.category] = [];
+    }
+    acc[service.category].push(service);
+    return acc;
+  }, {} as Record<string, Service[]>);
 
   return (
     <div>
-      <div style={{ marginBottom: "2rem" }}>
-        <h2
-          style={{
-            fontSize: "1.5rem",
-            fontWeight: "600",
-            color: "#111827",
-            margin: "0 0 0.5rem 0",
-          }}
-        >
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-2">
           Step 2: Choose Service Type
         </h2>
-        <p style={{ color: "#6b7280", margin: 0 }}>
-          Select the type of service you need
+        <p className="text-gray-600">
+          Select the service you need for your vehicle
         </p>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          gap: "1rem",
-        }}
-      >
-        {services.map((service) => (
-          <div
-            key={service.id}
-            onClick={() => handleSelect(service.id)}
-            style={{
-              padding: "1.5rem",
-              border: `2px solid ${
-                data.serviceTypeId === service.id ? "#03009B" : "#e5e7eb"
-              }`,
-              borderRadius: "0.75rem",
-              background:
-                data.serviceTypeId === service.id
-                  ? "var(--color-tint-primary)"
-                  : "white",
-              cursor: "pointer",
-              transition: "all 0.2s",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-                marginBottom: "0.5rem",
-              }}
-            >
-              <h3
-                style={{
-                  fontSize: "1.125rem",
-                  fontWeight: "600",
-                  color: "#111827",
-                  margin: 0,
-                }}
-              >
-                {service.name}
+      {services.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-500">No services available at the moment.</p>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {Object.entries(groupedServices).map(([category, categoryServices]) => (
+            <div key={category}>
+              <h3 className="text-lg font-semibold text-[#020079] mb-3">
+                {category}
               </h3>
-              <span
-                style={{
-                  fontSize: "1rem",
-                  fontWeight: "600",
-                  color: "#03009B",
-                }}
-              >
-                {service.price}
-              </span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {categoryServices.map((service) => (
+                  <div
+                    key={service.serviceId}
+                    onClick={() => handleSelect(service.serviceId)}
+                    className={`p-5 border-2 rounded-xl cursor-pointer transition-all ${
+                      data.serviceTypeId === service.serviceId
+                        ? 'border-[#020079] bg-[#020079]/5'
+                        : 'border-gray-200 hover:border-[#020079]/50'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="text-lg font-semibold text-gray-900">
+                        {service.title}
+                      </h4>
+                      <span className="text-[#FFD700] font-bold">
+                        Rs. {service.cost.toLocaleString()}
+                      </span>
+                    </div>
+                    <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                      {service.description}
+                    </p>
+                    <p className="text-gray-500 text-xs">
+                      Est. {service.estimatedHours} hours
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
-            <p
-              style={{
-                color: "#6b7280",
-                margin: "0 0 0.5rem 0",
-                fontSize: "0.875rem",
-              }}
-            >
-              {service.description}
-            </p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                fontSize: "0.875rem",
-                color: "#6b7280",
-              }}
-            >
-              <span>Duration: {service.duration}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      <div
-        style={{
-          marginTop: "2rem",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className="mt-8 flex justify-between">
         <button
           onClick={onBack}
-          style={{
-            background: "white",
-            color: "#374151",
-            padding: "0.75rem 2rem",
-            borderRadius: "0.5rem",
-            border: "1px solid #d1d5db",
-            fontWeight: "500",
-            cursor: "pointer",
-          }}
+          className="px-8 py-3 rounded-lg font-medium border-2 border-gray-300 text-gray-700 hover:border-gray-400 transition-all"
         >
           ← Back
         </button>
-
         <button
           onClick={onNext}
           disabled={!data.serviceTypeId}
-          style={{
-            background: data.serviceTypeId ? "#03009B" : "#9ca3af",
-            color: "white",
-            padding: "0.75rem 2rem",
-            borderRadius: "0.5rem",
-            border: "none",
-            fontWeight: "500",
-            cursor: data.serviceTypeId ? "pointer" : "not-allowed",
-            transition: "all 0.2s ease",
-            outline: "none",
-          }}
-          onMouseEnter={(e) => {
-            if (data.serviceTypeId) {
-              e.currentTarget.style.background = "#03009B";
-              e.currentTarget.style.boxShadow =
-                "0 4px 12px rgba(3, 0, 155, 0.3)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (data.serviceTypeId) {
-              e.currentTarget.style.background = "#03009B";
-              e.currentTarget.style.boxShadow = "none";
-            }
-          }}
-          onMouseDown={(e) => {
-            if (data.serviceTypeId) {
-              e.currentTarget.style.background = "#03009B";
-              e.currentTarget.style.transform = "scale(0.98)";
-              e.currentTarget.style.opacity = "0.9";
-            }
-          }}
-          onMouseUp={(e) => {
-            if (data.serviceTypeId) {
-              e.currentTarget.style.background = "#03009B";
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.opacity = "1";
-              e.currentTarget.style.boxShadow =
-                "0 4px 12px rgba(3, 0, 155, 0.3)";
-            }
-          }}
-          onFocus={(e) => {
-            if (data.serviceTypeId) {
-              e.currentTarget.style.boxShadow =
-                "0 0 0 3px rgba(3, 0, 155, 0.2)";
-            }
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.boxShadow = "none";
-          }}
+          className={`px-8 py-3 rounded-lg font-medium transition-all ${
+            data.serviceTypeId
+              ? 'bg-[#020079] hover:bg-[#03009B] text-white cursor-pointer shadow-sm hover:shadow-md'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
         >
           Next Step →
         </button>
