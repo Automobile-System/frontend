@@ -1,5 +1,3 @@
-import { cookies } from 'next/headers'
-
 interface DashboardOverview {
   activeServices: number
   completedServices: number
@@ -20,19 +18,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
  */
 export async function getDashboardOverview(): Promise<DashboardOverview | null> {
   try {
-    const cookieStore = await cookies()
-    const accessToken = cookieStore.get('accessToken')
-
-    if (!accessToken) {
-      console.error('No access token found')
-      return null
-    }
 
     const response = await fetch(`${BASE_URL}/api/customer/dashboard/overview`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Cookie': `accessToken=${accessToken.value}`,
       },
       credentials: 'include',
       cache: 'no-store',
@@ -56,19 +46,10 @@ export async function getDashboardOverview(): Promise<DashboardOverview | null> 
  */
 export async function getServiceFrequency(period: string = '1year'): Promise<ServiceFrequency[]> {
   try {
-    const cookieStore = await cookies()
-    const accessToken = cookieStore.get('accessToken')
-
-    if (!accessToken) {
-      console.error('No access token found')
-      return []
-    }
-
     const response = await fetch(`${BASE_URL}/api/customer/dashboard/service-frequency?period=${period}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Cookie': `accessToken=${accessToken.value}`,
       },
       credentials: 'include',
       cache: 'no-store',
