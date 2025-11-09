@@ -2,16 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
+
 import type { Payload } from "recharts/types/component/DefaultTooltipContent";
 import {
   getOverview,
@@ -24,6 +15,21 @@ import {
   ReportsResponse,
   CompletionRateTrendResponse,
 } from "@/types/authTypes";
+import dynamic from "next/dynamic";
+
+// Dynamically import Recharts components to reduce initial bundle size
+const PieChart = dynamic(() => import('recharts').then(mod => mod.PieChart), {
+  ssr: false,
+  loading: () => <div className="h-80 bg-gray-100 animate-pulse rounded-lg" />
+});
+
+const Pie = dynamic(() => import('recharts').then(mod => mod.Pie), { ssr: false });
+const LineChart = dynamic(() => import('recharts').then(mod => mod.LineChart), { ssr: false });
+const Line = dynamic(() => import('recharts').then(mod => mod.Line), { ssr: false });
+const XAxis = dynamic(() => import('recharts').then(mod => mod.XAxis), { ssr: false });
+const YAxis = dynamic(() => import('recharts').then(mod => mod.YAxis), { ssr: false });
+const Tooltip = dynamic(() => import('recharts').then(mod => mod.Tooltip), { ssr: false });
+const ResponsiveContainer = dynamic(() => import('recharts').then(mod => mod.ResponsiveContainer), { ssr: false });
 
 interface CompletionRateChartPoint {
   month: string;

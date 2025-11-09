@@ -1,68 +1,120 @@
 "use client";
 
-"use client";
-
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import EmployeeLayout from "@/components/layout/EmployeeLayout";
-import { Bar, Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  PointElement,
-} from "chart.js";
+import dynamic from "next/dynamic";
+import { useMemo } from "react";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend
-);
+// Dynamically import Chart.js components to reduce initial bundle size
+const Bar = dynamic(() => import("react-chartjs-2").then(mod => mod.Bar), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 animate-pulse rounded-lg" />
+});
+
+const Line = dynamic(() => import("react-chartjs-2").then(mod => mod.Line), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 animate-pulse rounded-lg" />
+});
+
+// Register Chart.js components lazily
+if (typeof window !== "undefined") {
+  import("chart.js").then((ChartJS) => {
+    ChartJS.Chart.register(
+      ChartJS.CategoryScale,
+      ChartJS.LinearScale,
+      ChartJS.BarElement,
+      ChartJS.LineElement,
+      ChartJS.PointElement,
+      ChartJS.Title,
+      ChartJS.Tooltip,
+      ChartJS.Legend
+    );
+  });
+}
 
 export default function EmployeeDashboard() {
   // Sample data for the summary cards
-  const summaryData = {
+  const summaryData = useMemo(() => ({
     name: "John Doe",
     tasksToday: 4,
     completedTasks: 21,
     totalHours: 72,
     rating: 4.8,
-  };
+  }), []);
 
   // Sample data for the bar chart
-  const dailyHoursData = {
+  const dailyHoursData = useMemo(() => ({
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri"],
     datasets: [
       {
         label: "Hours Worked",
         data: [8, 7.5, 8.2, 6.5, 8],
-        backgroundColor: "#FF6B6B",
+        backgroundColor: "#020079",
+        borderRadius: 6,
+        hoverBackgroundColor: "#03009B",
       },
     ],
-  };
+  }), []);
 
   // Sample data for the line chart
-  const ratingData = {
+  const ratingData = useMemo(() => ({
     labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
     datasets: [
       {
         label: "Customer Ratings",
         data: [4.5, 4.7, 4.6, 4.8],
-        borderColor: "#4CAF50",
+        borderColor: "#E6C200",
+        backgroundColor: "rgba(230, 194, 0, 0.1)",
         tension: 0.4,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        pointBackgroundColor: "#ffffff",
+        pointBorderColor: "#E6C200",
+        pointBorderWidth: 2,
+        pointHoverBackgroundColor: "#E6C200",
+        pointHoverBorderColor: "#020079",
+        fill: true,
       },
     ],
-  };
+  }), []);
+
+  const chartOptions = useMemo(() => ({
+    bar: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 10,
+          grid: { color: "#f0f0f0" },
+          ticks: { font: { family: "Inter, system-ui, sans-serif" } },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: "Inter, system-ui, sans-serif" } },
+        },
+      },
+      plugins: { legend: { display: false } },
+    },
+    line: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 5,
+          grid: { color: "#f0f0f0" },
+          ticks: { font: { family: "Inter, system-ui, sans-serif" } },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: "Inter, system-ui, sans-serif" } },
+        },
+      },
+      plugins: { legend: { display: false } },
+    },
+  }), []);
 
   return (
     <EmployeeLayout>
@@ -135,51 +187,7 @@ export default function EmployeeDashboard() {
             <h3 className="text-xl font-semibold mb-6 text-[#020079]">
               Daily Work Hours
             </h3>
-            <Bar
-              data={{
-                ...dailyHoursData,
-                datasets: [
-                  {
-                    ...dailyHoursData.datasets[0],
-                    backgroundColor: "#020079",
-                    borderRadius: 6,
-                    hoverBackgroundColor: "#03009B",
-                  },
-                ],
-              }}
-              options={{
-                responsive: true,
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    max: 10,
-                    grid: {
-                      color: "#f0f0f0",
-                    },
-                    ticks: {
-                      font: {
-                        family: "Inter, system-ui, sans-serif",
-                      },
-                    },
-                  },
-                  x: {
-                    grid: {
-                      display: false,
-                    },
-                    ticks: {
-                      font: {
-                        family: "Inter, system-ui, sans-serif",
-                      },
-                    },
-                  },
-                },
-                plugins: {
-                  legend: {
-                    display: false,
-                  },
-                },
-              }}
-            />
+            <Bar data={dailyHoursData} options={chartOptions.bar} />
           </Card>
 
           <Card className="p-6 bg-white shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 rounded-xl border border-[#020079]/20 hover:border-[#020079]">
@@ -194,59 +202,7 @@ export default function EmployeeDashboard() {
                 Last 30 Days
               </Badge>
             </div>
-            <Line
-              data={{
-                ...ratingData,
-                datasets: [
-                  {
-                    ...ratingData.datasets[0],
-                    borderColor: "#E6C200",
-                    backgroundColor: "rgba(230, 194, 0, 0.1)",
-                    tension: 0.4,
-                    pointRadius: 5,
-                    pointHoverRadius: 7,
-                    pointBackgroundColor: "#ffffff",
-                    pointBorderColor: "#E6C200",
-                    pointBorderWidth: 2,
-                    pointHoverBackgroundColor: "#E6C200",
-                    pointHoverBorderColor: "#020079",
-                    fill: true,
-                  },
-                ],
-              }}
-              options={{
-                responsive: true,
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    max: 5,
-                    grid: {
-                      color: "#f0f0f0",
-                    },
-                    ticks: {
-                      font: {
-                        family: "Inter, system-ui, sans-serif",
-                      },
-                    },
-                  },
-                  x: {
-                    grid: {
-                      display: false,
-                    },
-                    ticks: {
-                      font: {
-                        family: "Inter, system-ui, sans-serif",
-                      },
-                    },
-                  },
-                },
-                plugins: {
-                  legend: {
-                    display: false,
-                  },
-                },
-              }}
-            />
+            <Line data={ratingData} options={chartOptions.line} />
           </Card>
         </div>
       </div>
