@@ -45,35 +45,50 @@ export type Branch =
   | "Negombo"
   | "Panadura"
 export interface BookingData {
-    vehicleId: number | null;
+    vehicleId: string | null;
     serviceTypeId: number | null;
-    employeeId: number | null;
+    employeeId: string | null; // Optional - if not selected, manager assigns
     date: string;
     time: string;
-    notes: string;
 }
 
 export interface Vehicle {
-    id: number;
-    name: string;
-    licensePlate: string;
+    vehicleId: string;
+    registrationNo: string;
+    brandName: string;
     model: string;
+    capacity: number;
+    customerId: string;
+    customerEmail: string;
 }
 
 export interface Service {
-    id: number;
-    name: string;
-    duration: string;
-    price: string;
+    serviceId: number;
+    title: string;
     description: string;
+    category: string;
+    imageUrl: string;
+    estimatedHours: number;
+    cost: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface Employee {
-    id: number;
-    name: string;
-    specialization: string;
-    rating: number | null;
-    experience: string;
+    id: string;
+    fullName: string;
+    createdAt: string;
+    specialty: string;
+    empRating: number | null;
+    profileImage: string | null;
+}
+
+export interface AvailableSlot {
+    date: string;
+    totalCapacity: number;
+    bookedCount: number;
+    availableCount: number;
+    isAvailable: boolean;
 }
 
 export interface StepProps {
