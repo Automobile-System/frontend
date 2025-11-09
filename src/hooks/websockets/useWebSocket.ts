@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 
-export function useWebSocket<T = any>(url: string) {
+export function useWebSocket<T = unknown>(url: string) {
   const socketRef = useRef<WebSocket | null>(null);
   const [data, setData] = useState<T | null>(null);
   const [connected, setConnected] = useState(false);

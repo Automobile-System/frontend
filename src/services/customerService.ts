@@ -1,5 +1,3 @@
-import { cookies } from 'next/headers'
-
 interface DashboardOverview {
   activeServices: number
   completedServices: number
