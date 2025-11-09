@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Activity, CheckCircle2, CalendarDays, Hammer, Wifi, WifiOff } from 'lucide-react';
+import { Activity, CheckCircle2, CalendarDays, Hammer } from 'lucide-react';
 import { useCustomerDashboard } from '@/hooks/websockets/useCustomerDashboard';
 
 interface DashboardOverview {
@@ -18,9 +18,13 @@ interface StatsCardsWebSocketProps {
 }
 
 export default function StatsCardsWebSocket({ initialData, username }: StatsCardsWebSocketProps) {
-    const { dashboardData, isConnected } = useCustomerDashboard(username);
+    // Start with initial data from REST API (enterprise best practice)
     const [data, setData] = useState<DashboardOverview | null>(initialData);
+    
+    // Then enable WebSocket for real-time updates
+    const { dashboardData } = useCustomerDashboard(username);
 
+    // Update data when WebSocket sends new data
     useEffect(() => {
         if (dashboardData) {
             setData(dashboardData);
@@ -35,40 +39,31 @@ export default function StatsCardsWebSocket({ initialData, username }: StatsCard
     ];
 
     return (
-        <>
-            <div className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm mb-4 w-fit ${
-                isConnected ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
-            }`}>
-                {isConnected ? <Wifi size={16} /> : <WifiOff size={16} />}
-                <span>{isConnected ? 'Real-time updates active' : 'Connecting to live updates...'}</span>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            {stats.map((stat, index) => (
+                <div
+                    key={index}
+                    className="bg-white rounded-2xl border border-gray-200 p-7 shadow-sm hover:-translate-y-1.5 hover:shadow-xl transition-all duration-250 cursor-pointer group"
+                >
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-gray-500 mb-2">
+                                {stat.title}
+                            </p>
+                            <p className="text-4xl font-bold text-gray-900 my-2">
+                                {stat.value}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                                {stat.status}
+                            </p>
+                        </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                {stats.map((stat, index) => (
-                    <div
-                        key={index}
-                        className="bg-white rounded-2xl border border-gray-200 p-7 shadow-sm hover:-translate-y-1.5 hover:shadow-xl transition-all duration-250 cursor-pointer group"
-                    >
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-gray-500 mb-2">
-                                    {stat.title}
-                                </p>
-                                <p className="text-4xl font-bold text-gray-900 my-2">
-                                    {stat.value}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                    {stat.status}
-                                </p>
-                            </div>
-
-                            <div className={`w-14 h-14 rounded-full ${stat.bgColor} flex items-center justify-center ${stat.textColor} transition-transform duration-250 group-hover:scale-110`}>
-                                {stat.icon}
-                            </div>
+                        <div className={`w-14 h-14 rounded-full ${stat.bgColor} flex items-center justify-center ${stat.textColor} transition-transform duration-250 group-hover:scale-110`}>
+                            {stat.icon}
                         </div>
                     </div>
-                ))}
-            </div>
-        </>
+                </div>
+            ))}
+        </div>
     );
 }
