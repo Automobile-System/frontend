@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 type PageType = 'dashboard' | 'employees' | 'assign' | 'projects' | 'scheduler' | 'reports' | 'communication' | 'customersdetails';
 
@@ -16,6 +17,15 @@ interface SidebarProps {
  */
 export function Sidebar({ activePage, className = '' }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  
+  const handleLogout = () => {
+    // Clear any auth tokens/data
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    // Redirect to login
+    router.push('/login');
+  };
   
   // Automatically determine active page from pathname if not explicitly provided
   const getActivePage = (): PageType => {
@@ -37,7 +47,7 @@ export function Sidebar({ activePage, className = '' }: SidebarProps) {
 
   return (
     <aside className={`w-[270px] bg-[#020079]/5 border-r border-[#020079]/20 min-h-screen ${className}`}>
-      <div className="p-6">
+      <div className="p-6 flex flex-col h-screen">
         <nav className="space-y-2">
           <Link
             href="/manager/dashboard"
@@ -120,6 +130,17 @@ export function Sidebar({ activePage, className = '' }: SidebarProps) {
             Customers
           </Link>
         </nav>
+        
+        {/* Logout Button */}
+        <div className="mt-auto px-4 pb-6">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-roboto bg-gradient-to-r from-yellow-500 to-yellow-400 text-black hover:shadow-lg transition-all duration-200"
+          >
+            <LogOut className="w-5 h-5" />
+            Log Out
+          </button>
+        </div>
       </div>
     </aside>
   );

@@ -51,9 +51,10 @@ export default function BookingPage() {
         </div>
 
       {/* Form Section */}
-  <div className="max-w-6xl mx-auto px-4 py-16 -mt-8 md:-mt-16 relative z-20">
-        <div className="bg-white rounded-3xl shadow-2xl shadow-gray-200/50 p-8 md:p-12 border border-gray-100">
-          <BookingForm />
+      <div className="max-w-6xl mx-auto px-4 py-16 -mt-16 relative z-20">
+        {/* Frosted glass / blur themed form container with blue background */}
+        <div className="bg-gradient-to-br from-[#020079]/95 via-[#020079]/90 to-[#0300a8]/95 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-blue-400/30 shadow-2xl shadow-black/20">
+          <BookingForm variant="blur" />
         </div>
       </div>
 

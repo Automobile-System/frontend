@@ -225,12 +225,6 @@ export function Navigation({ className, initialUser }: NavigationProps) {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/booking" className={linkClass("/booking")}>
-                BOOKING
-              </Link>
-            </NavigationMenuItem>
-
-            <NavigationMenuItem>
               <Link href="/packages" className={linkClass("/packages")}>
                 PACKAGES
               </Link>
@@ -239,6 +233,14 @@ export function Navigation({ className, initialUser }: NavigationProps) {
             <NavigationMenuItem>
               <Link href="/contact" className={linkClass("/contact")}>
                 CONTACT
+              </Link>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <Link href="/booking">
+                <Button className="bg-gradient-to-r from-[#020079] to-[#0300a8] hover:from-[#020079]/90 hover:to-[#0300a8]/90 text-yellow-400 font-teko uppercase tracking-[0.15em] text-[15px] font-bold transition-all shadow-md hover:shadow-lg hover:scale-105">
+                  BOOK NOW
+                </Button>
               </Link>
             </NavigationMenuItem>
           </NavigationMenuList>
@@ -252,15 +254,15 @@ export function Navigation({ className, initialUser }: NavigationProps) {
             <div className="flex items-center gap-3">
               <Link href="/login">
                 <Button 
-                  variant="outline"
-                  className="border-brand text-brand hover:bg-brand hover:text-white font-teko uppercase tracking-[0.15em] text-[15px] transition-all"
+                  className="bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-600 hover:to-yellow-500 text-black font-teko uppercase tracking-[0.15em] text-[15px] font-bold transition-all shadow-md hover:shadow-lg"
                 >
                   LOG IN
                 </Button>
               </Link>
               <Link href="/signup">
                 <Button 
-                  className="btn-accent text-black font-teko uppercase tracking-[0.15em] text-[15px] shadow-accent-glow transition-all"
+                  variant="outline"
+                  className="border-2 border-yellow-400 text-black hover:bg-yellow-400 hover:text-black bg-transparent font-teko uppercase tracking-[0.15em] text-[15px] font-bold transition-all"
                 >
                   SIGN UP
                 </Button>
