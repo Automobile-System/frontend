@@ -43,8 +43,10 @@ export const getEmployeeHistory = (id: string) =>
 export const postTask = (payload: Record<string, unknown>) =>
   apiFetch("/api/tasks", { method: "POST", body: JSON.stringify(payload) });
 
-export const postProject = (payload: Record<string, unknown>) =>
+export const postProject = (payload: Record<string, unknown>) =>{
+  console.log("Creating project with payload:", payload);
   apiFetch("/api/projects", { method: "POST", body: JSON.stringify(payload) });
+}
 
 export const getProjects = () => apiFetch("/api/projects");
 

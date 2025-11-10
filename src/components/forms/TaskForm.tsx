@@ -70,6 +70,18 @@ export default function TaskForm({ onCreated, initial = {} }: Props) {
     e?.preventDefault();
     setLoading(true);
     try {
+      // Parse time string (HH:mm) into LocalTime object
+      let preferredTimeObj = undefined;
+      if (form.preferredTime) {
+        const [hours, minutes] = form.preferredTime.split(':').map(Number);
+        preferredTimeObj = {
+          hour: hours || 0,
+          minute: minutes || 0,
+          second: 0,
+          nano: 0
+        };
+      }
+
       // build payload according to backend contract expected
       const payload = {
         customerName: form.customerName,
@@ -77,18 +89,21 @@ export default function TaskForm({ onCreated, initial = {} }: Props) {
         vehicleRegistration: form.vehicleRegistration,
         vehicleModel: form.vehicleModel,
         serviceType: form.serviceType,
-        serviceNote: form.serviceNote,
+        serviceNotes: form.serviceNote,
         estimatedDurationHours: Number(form.estimatedDurationHours),
         estimatedPrice: Number(form.estimatedPrice),
         preferredDate: form.preferredDate,
-        preferredTime: form.preferredTime,
-        assignEmployeeId: form.assignEmployeeId || undefined,
+        preferredTime: preferredTimeObj,
+        assignedEmployeeId: form.assignEmployeeId || undefined,
       };
 
+      console.log("Submitting task with payload:", payload);
       const task = await postTask(payload);
-      showToast.success("Task created");
+      console.log("Task created successfully:", task);
+      showToast.success("Task created and added to schedule");
       onCreated?.(task);
     } catch (err) {
+      console.error("Failed to create task:", err);
       const message = err instanceof Error ? err.message : String(err);
       showToast.error("Could not create task", message);
     } finally {
@@ -162,7 +177,13 @@ export default function TaskForm({ onCreated, initial = {} }: Props) {
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label>Preferred Time</Label>
-              <Input type="time" value={form.preferredTime} onChange={(e) => setField("preferredTime", e.target.value)} />
+              <Input 
+                type="time" 
+                value={form.preferredTime} 
+                onChange={(e) => setField("preferredTime", e.target.value)}
+                onFocus={(e) => e.target.showPicker?.()}
+                step="60"
+              />
             </div>
           </div>
 

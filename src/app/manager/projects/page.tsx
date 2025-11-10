@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import ProjectFormModal from "@/components/modals/ProjectFormModal";
 import SubTaskModal from "@/components/modals/SubTaskModal";
+import { postProject, getProjects } from "@/services/api";
+import { showToast } from "@/lib/toast";
 
 interface Project {
   id: string;
@@ -91,8 +93,30 @@ export default function ProjectsManagement() {
   const [showSubTaskModal, setShowSubTaskModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projects, setProjects] = useState(INITIAL_PROJECTS);
+  const [creating, setCreating] = useState(false);
 
-  const handleCreateProject = (formData: {
+  // Map server project shape to UI card
+  const toUiProject = (p: any): Project => ({
+    id: String(p?.id ?? p?.code ?? `PRJ-${Math.random().toString(36).slice(2,7).toUpperCase()}`),
+    title: String(p?.title ?? p?.projectTitle ?? "Untitled Project"),
+    customer: String(p?.customer ?? p?.customerName ?? "Unknown"),
+    estimatedCost: (() => {
+      const cost = p?.estimatedCost ?? p?.totalCost ?? p?.finalCost;
+      return typeof cost !== 'undefined' ? `Rs. ${cost}` : "Rs. -";
+    })(),
+    startDate: new Date(p?.startDate ?? Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    team: Array.isArray(p?.team) ? p.team : undefined,
+    timeline: p?.timeline ?? undefined,
+    status: ((): Project["status"] => {
+      const s = (p?.status ?? p?.state ?? "Discussion") as string;
+      const allowed: Project["status"][] = ["Discussion","In Progress","Waiting for Parts","Completed"];
+      return (allowed as string[]).includes(s) ? (s as Project["status"]) : "Discussion";
+    })(),
+    requirements: Boolean(p?.requirements ?? false),
+    onHold: p?.onHold ?? undefined,
+  });
+
+  const handleCreateProject = async (formData: {
     customerName: string;
     contactNumber: string;
     vehicleRegistration: string;
@@ -104,21 +128,54 @@ export default function ProjectsManagement() {
     totalCost: string;
     subTasks: Array<{ name: string; hours: number }>;
   }) => {
-    const newProject: Project = {
-      id: `PRJ-${String(projects.length + 1).padStart(3, '0')}`,
-      title: formData.projectTitle,
-      customer: formData.customerName,
-      estimatedCost: `Rs. ${formData.totalCost}`,
-      startDate: new Date().toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric', 
-        year: 'numeric'
-      }),
-      status: "Discussion"
-    };
-    
-    setProjects([...projects, newProject]);
-    setShowProjectModal(false);
+    try {
+      if (creating) return;
+      setCreating(true);
+
+      // Map modal data to backend payload
+      const payload = {
+        projectTitle: formData.projectTitle,
+        customerName: formData.customerName,
+        contactNumber: formData.contactNumber,
+        vehicleRegistration: formData.vehicleRegistration,
+        vehicleModel: formData.vehicleModel,
+        projectDescription: formData.projectDescription,
+        startDate: formData.startDate,
+        estimatedCompletionTime: formData.estimatedCompletionDate,
+        totalProjectCost: Number(formData.totalCost),
+        subTasks: formData.subTasks?.map(st => ({ name: st.name, hours: st.hours })) ?? [],
+      } as Record<string, unknown>;
+
+      await postProject(payload);
+
+      // Refresh from server to ensure DB persisted
+      try {
+        const list: any[] = await getProjects();
+        const uiList = Array.isArray(list) ? list.map(toUiProject) : [];
+        if (uiList.length) {
+          setProjects(uiList);
+        }
+      } catch {}
+
+      showToast.success("Project created", `${formData.projectTitle} added to Discussion`);
+    } catch (e: any) {
+      console.error("Project creation error:", e);
+      // Extract error message properly
+      let msg = "Failed to create project";
+      if (typeof e === 'string') {
+        msg = e;
+      } else if (e?.message && typeof e.message === 'string') {
+        msg = e.message;
+      } else if (e?.error && typeof e.error === 'string') {
+        msg = e.error;
+      } else if (e?.data?.message) {
+        msg = e.data.message;
+      }
+      showToast.error("Create project failed", msg);
+    } finally {
+      setCreating(false);
+      setShowProjectModal(false);
+    }
   };
 
   const getColumnProjects = (status: Project["status"]) => {
