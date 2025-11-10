@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
+import { Star, Loader } from "lucide-react";
 import {
   EmployeeHistoryModal,
   type ServiceHistory,
@@ -123,7 +123,11 @@ export default function EmployeesPage() {
         const rows = Array.isArray(data) ? data.map(mapEmployee) : [];
         setEmployees(rows);
       })
-      .catch((err: unknown) => setError(err instanceof Error ? err.message : "Failed to load employees"))
+      .catch((err: unknown) =>
+        setError(
+          err instanceof Error ? err.message : "Failed to load employees"
+        )
+      )
       .finally(() => setLoading(false));
   }, []);
 
@@ -164,7 +168,9 @@ export default function EmployeesPage() {
         : [];
       setSelectedEmployee({ ...emp, serviceHistory: history });
     } catch (err: unknown) {
-      showToast.error(err instanceof Error ? err.message : "Failed to load employee history");
+      showToast.error(
+        err instanceof Error ? err.message : "Failed to load employee history"
+      );
     } finally {
       setLoadingHistoryId(null);
     }
@@ -236,7 +242,10 @@ export default function EmployeesPage() {
                       colSpan={6}
                       className="px-6 py-6 text-center font-roboto text-[#020079]"
                     >
-                      Loading employees…
+                      <div className="flex items-center justify-center gap-2">
+                        <Loader className="w-5 h-5 animate-spin" />
+                        <span>Loading employees…</span>
+                      </div>
                     </td>
                   </tr>
                 )}
