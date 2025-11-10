@@ -69,6 +69,7 @@ export const getEmployeeEfficiency = () => apiFetch("/api/reports/employee-effic
 export const getMostRequestedEmployees = () => apiFetch("/api/reports/most-requested-employees");
 export const getPartsDelayAnalytics = () => apiFetch("/api/reports/parts-delay-analytics");
 export const getCompletedProjectsByType = () => apiFetch("/api/reports/completed-projects-by-type");
+export const getCompletionRateTrend = () => apiFetch("/api/reports/completion-rate-trend");
 
 /* Customer Profile */
 export const getCustomerProfile = () => apiFetch("/api/customer/profile");
