@@ -51,7 +51,7 @@ export default function BookingPage() {
         </div>
 
       {/* Form Section */}
-      <div className="max-w-6xl mx-auto px-4 py-16 -mt-16 relative z-20">
+  <div className="max-w-6xl mx-auto px-4 py-16 -mt-8 md:-mt-16 relative z-20">
         <div className="bg-white rounded-3xl shadow-2xl shadow-gray-200/50 p-8 md:p-12 border border-gray-100">
           <BookingForm />
         </div>

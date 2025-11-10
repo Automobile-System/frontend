@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,17 +15,16 @@ const vehicleTypes = [
   "Van",
   "Sports Car",
   "Luxury Car",
-  "Other"
+  "Other",
 ]
 
 const services = [
   "Wash and Grooming",
   "Lube Services",
   "Exterior & Interior Detailing",
-  "Engine Tune ups",
-  "Wash and Grooming",
+  "Engine Tune-ups",
   "Undercarriage Degreasing",
-  "Windscreean Treatments",
+  "Windscreen Treatments",
   "Inspection Reports",
   "Insurance Claims",
   "Part Replacements",
@@ -32,12 +32,19 @@ const services = [
   "Wheel Alignment",
   "Battery Services",
   "Nano Treatments",
-  "Full Paints",
-  "Mechanical",
+  "Full Paint",
+  "Mechanical Service",
   "Detailing",
   "Body Shop",
-  "Periodic Maintenances",
-  "Other"
+  "Periodic Maintenance",
+  "Other",
+]
+
+const branches = [
+  "Head Office - Rathmalana",
+  "Colombo Branch",
+  "Kandy Branch",
+  "Galle Branch",
 ]
 
 export default function BookingForm() {
@@ -56,6 +63,9 @@ export default function BookingForm() {
 
   const [selectedServices, setSelectedServices] = useState<string[]>([])
 
+  const router = useRouter()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const handleServiceToggle = (service: string) => {
     setSelectedServices(prev => {
       if (prev.includes(service)) {
@@ -67,7 +77,21 @@ export default function BookingForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log({ ...formData, services: selectedServices })
+    // basic client-side validation
+    if (!formData.firstName || !formData.lastName || !formData.phone || !formData.vehicleType || !formData.vehicleNumber || !formData.date || !formData.time) {
+      alert('Please fill in all required fields.')
+      return
+    }
+
+    setIsSubmitting(true)
+    const payload = { ...formData, services: selectedServices }
+    console.log('Submitting booking', payload)
+
+    // TODO: replace with actual API call
+    setTimeout(() => {
+      setIsSubmitting(false)
+      router.push('/booking/success')
+    }, 800)
   }
 
   return (
@@ -149,14 +173,31 @@ export default function BookingForm() {
               required
               value={formData.vehicleType}
               onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })}
-              className="w-full h-10 px-3 rounded-md border border-black focus:border-[#020079] focus:outline-none focus:ring-2 focus:ring-[#020079]/20"
+              className="w-full h-10 px-3 rounded-md border border-gray-300 focus:border-[#020079] focus:outline-none focus:ring-2 focus:ring-[#020079]/20 relative z-50 bg-white text-black"
               aria-label="Select Vehicle Type"
             >
               <option value="">Select Vehicle Type</option>
               {vehicleTypes.map((type) => (
-                <option key={type} value={type}>
+                <option key={type} value={type} className="text-black">
                   {type}
                 </option>
+              ))}
+            </select>
+          </div>
+          {/* Branch selection */}
+          <div className="space-y-2">
+            <Label htmlFor="branch" className="text-black font-normal">
+              Preferred Branch <span className="text-gray-500 text-sm">(Optional)</span>
+            </Label>
+            <select
+              id="branch"
+              value={formData.branch}
+              onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
+              className="w-full h-10 px-3 rounded-md border border-gray-300 focus:border-[#020079] focus:outline-none focus:ring-2 focus:ring-[#020079]/20 bg-white text-black"
+            >
+              <option value="">Select Branch (optional)</option>
+              {branches.map((b) => (
+                <option key={b} value={b} className="text-black">{b}</option>
               ))}
             </select>
           </div>
@@ -186,22 +227,31 @@ export default function BookingForm() {
           <p className="text-sm text-gray-600 mt-2">Choose one or more services you need</p>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-3">
-            {services.map((service) => (
-              <label
-                key={service}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedServices.includes(service)}
-                  onChange={() => handleServiceToggle(service)}
-                  className="w-4 h-4 border-2 border-gray-400 rounded-sm bg-white checked:bg-white checked:border-gray-400 focus:ring-0 focus:ring-offset-0 appearance-none relative
-                  checked:after:content-['✓'] checked:after:absolute checked:after:left-[1px] checked:after:top-[-2px] checked:after:text-black checked:after:text-xs checked:after:font-semibold"
-                />
-                <span className="text-sm font-normal text-gray-600">{service}</span>
-              </label>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="col-span-1 sm:col-span-2 md:col-span-3 flex justify-end">
+              <div className="flex gap-2">
+                <button type="button" onClick={() => { setSelectedServices(services.slice(0, 3)) }} className="text-sm text-[#020079] hover:underline">Quick pick</button>
+                <button type="button" onClick={() => setSelectedServices([])} className="text-sm text-gray-500 hover:underline">Clear</button>
+              </div>
+            </div>
+
+            <div className="col-span-1 sm:col-span-2 md:col-span-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-56 overflow-auto p-2 border rounded-md bg-white">
+                {services.map((service) => (
+                  <label key={service} className="flex items-start gap-3 p-2 rounded hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={selectedServices.includes(service)}
+                      onChange={() => handleServiceToggle(service)}
+                      className="w-5 h-5 mt-1 text-[#020079] border-gray-300 rounded focus:ring-[#020079]"
+                    />
+                    <div>
+                      <div className="text-sm font-medium text-gray-800">{service}</div>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -226,7 +276,7 @@ export default function BookingForm() {
                 required
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="border-black focus:border-[#020079]"
+                className="border-gray-300 focus:border-[#020079]"
               />
             </div>
             <div className="space-y-2">
@@ -239,7 +289,7 @@ export default function BookingForm() {
                 required
                 value={formData.time}
                 onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                className="border-black focus:border-[#020079]"
+                className="border-gray-300 focus:border-[#020079]"
               />
             </div>
           </div>
@@ -264,7 +314,7 @@ export default function BookingForm() {
               value={formData.additionalNotes}
               onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
               rows={4}
-              className="w-full px-3 py-2 rounded-md border border-black focus:border-[#020079] focus:outline-none focus:ring-2 focus:ring-[#020079]/20 resize-none"
+              className="w-full px-3 py-2 rounded-md border border-gray-300 focus:border-[#020079] focus:outline-none focus:ring-2 focus:ring-[#020079]/20 resize-none"
               placeholder="Any special requests or additional information..."
             />
           </div>
@@ -275,9 +325,10 @@ export default function BookingForm() {
       <div className="flex justify-center pt-4">
         <Button
           type="submit"
-          className="bg-[#020079] hover:bg-[#020079]/90 text-white px-12 py-6 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:scale-105 min-w-[200px]"
+          disabled={isSubmitting}
+          className={`bg-[#020079] ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#020079]/90'} text-white px-10 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all min-w-[200px]`}
         >
-          Submit Booking
+          {isSubmitting ? 'Submitting...' : 'Submit Booking'}
         </Button>
       </div>
     </form>
