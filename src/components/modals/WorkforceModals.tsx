@@ -82,7 +82,21 @@ export function AddManagerModal({ isOpen, onClose, onSubmit }: AddManagerModalPr
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(formData)
+    
+    // Auto-generate managerId (MGR-XXX format with random 3-digit number)
+    const randomId = Math.floor(100 + Math.random() * 900) // 100-999
+    const managerId = `MGR-${randomId}`
+    
+    // Auto-generate username from email (part before @)
+    const username = formData.email.split('@')[0]
+    
+    // Submit with auto-generated fields
+    onSubmit({
+      ...formData,
+      managerId,
+      username
+    })
+    
     setFormData({
       firstName: "",
       lastName: "",
@@ -294,7 +308,21 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(formData)
+    
+    // Auto-generate employeeId (EMP-XXX format with random 3-digit number)
+    const randomId = Math.floor(100 + Math.random() * 900) // 100-999
+    const employeeId = `EMP-${randomId}`
+    
+    // Auto-generate username from email (part before @)
+    const username = formData.email.split('@')[0]
+    
+    // Submit with auto-generated fields
+    onSubmit({
+      ...formData,
+      employeeId,
+      username
+    })
+    
     setFormData({
       firstName: "",
       lastName: "",

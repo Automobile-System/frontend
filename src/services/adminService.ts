@@ -1059,35 +1059,25 @@ export interface AddManagerRequest {
 
 export const addManager = async (data: AddManagerRequest): Promise<{ success: boolean; message: string; manager: Manager }> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/workforce/managers', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${getAuthToken()}`
-    //   },
-    //   body: JSON.stringify(data)
-    // })
-    // if (!response.ok) throw new Error('Failed to add manager')
-    // return await response.json()
-
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 800))
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     
-    const newManager: Manager = {
-      id: data.managerId,
-      name: `${data.firstName} ${data.lastName}`,
-      email: data.email,
-      phone: data.phone,
-      joinDate: new Date(data.joinDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-      status: 'Active'
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/managers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      credentials: 'include',
+      body: JSON.stringify(data)
+    })
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Failed to add manager' }))
+      throw new Error(error.message || 'Failed to add manager')
     }
-
-    return {
-      success: true,
-      message: `Manager Added Successfully!\n\nName: ${newManager.name}\nID: ${data.managerId}\nEmail: ${data.email}\n\nCredentials have been sent to the manager's email. They can log in with their username and change the temporary password.`,
-      manager: newManager
-    }
+    
+    return await response.json()
   } catch (error) {
     console.error('Error adding manager:', error)
     throw error
@@ -1116,36 +1106,25 @@ export interface AddEmployeeRequest {
 
 export const addEmployee = async (data: AddEmployeeRequest): Promise<{ success: boolean; message: string; employee: Employee }> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/workforce/employees', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${getAuthToken()}`
-    //   },
-    //   body: JSON.stringify(data)
-    // })
-    // if (!response.ok) throw new Error('Failed to add employee')
-    // return await response.json()
-
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 800))
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     
-    const newEmployee: Employee = {
-      id: data.employeeId,
-      name: `${data.firstName} ${data.lastName}`,
-      specialization: data.specialization,
-      email: data.email,
-      phone: data.phone,
-      rating: 0, // New employee starts with 0 rating
-      status: 'Active'
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/employees`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      credentials: 'include',
+      body: JSON.stringify(data)
+    })
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Failed to add employee' }))
+      throw new Error(error.message || 'Failed to add employee')
     }
-
-    return {
-      success: true,
-      message: `Employee Added Successfully!\n\nName: ${newEmployee.name}\nID: ${data.employeeId}\nSpecialization: ${data.specialization}\nEmail: ${data.email}\n\nCredentials have been sent to the employee's email. They can log in and managers can assign tasks.`,
-      employee: newEmployee
-    }
+    
+    return await response.json()
   } catch (error) {
     console.error('Error adding employee:', error)
     throw error
