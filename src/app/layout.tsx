@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Teko, Roboto } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -30,7 +30,12 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "Automobile Management System",
   description:
-    "Enterprise automobile management application developed by Team Nemmi",
+    "Enterprise automobile management application developed by Team Tenx",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1.0,
 };
 
 export default function RootLayout({

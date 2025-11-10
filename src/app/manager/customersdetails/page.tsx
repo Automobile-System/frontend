@@ -356,18 +356,19 @@ export default function CustomerDetailsPage() {
     applyFilters();
   }, [applyFilters]);
 
-  const loadCustomerDetails = async (customerId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const loadCustomerDetails = async (_customerId: string) => {
     try {
       setDetailsLoading(true);
       setIsDetailsOpen(true);
 
       // Use mock data for now - replace with API calls when backend is ready
       // const [details, active, projects, servHistory, projHistory] = await Promise.all([
-      //   fetchCustomerDetails(customerId),
-      //   fetchCustomerActiveServices(customerId),
-      //   fetchCustomerActiveProjects(customerId),
-      //   fetchCustomerServiceHistory(customerId),
-      //   fetchCustomerProjectHistory(customerId),
+      //   fetchCustomerDetails(_customerId),
+      //   fetchCustomerActiveServices(_customerId),
+      //   fetchCustomerActiveProjects(_customerId),
+      //   fetchCustomerServiceHistory(_customerId),
+      //   fetchCustomerProjectHistory(_customerId),
       // ]);
 
       // Simulate API delay
