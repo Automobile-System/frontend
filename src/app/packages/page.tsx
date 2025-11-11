@@ -128,39 +128,6 @@ const packages = [
   }
 ]
 
-const colorClasses = {
-  blue: {
-    badge: "bg-blue-100 text-blue-800",
-    icon: "bg-blue-100 text-blue-600",
-    button: "bg-[#020079] hover:bg-[#020079]/90 text-white"
-  },
-  yellow: {
-    badge: "bg-yellow-100 text-yellow-800",
-    icon: "bg-yellow-100 text-yellow-600",
-    button: "bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold"
-  },
-  purple: {
-    badge: "bg-purple-100 text-purple-800",
-    icon: "bg-purple-100 text-purple-600",
-    button: "bg-purple-600 hover:bg-purple-700 text-white"
-  },
-  green: {
-    badge: "bg-green-100 text-green-800",
-    icon: "bg-green-100 text-green-600",
-    button: "bg-green-600 hover:bg-green-700 text-white"
-  },
-  red: {
-    badge: "bg-blue-100 text-blue-800",
-    icon: "bg-blue-100 text-blue-600",
-    button: "bg-[#020079] hover:bg-[#020079]/90 text-white"
-  },
-  orange: {
-    badge: "bg-orange-100 text-orange-800",
-    icon: "bg-orange-100 text-orange-600",
-    button: "bg-orange-600 hover:bg-orange-700 text-white"
-  }
-}
-
 export default function PackagesPage() {
   return (
     <>
@@ -200,7 +167,6 @@ export default function PackagesPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {packages.map((pkg) => {
               const Icon = pkg.icon
-              const colors = colorClasses[pkg.color as keyof typeof colorClasses]
               
               return (
                 <div
