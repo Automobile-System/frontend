@@ -166,9 +166,16 @@ export default function PackagesPage() {
     <>
       <Navigation />
       
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white font-roboto">
+      <div className="min-h-screen bg-gradient-to-br from-[#020079]/95 via-[#020079]/90 to-[#0300a8]/95 font-roboto relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-yellow-400/20 rounded-full filter blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-400/20 rounded-full filter blur-3xl animate-pulse delay-700"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yellow-400/10 rounded-full filter blur-3xl"></div>
+        </div>
+        
         {/* Hero Section */}
-        <div className="relative bg-gradient-to-br from-[#020079] via-[#020079] to-[#0300a8] py-20 px-4 overflow-hidden">
+        <div className="relative py-20 px-4 backdrop-blur-sm">
           {/* Decorative elements */}
           <div className="absolute top-0 left-0 w-full h-full opacity-10">
             <div className="absolute top-10 left-10 w-72 h-72 bg-yellow-400 rounded-full filter blur-3xl animate-pulse"></div>
@@ -189,7 +196,7 @@ export default function PackagesPage() {
         </div>
 
         {/* Packages Grid */}
-        <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="max-w-7xl mx-auto px-4 py-16 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {packages.map((pkg) => {
               const Icon = pkg.icon
@@ -198,38 +205,38 @@ export default function PackagesPage() {
               return (
                 <div
                   key={pkg.id}
-                  className={`relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 ${
-                    pkg.popular ? 'border-yellow-400 scale-105' : 'border-gray-100'
+                  className={`relative bg-white/10 backdrop-blur-xl rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-white/20 hover:border-yellow-400/50 ${
+                    pkg.popular ? 'ring-2 ring-yellow-400/50 scale-105' : ''
                   }`}
                 >
                   {/* Popular Badge */}
                   {pkg.popular && (
-                    <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-4 py-1 rounded-full text-xs font-bold shadow-lg z-10">
+                    <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-400 to-yellow-500 text-black px-4 py-1 rounded-full text-xs font-bold shadow-lg z-10 backdrop-blur-sm">
                       MOST POPULAR
                     </div>
                   )}
 
-                  {/* Gradient Header */}
-                  <div className={`bg-gradient-to-r ${pkg.gradient} p-6 text-white`}>
-                    <div className={`w-14 h-14 ${colors.icon} rounded-full flex items-center justify-center mb-4`}>
-                      <Icon className={`w-7 h-7 text-${pkg.color}-600`} />
+                  {/* Frosted Glass Header */}
+                  <div className="bg-gradient-to-r from-[#020079]/80 to-[#0300a8]/80 backdrop-blur-sm p-6 text-white border-b border-white/20">
+                    <div className="w-14 h-14 bg-yellow-400/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 border border-yellow-400/30">
+                      <Icon className="w-7 h-7 text-yellow-400" />
                     </div>
                     <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
                     <p className="text-white/90 text-sm mb-4">{pkg.description}</p>
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold">{pkg.price}</span>
+                      <span className="text-3xl font-bold text-yellow-400">{pkg.price}</span>
                     </div>
                     <p className="text-white/80 text-sm mt-2">Duration: {pkg.duration}</p>
                   </div>
 
                   {/* Services List */}
-                  <div className="p-6">
-                    <h4 className="text-lg font-semibold text-black mb-4">Included Services:</h4>
+                  <div className="p-6 bg-white/5 backdrop-blur-sm">
+                    <h4 className="text-lg font-semibold text-white mb-4">Included Services:</h4>
                     <ul className="space-y-3 mb-6">
                       {pkg.services.map((service, idx) => (
                         <li key={idx} className="flex items-start gap-3">
-                          <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                          <span className="text-gray-700 text-sm">{service}</span>
+                          <Check className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                          <span className="text-white/90 text-sm">{service}</span>
                         </li>
                       ))}
                     </ul>
@@ -237,7 +244,7 @@ export default function PackagesPage() {
                     {/* Book Button */}
                     <Link
                       href="/booking"
-                      className={`block w-full text-center px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 shadow-md hover:shadow-lg ${colors.button}`}
+                      className="block w-full text-center px-6 py-3 rounded-xl font-semibold transition-all hover:scale-105 shadow-md hover:shadow-lg bg-gradient-to-r from-yellow-500 to-yellow-400 text-black hover:shadow-yellow-400/25"
                     >
                       Book This Package
                     </Link>
@@ -249,22 +256,22 @@ export default function PackagesPage() {
         </div>
 
         {/* Custom Package Section */}
-        <div className="bg-gradient-to-br from-blue-50 to-white py-16 px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">Need a Custom Package?</h2>
-            <p className="text-gray-600 mb-8 text-lg">
+        <div className="py-16 px-4 relative">
+          <div className="max-w-4xl mx-auto text-center bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Need a Custom Package?</h2>
+            <p className="text-white/90 mb-8 text-lg">
               Can&apos;t find exactly what you&apos;re looking for? We can create a personalized service package tailored to your vehicle&apos;s specific needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/contact"
-                className="inline-block bg-[#020079] text-white px-8 py-4 rounded-xl font-semibold hover:bg-[#020079]/90 transition-all hover:scale-105 shadow-lg"
+                className="inline-block bg-gradient-to-r from-yellow-500 to-yellow-400 text-black px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all hover:scale-105 shadow-md"
               >
                 Contact Us
               </Link>
               <Link
                 href="/booking"
-                className="inline-block border-2 border-[#020079] text-[#020079] px-8 py-4 rounded-xl font-semibold hover:bg-[#020079]/5 transition-all"
+                className="inline-block border-2 border-yellow-400/50 text-white px-8 py-4 rounded-xl font-semibold hover:bg-yellow-400/10 transition-all backdrop-blur-sm"
               >
                 Book Individual Services
               </Link>
@@ -273,50 +280,52 @@ export default function PackagesPage() {
         </div>
 
         {/* Benefits Section */}
-        <div className="max-w-7xl mx-auto px-4 py-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-black mb-12">
-            Why Choose Our Packages?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">💰</span>
+        <div className="max-w-7xl mx-auto px-4 py-16 relative">
+          <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/20">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-white mb-12">
+              Why Choose Our Packages?
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-yellow-400/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border border-yellow-400/30">
+                  <span className="text-3xl">💰</span>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">Save Money</h3>
+                <p className="text-white/80 text-sm">Packages offer better value than individual services</p>
               </div>
-              <h3 className="text-xl font-semibold text-black mb-2">Save Money</h3>
-              <p className="text-gray-600 text-sm">Packages offer better value than individual services</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">⏱️</span>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-yellow-400/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border border-yellow-400/30">
+                  <span className="text-3xl">⏱️</span>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">Save Time</h3>
+                <p className="text-white/80 text-sm">Everything done in one convenient visit</p>
               </div>
-              <h3 className="text-xl font-semibold text-black mb-2">Save Time</h3>
-              <p className="text-gray-600 text-sm">Everything done in one convenient visit</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">✨</span>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-yellow-400/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border border-yellow-400/30">
+                  <span className="text-3xl">✨</span>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">Expert Care</h3>
+                <p className="text-white/80 text-sm">Curated by our automotive professionals</p>
               </div>
-              <h3 className="text-xl font-semibold text-black mb-2">Expert Care</h3>
-              <p className="text-gray-600 text-sm">Curated by our automotive professionals</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🛡️</span>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-yellow-400/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4 border border-yellow-400/30">
+                  <span className="text-3xl">🛡️</span>
+                </div>
+                <h3 className="text-xl font-semibold text-white mb-2">Quality Guarantee</h3>
+                <p className="text-white/80 text-sm">All packages come with our service warranty</p>
               </div>
-              <h3 className="text-xl font-semibold text-black mb-2">Quality Guarantee</h3>
-              <p className="text-gray-600 text-sm">All packages come with our service warranty</p>
             </div>
           </div>
         </div>
 
         {/* Footer */}
-        <footer className="bg-gradient-to-br from-[#020079] to-[#000050] text-white py-12 px-4">
-          <div className="max-w-7xl mx-auto text-center">
-            <h3 className="text-2xl font-bold mb-4">Ready to Get Started?</h3>
+        <footer className="py-12 px-4 relative">
+          <div className="max-w-7xl mx-auto text-center bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20">
+            <h3 className="text-2xl font-bold mb-4 text-white">Ready to Get Started?</h3>
             <p className="text-white/80 mb-6">Book your package today and experience the NITROLINE difference</p>
             <Link
               href="/booking"
-              className="inline-block bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black px-10 py-4 rounded-xl font-bold transition-all hover:scale-105 shadow-lg shadow-yellow-500/50"
+              className="inline-block bg-gradient-to-r from-yellow-500 to-yellow-400 text-black px-10 py-4 rounded-xl font-bold transition-all hover:scale-105 shadow-lg hover:shadow-yellow-400/25"
             >
               Book Now
             </Link>
