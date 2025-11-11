@@ -44,7 +44,7 @@ export default function CustomerHeader() {
               textTransform: "uppercase",
             }}
           >
-            Customer Portal
+            Dashboard
           </h1>
         </div>
 

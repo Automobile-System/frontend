@@ -1,9 +1,11 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useAuth } from '@/hooks/useAuth'
 
 export function CustomerDashboardHeader() {
   const router = useRouter()
+  const { user } = useAuth()
 
   const handleBookService = () => {
     router.push("/customer/book-service")
@@ -13,7 +15,7 @@ export function CustomerDashboardHeader() {
     <div className="flex items-center justify-between">
       <div>
         <h1 className="text-4xl font-bold text-gray-900 m-0">
-          Welcome back! 👋
+          Welcome {user?.firstName}
         </h1>
         <p className="text-gray-500 mt-2 text-base">
           Your vehicle service summary and recommendations
