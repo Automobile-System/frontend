@@ -10,10 +10,10 @@ import type {
 import type { TooltipProps } from "recharts/types/component/Tooltip";
 
 import {
-  getOverview,
-  getEmployeeEfficiency,
-  getCompletionRateTrend,
-} from "@/services/api";
+  fetchDashboardOverview,
+  fetchEmployeeEfficiencyReport,
+  fetchCompletionRateTrendReport,
+} from "@/services/managerService";
 import {
   ManagerDashboardOverview,
   PieChartData,
@@ -111,9 +111,9 @@ export default function ManagerDashboardPage() {
       // Fetch both dashboard overview and task distribution
       const [overviewData, efficiencyReport, completionRateReport] =
         (await Promise.all([
-          getOverview(),
-          getEmployeeEfficiency(),
-          getCompletionRateTrend(),
+          fetchDashboardOverview(),
+          fetchEmployeeEfficiencyReport(),
+          fetchCompletionRateTrendReport(),
         ])) as [
           ManagerDashboardOverview,
           ReportsResponse,

@@ -242,7 +242,7 @@ export interface ApiMessageResponse {
 // ============================================================================
 
 export async function fetchDashboardOverview(): Promise<DashboardOverviewResponse> {
-  return apiFetch<DashboardOverviewResponse>('/api/dashboard/overview');
+  return apiFetch<DashboardOverviewResponse>('/api/manager/dashboard/overview');
 }
 
 export async function fetchEmployees(): Promise<EmployeeListItem[]> {
@@ -275,7 +275,7 @@ export async function createSubTask(
 export async function createService(
   payload: CreateServicePayload
 ): Promise<ApiMessageResponse> {
-  return apiFetch<ApiMessageResponse>('/api/service', {
+   return apiFetch<ApiMessageResponse>('/api/services', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
@@ -285,14 +285,14 @@ export async function updateService(
   serviceId: number,
   payload: CreateServicePayload
 ): Promise<ApiMessageResponse> {
-  return apiFetch<ApiMessageResponse>(`/api/service/${serviceId}`, {
+  return apiFetch<ApiMessageResponse>(`/api/services/${serviceId}`, {
     method: 'PUT',
     body: JSON.stringify(payload),
   });
 }
 
 export async function deleteService(serviceId: number): Promise<ApiMessageResponse> {
-  return apiFetch<ApiMessageResponse>(`/api/service/${serviceId}`, {
+  return apiFetch<ApiMessageResponse>(`/api/services/${serviceId}`, {
     method: 'DELETE',
   });
 }
@@ -302,11 +302,11 @@ export async function fetchProjects(): Promise<ProjectBoardResponse[]> {
 }
 
 export async function fetchServices(): Promise<ServiceSummary[]> {
-  return apiFetch<ServiceSummary[]>('/api/service');
+  return apiFetch<ServiceSummary[]>('/api/services');
 }
 
 export async function fetchAvailableEmployees(): Promise<AvailableEmployee[]> {
-  return apiFetch<AvailableEmployee[]>('/api/employees/available');
+  return apiFetch<AvailableEmployee[]>('/api/manager/employees/available');
 }
 
 export async function fetchSchedule(
@@ -314,43 +314,43 @@ export async function fetchSchedule(
   endDate: string
 ): Promise<ScheduleResponse> {
   const params = new URLSearchParams({ startDate, endDate });
-  return apiFetch<ScheduleResponse>(`/api/schedule?${params.toString()}`);
+  return apiFetch<ScheduleResponse>(`/api/manager/schedule?${params.toString()}`);
 }
 
 export async function updateScheduleTask(
   taskId: number,
   payload: UpdateSchedulePayload
 ): Promise<ApiMessageResponse> {
-  return apiFetch<ApiMessageResponse>(`/api/schedule/task/${taskId}`, {
+  return apiFetch<ApiMessageResponse>(`/api/manager/schedule/task/${taskId}`, {
     method: 'PUT',
     body: JSON.stringify(payload),
   });
 }
 
 export async function autoBalanceWorkload(): Promise<ApiMessageResponse> {
-  return apiFetch<ApiMessageResponse>('/api/schedule/auto-balance', {
+  return apiFetch<ApiMessageResponse>('/api/manager/schedule/auto-balance', {
     method: 'POST',
   });
 }
 
 export async function fetchEmployeeEfficiencyReport(): Promise<ReportsResponse> {
-  return apiFetch<ReportsResponse>('/api/reports/employee-efficiency');
+  return apiFetch<ReportsResponse>('/api/manager/reports/employee-efficiency');
 }
 
 export async function fetchMostRequestedEmployeesReport(): Promise<ReportsResponse> {
-  return apiFetch<ReportsResponse>('/api/reports/most-requested-employees');
+  return apiFetch<ReportsResponse>('/api/manager/reports/most-requested-employees');
 }
 
 export async function fetchPartsDelayAnalyticsReport(): Promise<ReportsResponse> {
-  return apiFetch<ReportsResponse>('/api/reports/parts-delay-analytics');
+  return apiFetch<ReportsResponse>('/api/manager/reports/parts-delay-analytics');
 }
 
 export async function fetchCompletedProjectsByTypeReport(): Promise<ReportsResponse> {
-  return apiFetch<ReportsResponse>('/api/reports/completed-projects-by-type');
+  return apiFetch<ReportsResponse>('/api/manager/reports/completed-projects-by-type');
 }
 
 export async function fetchCompletionRateTrendReport(): Promise<CompletionRatePercentageResponse> {
-  return apiFetch<CompletionRatePercentageResponse>('/api/reports/completion-rate-trend');
+  return apiFetch<CompletionRatePercentageResponse>('/api/manager/reports/completion-rate-trend');
 }
 
 // ============================================================================

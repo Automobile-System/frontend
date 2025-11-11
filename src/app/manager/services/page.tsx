@@ -97,6 +97,9 @@ export default function ManagerServicesPage() {
   const [editingService, setEditingService] = useState<ServiceSummary | null>(null);
   const [formState, setFormState] = useState<ServiceFormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<ServiceSummary | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     void loadServices();
@@ -235,24 +238,34 @@ export default function ManagerServicesPage() {
     }
   };
 
-  const handleDelete = async (service: ServiceSummary) => {
-    if (!service.serviceId) {
+  const openDeleteDialog = (service: ServiceSummary) => {
+    setDeleteTarget(service);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const closeDeleteDialog = () => {
+    if (isDeleting) return;
+    setIsDeleteDialogOpen(false);
+    setDeleteTarget(null);
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget?.serviceId) {
       showToast.warning("Service id missing; cannot delete.");
+      closeDeleteDialog();
       return;
     }
-    const confirmed = window.confirm(
-      `Are you sure you want to delete "${service.title}"? This action cannot be undone.`
-    );
-    if (!confirmed) return;
 
     try {
-      const response = await deleteServiceApi(service.serviceId);
+      setIsDeleting(true);
+      const response = await deleteServiceApi(deleteTarget.serviceId);
       const message =
         typeof response?.message === "string"
           ? response.message
           : "Service deleted successfully.";
       showToast.success(message);
       await loadServices();
+      closeDeleteDialog();
     } catch (err: unknown) {
       console.error("Failed to delete service", err);
       const message =
@@ -260,6 +273,8 @@ export default function ManagerServicesPage() {
           ? err.message
           : "Failed to delete service. Please try again.";
       showToast.error(message);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -373,7 +388,7 @@ export default function ManagerServicesPage() {
                     variant="destructive"
                     size="sm"
                     className="bg-red-600 hover:bg-red-700 text-white shadow-sm"
-                    onClick={() => handleDelete(service)}
+                    onClick={() => openDeleteDialog(service)}
                   >
                     Delete
                   </Button>
@@ -615,6 +630,51 @@ export default function ManagerServicesPage() {
               </DialogFooter>
             </form>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={(open) => {
+        if (!open) {
+          closeDeleteDialog();
+        } else {
+          setIsDeleteDialogOpen(true);
+        }
+      }}>
+        <DialogContent className="sm:max-w-md w-full border border-[#020079]/25 shadow-2xl rounded-2xl bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bebas text-[#020079]">
+              Delete Service
+            </DialogTitle>
+            <DialogDescription className="font-roboto text-[#020079]/70">
+              This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 font-roboto text-[#020079]">
+            <p>
+              Are you sure you want to delete{" "}
+              <span className="font-semibold">
+                {deleteTarget?.title ?? "this service"}
+              </span>
+              ? This will permanently remove it from the catalog.
+            </p>
+          </div>
+          <DialogFooter className="pt-2 gap-3 justify-end">
+            <Button
+              variant="ghost"
+              onClick={closeDeleteDialog}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              className="bg-red-600 hover:bg-red-700"
+              onClick={() => void handleDelete()}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
