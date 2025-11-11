@@ -101,6 +101,36 @@ export const deleteCustomerVehicle = (id: string) =>
   apiFetch(`/api/customer/vehicles/${id}`, {
     method: "DELETE"
   });
+
+/* Chat */
+export const createConversation = (payload: {
+  participantId: string;
+  employeeId?: string;
+  vehicleId?: string;
+}) =>
+  apiFetch("/api/chat/conversations", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+
+export const getEmployeeConversationsApi = (employeeId: string) =>
+  apiFetch(`/api/chat/conversations/${employeeId}`);
+
+export const getParticipantConversationsApi = (participantId: string) =>
+  apiFetch(`/api/chat/conversations/participant/${participantId}`);
+
+export const getConversationMessages = (conversationId: string | number) =>
+  apiFetch(`/api/chat/messages/${conversationId}`);
+
+export const postChatMessage = (payload: {
+  conversationId: number;
+  senderId: string;
+  text: string;
+}) =>
+  apiFetch("/api/chat/messages", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 /* Contact */
 export const postContactMessage = (payload: {
   name: string

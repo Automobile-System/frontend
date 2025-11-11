@@ -8,7 +8,7 @@ export interface User {
   email: string
   firstName: string
   lastName: string
-  role: string
+  role: string | null
   avatar?: string
 }
 
@@ -32,8 +32,25 @@ export function useAuth() {
 
       if (response.ok) {
         const userData = await response.json()
-        setUser(userData)
-        setIsAuthenticated(true)
+
+        const mappedUser: User = {
+          id: userData.userId ?? userData.id ?? '',
+          email: userData.email ?? '',
+          firstName: userData.firstName ?? '',
+          lastName: userData.lastName ?? '',
+          role: Array.isArray(userData.roles)
+            ? userData.roles[0] ?? null
+            : userData.role ?? null,
+          avatar: userData.profileImageUrl ?? userData.avatar ?? undefined,
+        }
+
+        if (!mappedUser.id) {
+          setUser(null)
+          setIsAuthenticated(false)
+        } else {
+          setUser(mappedUser)
+          setIsAuthenticated(true)
+        }
       } else {
         setUser(null)
         setIsAuthenticated(false)
