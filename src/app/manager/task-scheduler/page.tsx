@@ -3,11 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import AddTaskModal from "@/components/modals/AddTaskModal";
 import ProjectFormModal from "@/components/modals/ProjectFormModal";
 import EmployeeAssignmentModal from "@/components/modals/EmployeeAssignmentModal";
 import TaskDetailsModal from "@/components/modals/TaskDetailsModal";
+import { getAvailableEmployees } from "@/services/api";
+import { Loader } from "lucide-react";
 
 interface PendingTask {
   id: string;
@@ -23,22 +25,22 @@ const PENDING_TASKS: PendingTask[] = [
     vehicle: "PQ-7890 (Toyota Prius)",
     serviceType: "Brake System Service",
     dateTime: "2025-11-06 09:00 AM",
-    customer: "Robert Chen"
+    customer: "Robert Chen",
   },
   {
     id: "1248",
     vehicle: "RS-4321 (Honda CR-V)",
     serviceType: "Engine Diagnostics",
     dateTime: "2025-11-06 02:00 PM",
-    customer: "Jessica Taylor"
+    customer: "Jessica Taylor",
   },
   {
     id: "1249",
     vehicle: "TU-9876 (Mazda CX-5)",
     serviceType: "Full Service Package",
     dateTime: "2025-11-07 10:30 AM",
-    customer: "William Martinez"
-  }
+    customer: "William Martinez",
+  },
 ];
 
 interface HeldTask {
@@ -64,12 +66,21 @@ interface EmployeeAvailability {
   };
 }
 
+// Backend response shape for GET /api/employees/available
+interface ApiAvailableEmployee {
+  id: string;
+  name: string;
+  skill: string;
+  tasks: string; // e.g. "2/5" or "2/5 - FULL"
+  disabled: boolean;
+}
+
 const HELD_TASKS: HeldTask[] = [
   {
     id: "1245",
     reason: "missing parts",
-    duration: "24 hours"
-  }
+    duration: "24 hours",
+  },
 ];
 
 const SCHEDULED_TASKS: ScheduledTask[] = [
@@ -80,7 +91,7 @@ const SCHEDULED_TASKS: ScheduledTask[] = [
     serviceType: "Engine Oil Change",
     assignedTo: "Ruwan Silva",
     dateTime: "2025-11-05 10:00 AM",
-    status: "Scheduled"
+    status: "Scheduled",
   },
   {
     id: "1244",
@@ -89,7 +100,7 @@ const SCHEDULED_TASKS: ScheduledTask[] = [
     serviceType: "Brake Inspection",
     assignedTo: "Kasun Mendis",
     dateTime: "2025-11-05 02:00 PM",
-    status: "In Progress"
+    status: "In Progress",
   },
   {
     id: "1245",
@@ -98,7 +109,7 @@ const SCHEDULED_TASKS: ScheduledTask[] = [
     serviceType: "Transmission Repair",
     assignedTo: "Amal Wickramasinghe",
     dateTime: "2025-11-04 09:00 AM",
-    status: "On Hold"
+    status: "On Hold",
   },
   {
     id: "1246",
@@ -107,55 +118,72 @@ const SCHEDULED_TASKS: ScheduledTask[] = [
     serviceType: "Full Service",
     assignedTo: "Nimal Fernando",
     dateTime: "2025-11-06 11:00 AM",
-    status: "Scheduled"
-  }
-];
-
-const EMPLOYEE_AVAILABILITY: EmployeeAvailability[] = [
-  {
-    name: "Ruwan Silva",
-    schedule: {
-      "Mon 11/4": "Booked",
-      "Tue 11/5": "Available",
-      "Wed 11/6": "Booked",
-      "Thu 11/7": "Available",
-      "Fri 11/8": "Available"
-    }
+    status: "Scheduled",
   },
-  {
-    name: "Kamal Perera",
-    schedule: {
-      "Mon 11/4": "Booked",
-      "Tue 11/5": "Booked",
-      "Wed 11/6": "Booked",
-      "Thu 11/7": "Booked",
-      "Fri 11/8": "Booked"
-    }
-  },
-  {
-    name: "Nimal Fernando",
-    schedule: {
-      "Mon 11/4": "Available",
-      "Tue 11/5": "Booked",
-      "Wed 11/6": "Available",
-      "Thu 11/7": "Available",
-      "Fri 11/8": "Available"
-    }
-  }
 ];
 
 export default function TaskSchedulerPage() {
   const [tasks, setTasks] = useState<PendingTask[]>(PENDING_TASKS);
   const [heldTasks] = useState<HeldTask[]>(HELD_TASKS);
   const [scheduledTasks] = useState<ScheduledTask[]>(SCHEDULED_TASKS);
-  const [employeeAvailability] = useState<EmployeeAvailability[]>(EMPLOYEE_AVAILABILITY);
+  // Dynamic availability built from API data
+  const [employeeAvailability, setEmployeeAvailability] = useState<
+    EmployeeAvailability[]
+  >([]);
+  const [loadingEmployees, setLoadingEmployees] = useState(false);
+  const [employeesError, setEmployeesError] = useState<string | null>(null);
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [showEmployeeModal, setShowEmployeeModal] = useState(false);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState<PendingTask | null>(null);
-  const [selectedScheduledTask, setSelectedScheduledTask] = useState<ScheduledTask | null>(null);
-  const [taskToReassign, setTaskToReassign] = useState<ScheduledTask | null>(null);
+  const [selectedScheduledTask, setSelectedScheduledTask] =
+    useState<ScheduledTask | null>(null);
+  const [taskToReassign, setTaskToReassign] = useState<ScheduledTask | null>(
+    null
+  );
+
+  // Generate a simple 5-day window similar to previous mock headers
+  const weekHeaders = useMemo(() => {
+    const days: string[] = [];
+    const now = new Date();
+    for (let i = 0; i < 5; i++) {
+      const d = new Date(now);
+      d.setDate(now.getDate() + i);
+      const wd = d.toLocaleDateString(undefined, { weekday: "short" });
+      const mm = (d.getMonth() + 1).toString();
+      const dd = d.getDate().toString();
+      days.push(`${wd} ${mm}/${dd}`);
+    }
+    return days;
+  }, []);
+
+  // Fetch available employees once (could also be triggered when showEmployeeModal opens)
+  useEffect(() => {
+    let mounted = true;
+    setLoadingEmployees(true);
+    setEmployeesError(null);
+    getAvailableEmployees()
+      .then((data: ApiAvailableEmployee[]) => {
+        if (!mounted) return;
+        const mapped: EmployeeAvailability[] = data.map((emp) => {
+          const isFull = emp.disabled || /FULL/i.test(emp.tasks || "");
+          const schedule: EmployeeAvailability["schedule"] = {};
+          weekHeaders.forEach((day) => {
+            schedule[day] = isFull ? "Booked" : "Available";
+          });
+          return { name: emp.name, schedule };
+        });
+        setEmployeeAvailability(mapped);
+      })
+      .catch((err) =>
+        setEmployeesError(err?.message || "Failed to load employees")
+      )
+      .finally(() => setLoadingEmployees(false));
+    return () => {
+      mounted = false;
+    };
+  }, [weekHeaders]);
 
   const handleViewDetails = (task: ScheduledTask) => {
     setSelectedScheduledTask(task);
@@ -179,7 +207,7 @@ export default function TaskSchedulerPage() {
     totalCost: string;
     subTasks: Array<{ name: string; hours: number }>;
   }) => {
-    console.log('New Project Data:', formData);
+    console.log("New Project Data:", formData);
     // TODO: Implement API call to save the project
     setShowProjectModal(false);
   };
@@ -191,12 +219,12 @@ export default function TaskSchedulerPage() {
       vehicle: `${formData.vehicleRegistration} (${formData.vehicleModel})`,
       serviceType: formData.serviceType,
       dateTime: `${formData.preferredDate} ${formData.preferredTime}`,
-      customer: formData.customerName
+      customer: formData.customerName,
     };
 
     // Add the new task to the tasks list
     setTasks([...tasks, newTask]);
-    
+
     // Close the modal
     setShowAddTaskModal(false);
   };
@@ -209,7 +237,7 @@ export default function TaskSchedulerPage() {
   const handleEmployeeAssigned = () => {
     if (selectedTask) {
       // Remove the task from pending tasks after assignment
-      setTasks(tasks.filter(task => task.id !== selectedTask.id));
+      setTasks(tasks.filter((task) => task.id !== selectedTask.id));
       setSelectedTask(null);
       setShowEmployeeModal(false);
       // TODO: Add task to assigned tasks list or make API call
@@ -230,14 +258,14 @@ export default function TaskSchedulerPage() {
 
       {/* Action Buttons */}
       <div className="flex gap-4 mb-8">
-        <Button 
+        <Button
           size="lg"
           className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold"
           onClick={() => setShowAddTaskModal(true)}
         >
           + Add Task (Predefined Service)
         </Button>
-        <Button 
+        <Button
           size="lg"
           className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold"
           onClick={() => setShowProjectModal(true)}
@@ -258,7 +286,8 @@ export default function TaskSchedulerPage() {
             </Badge>
           </div>
           <p className="font-roboto text-[#020079]/70 mt-2">
-            These tasks were created without employee selection. Please assign available employees.
+            These tasks were created without employee selection. Please assign
+            available employees.
           </p>
         </CardHeader>
         <CardContent className="pt-6">
@@ -266,24 +295,49 @@ export default function TaskSchedulerPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-[#020079]/20">
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Task ID</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Vehicle</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Service Type</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Date/Time</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Customer</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Actions</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Task ID
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Vehicle
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Service Type
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Date/Time
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Customer
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {tasks.map((task) => (
-                  <tr key={task.id} className="border-b border-[#020079]/10 hover:bg-[#020079]/5">
-                    <td className="px-4 py-4 font-roboto text-[#020079] font-semibold">{task.id}</td>
-                    <td className="px-4 py-4 font-roboto text-[#020079]">{task.vehicle}</td>
-                    <td className="px-4 py-4 font-roboto text-[#020079]">{task.serviceType}</td>
-                    <td className="px-4 py-4 font-roboto text-[#020079]">{task.dateTime}</td>
-                    <td className="px-4 py-4 font-roboto text-[#020079]">{task.customer}</td>
+                  <tr
+                    key={task.id}
+                    className="border-b border-[#020079]/10 hover:bg-[#020079]/5"
+                  >
+                    <td className="px-4 py-4 font-roboto text-[#020079] font-semibold">
+                      {task.id}
+                    </td>
+                    <td className="px-4 py-4 font-roboto text-[#020079]">
+                      {task.vehicle}
+                    </td>
+                    <td className="px-4 py-4 font-roboto text-[#020079]">
+                      {task.serviceType}
+                    </td>
+                    <td className="px-4 py-4 font-roboto text-[#020079]">
+                      {task.dateTime}
+                    </td>
+                    <td className="px-4 py-4 font-roboto text-[#020079]">
+                      {task.customer}
+                    </td>
                     <td className="px-4 py-4">
-                      <Button 
+                      <Button
                         size="sm"
                         className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto font-semibold"
                         onClick={() => handleAssignEmployee(task)}
@@ -309,15 +363,25 @@ export default function TaskSchedulerPage() {
         <CardContent className="pt-6">
           <div className="space-y-4">
             {heldTasks.map((task) => (
-              <div key={task.id} className="flex items-center justify-between p-4 bg-[#FFD700]/10 border border-[#FFD700]/30 rounded-lg">
+              <div
+                key={task.id}
+                className="flex items-center justify-between p-4 bg-[#FFD700]/10 border border-[#FFD700]/30 rounded-lg"
+              >
                 <span className="font-roboto text-[#020079]">
-                  <span className="font-semibold">Task {task.id}</span> on hold for {task.duration} ({task.reason})
+                  <span className="font-semibold">Task {task.id}</span> on hold
+                  for {task.duration} ({task.reason})
                 </span>
                 <div className="flex gap-2">
-                  <Button size="sm" className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto">
+                  <Button
+                    size="sm"
+                    className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
+                  >
                     Contact Customer
                   </Button>
-                  <Button size="sm" className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto">
+                  <Button
+                    size="sm"
+                    className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto"
+                  >
                     Reassign Task
                   </Button>
                 </div>
@@ -339,44 +403,81 @@ export default function TaskSchedulerPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b-2 border-[#020079]/20">
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Task ID</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Customer</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Vehicle</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Service Type</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Assigned To</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Date/Time</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Status</th>
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Actions</th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Task ID
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Customer
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Vehicle
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Service Type
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Assigned To
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Date/Time
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Status
+                  </th>
+                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {scheduledTasks.map((task) => (
-                  <tr key={task.id} className="border-b border-[#020079]/10 hover:bg-[#020079]/5">
-                    <td className="px-4 py-3 font-roboto text-[#020079] font-semibold">{task.id}</td>
-                    <td className="px-4 py-3 font-roboto text-[#020079]">{task.customer}</td>
-                    <td className="px-4 py-3 font-roboto text-[#020079]">{task.vehicle}</td>
-                    <td className="px-4 py-3 font-roboto text-[#020079]">{task.serviceType}</td>
-                    <td className="px-4 py-3 font-roboto text-[#020079]">{task.assignedTo}</td>
-                    <td className="px-4 py-3 font-roboto text-[#020079]">{task.dateTime}</td>
+                  <tr
+                    key={task.id}
+                    className="border-b border-[#020079]/10 hover:bg-[#020079]/5"
+                  >
+                    <td className="px-4 py-3 font-roboto text-[#020079] font-semibold">
+                      {task.id}
+                    </td>
+                    <td className="px-4 py-3 font-roboto text-[#020079]">
+                      {task.customer}
+                    </td>
+                    <td className="px-4 py-3 font-roboto text-[#020079]">
+                      {task.vehicle}
+                    </td>
+                    <td className="px-4 py-3 font-roboto text-[#020079]">
+                      {task.serviceType}
+                    </td>
+                    <td className="px-4 py-3 font-roboto text-[#020079]">
+                      {task.assignedTo}
+                    </td>
+                    <td className="px-4 py-3 font-roboto text-[#020079]">
+                      {task.dateTime}
+                    </td>
                     <td className="px-4 py-3">
-                      <Badge className={`font-roboto
-                        ${task.status === "Scheduled" ? "bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30" : 
-                          task.status === "In Progress" ? "bg-[#020079]/20 text-[#020079] border-[#020079]/30" :
-                          "bg-[#FFD700]/30 text-[#020079] border-[#FFD700]/40"}`}>
+                      <Badge
+                        className={`font-roboto
+                        ${
+                          task.status === "Scheduled"
+                            ? "bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30"
+                            : task.status === "In Progress"
+                            ? "bg-[#020079]/20 text-[#020079] border-[#020079]/30"
+                            : "bg-[#FFD700]/30 text-[#020079] border-[#FFD700]/40"
+                        }`}
+                      >
                         {task.status}
                       </Badge>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
                           onClick={() => handleViewDetails(task)}
                         >
                           View Details
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto"
                           onClick={() => handleReassign(task)}
                         >
@@ -400,34 +501,71 @@ export default function TaskSchedulerPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b-2 border-[#020079]/20">
-                  <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">Employee</th>
-                  {Object.keys(employeeAvailability[0].schedule).map((day) => (
-                    <th key={day} className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">{day}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {employeeAvailability.map((employee) => (
-                  <tr key={employee.name} className="border-b border-[#020079]/10 hover:bg-[#020079]/5">
-                    <td className="px-4 py-3 font-roboto text-[#020079] font-semibold">{employee.name}</td>
-                    {Object.entries(employee.schedule).map(([day, status]) => (
-                      <td key={day} className="px-4 py-3">
-                        <Badge className={`font-roboto
-                          ${status === "Available" ? "bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30" : 
-                          "bg-[#020079]/20 text-[#020079] border-[#020079]/30"}`}>
-                          {status}
-                        </Badge>
-                      </td>
+          {loadingEmployees && (
+            <div className="flex items-center justify-center gap-2 py-8">
+              <Loader className="w-5 h-5 animate-spin text-[#020079]" />
+              <p className="font-roboto text-[#020079]">Loading employees…</p>
+            </div>
+          )}
+          {employeesError && !loadingEmployees && (
+            <p className="font-roboto text-red-700">{employeesError}</p>
+          )}
+          {!loadingEmployees &&
+            !employeesError &&
+            employeeAvailability.length === 0 && (
+              <p className="font-roboto text-[#020079]">No employees found.</p>
+            )}
+          {!loadingEmployees &&
+            !employeesError &&
+            employeeAvailability.length > 0 && (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b-2 border-[#020079]/20">
+                      <th className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold">
+                        Employee
+                      </th>
+                      {weekHeaders.map((day) => (
+                        <th
+                          key={day}
+                          className="px-4 py-3 text-left font-roboto text-[#020079] font-semibold"
+                        >
+                          {day}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {employeeAvailability.map((employee) => (
+                      <tr
+                        key={employee.name}
+                        className="border-b border-[#020079]/10 hover:bg-[#020079]/5"
+                      >
+                        <td className="px-4 py-3 font-roboto text-[#020079] font-semibold">
+                          {employee.name}
+                        </td>
+                        {weekHeaders.map((day) => {
+                          const status = employee.schedule[day];
+                          return (
+                            <td key={day} className="px-4 py-3">
+                              <Badge
+                                className={`font-roboto ${
+                                  status === "Available"
+                                    ? "bg-[#FFD700]/20 text-[#020079] border-[#FFD700]/30"
+                                    : "bg-[#020079]/20 text-[#020079] border-[#020079]/30"
+                                }`}
+                              >
+                                {status}
+                              </Badge>
+                            </td>
+                          );
+                        })}
+                      </tr>
                     ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                  </tbody>
+                </table>
+              </div>
+            )}
         </CardContent>
       </Card>
 
@@ -451,12 +589,18 @@ export default function TaskSchedulerPage() {
           setTaskToReassign(null);
         }}
         onSubmit={handleTaskSubmit}
-        initialData={taskToReassign ? {
-          customerName: taskToReassign.customer,
-          vehicleRegistration: taskToReassign.vehicle.split(' ')[0],
-          vehicleModel: taskToReassign.vehicle.split(' ')[1]?.replace(/[()]/g, ''),
-          serviceType: taskToReassign.serviceType
-        } : undefined}
+        initialData={
+          taskToReassign
+            ? {
+                customerName: taskToReassign.customer,
+                vehicleRegistration: taskToReassign.vehicle.split(" ")[0],
+                vehicleModel: taskToReassign.vehicle
+                  .split(" ")[1]
+                  ?.replace(/[()]/g, ""),
+                serviceType: taskToReassign.serviceType,
+              }
+            : undefined
+        }
       />
 
       <ProjectFormModal
@@ -472,11 +616,11 @@ export default function TaskSchedulerPage() {
           task={{
             id: selectedTask.id,
             vehicle: selectedTask.vehicle,
-            service: selectedTask.serviceType
+            service: selectedTask.serviceType,
           }}
           onAssign={handleEmployeeAssigned}
         />
       )}
     </div>
-  )
-};
+  );
+}
