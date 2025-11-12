@@ -105,19 +105,19 @@ export default function Calendar() {
       const events = await getCalendarEvents(weekStart, weekEnd);
 
       // Transform API response to match your Task interface
-      const tasks: Task[] = events.map((event: any) => ({
-        id: event.id?.toString() || "",
-        title: event.title || "",
+      const tasks: Task[] = events.map((event: Record<string, unknown>) => ({
+        id: String(event.id || ""),
+        title: String(event.title || ""),
         time: event.startTime
-          ? new Date(event.startTime).toLocaleTimeString("en-US", {
+          ? new Date(String(event.startTime)).toLocaleTimeString("en-US", {
               hour: "numeric",
               minute: "2-digit",
               hour12: true,
             })
           : "09:00 AM",
-        deadline: event.startTime || event.endTime || weekStart.toISOString(),
+        deadline: String(event.startTime || event.endTime || weekStart.toISOString()),
         type: "normal" as const, // Calendar events don't have priority in response
-        vehicle: event.vehicleRegNo || "",
+        vehicle: String(event.vehicleRegNo || ""),
         status: "pending" as const,
       }));
 

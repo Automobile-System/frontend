@@ -86,9 +86,9 @@ export default function PerformancePage() {
         
         // Transform chartsData.monthlyTasksData to MonthlyData[]
         if (chartsData.monthlyTasksData) {
-          const transformedMonthlyData: MonthlyData[] = chartsData.monthlyTasksData.map((item: any) => ({
-            month: item.month || "",
-            tasksCompleted: item.completedTasks || 0,
+          const transformedMonthlyData: MonthlyData[] = chartsData.monthlyTasksData.map((item: Record<string, unknown>) => ({
+            month: String(item.month || ""),
+            tasksCompleted: Number(item.completedTasks || 0),
             avgCompletionTime: 0, // Backend may not provide this, calculate if available
             rating: 0, // Backend may not provide this, calculate if available
           }));
@@ -97,13 +97,13 @@ export default function PerformancePage() {
         
         // Transform chartsData.serviceDistributionData to ServiceTypeData[]
         if (chartsData.serviceDistributionData) {
-          const total = chartsData.serviceDistributionData.reduce((sum: number, item: any) => sum + (item.count || 0), 0);
-          const transformedServiceData: ServiceTypeData[] = chartsData.serviceDistributionData.map((item: any, index: number) => {
+          const total = chartsData.serviceDistributionData.reduce((sum: number, item: Record<string, unknown>) => sum + Number(item.count || 0), 0);
+          const transformedServiceData: ServiceTypeData[] = chartsData.serviceDistributionData.map((item: Record<string, unknown>, index: number) => {
             const colors = ["bg-blue-500", "bg-emerald-500", "bg-purple-500", "bg-orange-500", "bg-gray-400"];
             return {
-              type: item.serviceType || "Unknown",
-              count: item.count || 0,
-              percentage: total > 0 ? Math.round((item.count / total) * 100) : 0,
+              type: String(item.serviceType || "Unknown"),
+              count: Number(item.count || 0),
+              percentage: total > 0 ? Math.round((Number(item.count) / total) * 100) : 0,
               color: colors[index % colors.length],
             };
           });

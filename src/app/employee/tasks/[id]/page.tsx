@@ -66,13 +66,15 @@ export default function TaskDetailPage({
     const loadTask = async () => {
       setIsLoading(true);
       try {
+        // Await params to get the actual id
+        const resolvedParams = await params;
         const { getTaskById } = await import("@/services/employeeService");
-        const taskData = await getTaskById(params.id);
+        const taskData = await getTaskById(resolvedParams.id);
         
         // Transform API response to match Task interface
         // Note: Backend may return different structure, adjust as needed
         const transformedTask: Task = {
-          id: taskData.id?.toString() || params.id,
+          id: taskData.id?.toString() || resolvedParams.id,
           title: taskData.title || "",
           vehicle: taskData.vehicleRegNo || taskData.vehicle || "Unknown Vehicle",
           plateNumber: taskData.vehicleRegNo || taskData.plateNumber || "",
@@ -120,7 +122,8 @@ export default function TaskDetailPage({
     };
     
     loadTask();
-  }, [params.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return (

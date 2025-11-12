@@ -27,7 +27,7 @@ async function apiFetch(path: string, options: RequestInit = {}) {
 
 // Cache for employee ID to avoid repeated API calls
 let cachedEmployeeId: string | null = null;
-let cachedEmployeeProfile: any | null = null;
+let cachedEmployeeProfile: Record<string, unknown> | null = null;
 
 /**
  * Get employee ID from profile

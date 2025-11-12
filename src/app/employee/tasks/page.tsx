@@ -100,13 +100,13 @@ export default function AssignedTasks() {
         );
 
         // Transform API response to match Task interface
-        const transformedTasks: Task[] = fetchedTasks.map((task: any) => ({
-          id: task.id?.toString() || "",
-          title: task.title || "",
-          vehicle: task.vehicleRegNo || "Unknown Vehicle",
-          plateNumber: task.vehicleRegNo || "",
+        const transformedTasks: Task[] = fetchedTasks.map((task: Record<string, unknown>) => ({
+          id: String(task.id || ""),
+          title: String(task.title || ""),
+          vehicle: String(task.vehicleRegNo || "Unknown Vehicle"),
+          plateNumber: String(task.vehicleRegNo || ""),
           deadline: task.deadline
-            ? new Date(task.deadline).toLocaleString("en-US", {
+            ? new Date(String(task.deadline)).toLocaleString("en-US", {
                 month: "2-digit",
                 day: "2-digit",
                 year: "numeric",
@@ -114,9 +114,9 @@ export default function AssignedTasks() {
                 minute: "2-digit",
               })
             : "",
-          customer: task.customerName || "",
-          status: (task.status?.toLowerCase() || "not_started") as TaskStatus,
-          timeElapsedSeconds: task.timeSpent ? Math.round(task.timeSpent * 3600) : 0,
+          customer: String(task.customerName || ""),
+          status: (String(task.status || "not_started").toLowerCase()) as TaskStatus,
+          timeElapsedSeconds: task.timeSpent ? Math.round(Number(task.timeSpent) * 3600) : 0,
         }));
 
         setTasks(transformedTasks);

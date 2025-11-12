@@ -95,32 +95,32 @@ export default function TimeLogs() {
       const logs = await getTimeLogs(dateRange);
       
       // Transform API response to match TimeLog interface
-      const transformedLogs: TimeLog[] = logs.map((log: any) => ({
-        id: log.id?.toString() || "",
+      const transformedLogs: TimeLog[] = logs.map((log: Record<string, unknown>) => ({
+        id: String(log.id || ""),
         date: log.date 
-          ? new Date(log.date).toISOString().split('T')[0]
-          : (log.startTime ? new Date(log.startTime).toISOString().split('T')[0] : ""),
-        taskId: log.taskId?.toString() || "",
-        taskName: log.taskTitle || log.taskName || "",
-        vehicle: log.vehicleRegNo || "Unknown Vehicle",
-        plateNumber: log.vehicleRegNo || "",
-        customer: log.customer || "",
+          ? new Date(String(log.date)).toISOString().split('T')[0]
+          : (log.startTime ? new Date(String(log.startTime)).toISOString().split('T')[0] : ""),
+        taskId: String(log.taskId || ""),
+        taskName: String(log.taskTitle || log.taskName || ""),
+        vehicle: String(log.vehicleRegNo || "Unknown Vehicle"),
+        plateNumber: String(log.vehicleRegNo || ""),
+        customer: String(log.customer || ""),
         startTime: log.startTime
-          ? new Date(log.startTime).toLocaleTimeString("en-US", {
+          ? new Date(String(log.startTime)).toLocaleTimeString("en-US", {
               hour: "numeric",
               minute: "2-digit",
               hour12: true,
             })
           : "",
         endTime: log.endTime
-          ? new Date(log.endTime).toLocaleTimeString("en-US", {
+          ? new Date(String(log.endTime)).toLocaleTimeString("en-US", {
               hour: "numeric",
               minute: "2-digit",
               hour12: true,
             })
           : "",
-        totalHours: log.durationHours || 0,
-        remarks: log.remarks || "",
+        totalHours: Number(log.durationHours || 0),
+        remarks: String(log.remarks || ""),
         status: log.endTime ? "completed" : "in_progress",
       }));
       
@@ -135,6 +135,7 @@ export default function TimeLogs() {
 
   useEffect(() => {
     loadTimeLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentWeekStart]);
 
   // Filter logs
