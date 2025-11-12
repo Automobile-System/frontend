@@ -5,7 +5,16 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 
-type PageType = 'dashboard' | 'employees' | 'assign' | 'projects' | 'scheduler' | 'reports' | 'communication' | 'customersdetails';
+type PageType =
+  | 'dashboard'
+  | 'employees'
+  | 'assign'
+  | 'projects'
+  | 'services'
+  | 'scheduler'
+  | 'reports'
+  | 'communication'
+  | 'customersdetails';
 
 interface SidebarProps {
   activePage?: PageType;
@@ -36,6 +45,7 @@ export function Sidebar({ activePage, className = '' }: SidebarProps) {
     if (pathname.includes('/employees')) return 'employees';
     if (pathname.includes('/task-scheduler')) return 'assign';
     if (pathname.includes('/projects')) return 'projects';
+    if (pathname.includes('/services')) return 'services';
     if (pathname.includes('/scheduler')) return 'scheduler';
     if (pathname.includes('/reports')) return 'reports';
     if (pathname.includes('/communication')) return 'communication';
@@ -88,6 +98,16 @@ export function Sidebar({ activePage, className = '' }: SidebarProps) {
             }`}
           >
             Projects
+          </Link>
+          <Link
+            href="/manager/services"
+            className={`block px-4 py-3 rounded-lg text-sm font-roboto transition-all duration-200 ${
+              currentActivePage === 'services'
+                ? "bg-[#020079] text-white font-semibold"
+                : "text-[#020079] hover:bg-[#020079]/10 bg-white"
+            }`}
+          >
+            Services
           </Link>
           <Link
             href="/manager/scheduler"
