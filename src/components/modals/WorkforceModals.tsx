@@ -558,3 +558,413 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
     </div>
   )
 }
+
+interface EditManagerModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (data: Partial<ManagerFormData>) => void
+  managerData: {
+    id: string
+    name: string
+    email: string
+    phone: string
+    joinDate: string
+  } | null
+}
+
+export function EditManagerModal({ isOpen, onClose, onSubmit, managerData }: EditManagerModalProps) {
+  const [formData, setFormData] = useState<ManagerFormData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    managerId: "",
+    joinDate: "",
+    username: "",
+    password: "",
+    address: ""
+  })
+
+  useEffect(() => {
+    if (isOpen && managerData) {
+      const [firstName, ...lastNameParts] = managerData.name.split(' ')
+      setFormData({
+        firstName: firstName || "",
+        lastName: lastNameParts.join(' ') || "",
+        email: managerData.email,
+        phone: managerData.phone,
+        managerId: managerData.id,
+        joinDate: managerData.joinDate,
+        username: managerData.email.split('@')[0],
+        password: "",
+        address: ""
+      })
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen, managerData])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Only send updatable fields
+    const updateData = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      ...(formData.password && { password: formData.password }), // Only include if not empty
+      ...(formData.address && { address: formData.address })
+    }
+    onSubmit(updateData)
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      managerId: "",
+      joinDate: "",
+      username: "",
+      password: "",
+      address: ""
+    })
+  }
+
+  if (!isOpen || !managerData) return null
+
+  return (
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-blue-100">
+        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-t-lg flex justify-between items-center z-10">
+          <div>
+            <h2 className="text-2xl font-bold">Edit Manager</h2>
+            <p className="text-blue-100 text-sm mt-1">Update manager information</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="p-6">
+          <div className="grid grid-cols-2 gap-6 mb-6">
+            <div>
+              <Label htmlFor="editManagerFirstName" className="text-slate-700 mb-2 block">
+                First Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="editManagerFirstName"
+                type="text"
+                placeholder="Enter first name"
+                value={formData.firstName}
+                onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                required
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="editManagerLastName" className="text-slate-700 mb-2 block">
+                Last Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="editManagerLastName"
+                type="text"
+                placeholder="Enter last name"
+                value={formData.lastName}
+                onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                required
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
+              />
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <Label htmlFor="editManagerEmail" className="text-slate-700 mb-2 block">
+              Email <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="editManagerEmail"
+              type="email"
+              placeholder="manager@example.com"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              required
+              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
+            />
+          </div>
+
+          <div className="mb-6">
+            <Label htmlFor="editManagerPhone" className="text-slate-700 mb-2 block">
+              Phone Number <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="editManagerPhone"
+              type="tel"
+              placeholder="+94771234567"
+              value={formData.phone}
+              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              required
+              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
+            />
+          </div>
+
+          <div className="mb-6">
+            <Label htmlFor="editManagerAddress" className="text-slate-700 mb-2 block">
+              Address
+            </Label>
+            <textarea
+              id="editManagerAddress"
+              placeholder="Optional: Enter address"
+              value={formData.address}
+              onChange={(e) => setFormData({...formData, address: e.target.value})}
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] text-slate-700"
+            />
+          </div>
+
+          <div className="flex gap-3 justify-end">
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="outline"
+              className="border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              Update Manager
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+interface EditEmployeeModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (data: Partial<EmployeeFormData>) => void
+  employeeData: {
+    id: string
+    name: string
+    email: string
+    phone: string
+    specialization: string
+    rating: number
+    status: string
+  } | null
+}
+
+export function EditEmployeeModal({ isOpen, onClose, onSubmit, employeeData }: EditEmployeeModalProps) {
+  const [formData, setFormData] = useState<EmployeeFormData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    employeeId: "",
+    specialization: "",
+    joinDate: "",
+    salary: "",
+    username: "",
+    password: "",
+    experience: "",
+    address: ""
+  })
+
+  useEffect(() => {
+    if (isOpen && employeeData) {
+      const [firstName, ...lastNameParts] = employeeData.name.split(' ')
+      setFormData({
+        firstName: firstName || "",
+        lastName: lastNameParts.join(' ') || "",
+        email: employeeData.email,
+        phone: employeeData.phone,
+        employeeId: employeeData.id,
+        specialization: employeeData.specialization,
+        joinDate: "",
+        salary: "",
+        username: employeeData.email.split('@')[0],
+        password: "",
+        experience: "",
+        address: ""
+      })
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen, employeeData])
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Only send updatable fields
+    const updateData = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      specialization: formData.specialization,
+      ...(formData.password && { password: formData.password }), // Only include if not empty
+      ...(formData.address && { address: formData.address })
+    }
+    onSubmit(updateData)
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      employeeId: "",
+      specialization: "",
+      joinDate: "",
+      salary: "",
+      username: "",
+      password: "",
+      experience: "",
+      address: ""
+    })
+  }
+
+  if (!isOpen || !employeeData) return null
+
+  return (
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-emerald-100">
+        <div className="sticky top-0 bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-6 rounded-t-lg flex justify-between items-center z-10">
+          <div>
+            <h2 className="text-2xl font-bold">Edit Employee</h2>
+            <p className="text-emerald-100 text-sm mt-1">Update employee information</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="p-6">
+          <div className="grid grid-cols-2 gap-6 mb-6">
+            <div>
+              <Label htmlFor="editEmployeeFirstName" className="text-slate-700 mb-2 block">
+                First Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="editEmployeeFirstName"
+                type="text"
+                placeholder="Enter first name"
+                value={formData.firstName}
+                onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                required
+                className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 text-slate-700"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="editEmployeeLastName" className="text-slate-700 mb-2 block">
+                Last Name <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="editEmployeeLastName"
+                type="text"
+                placeholder="Enter last name"
+                value={formData.lastName}
+                onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                required
+                className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 text-slate-700"
+              />
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <Label htmlFor="editEmployeeEmail" className="text-slate-700 mb-2 block">
+              Email <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="editEmployeeEmail"
+              type="email"
+              placeholder="employee@example.com"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              required
+              className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 text-slate-700"
+            />
+          </div>
+
+          <div className="mb-6">
+            <Label htmlFor="editEmployeePhone" className="text-slate-700 mb-2 block">
+              Phone Number <span className="text-red-500">*</span>
+            </Label>
+            <Input
+              id="editEmployeePhone"
+              type="tel"
+              placeholder="+94771234567"
+              value={formData.phone}
+              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              required
+              className="border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 text-slate-700"
+            />
+          </div>
+
+          <div className="mb-6">
+            <Label htmlFor="editEmployeeSpecialization" className="text-slate-700 mb-2 block">
+              Specialization <span className="text-red-500">*</span>
+            </Label>
+            <select
+              id="editEmployeeSpecialization"
+              value={formData.specialization}
+              onChange={(e) => setFormData({...formData, specialization: e.target.value})}
+              required
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-slate-700"
+            >
+              <option value="">Select specialization</option>
+              {specializations.map((spec) => (
+                <option key={spec} value={spec}>{spec}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-6">
+            <Label htmlFor="editEmployeeAddress" className="text-slate-700 mb-2 block">
+              Address
+            </Label>
+            <textarea
+              id="editEmployeeAddress"
+              placeholder="Optional: Enter address"
+              value={formData.address}
+              onChange={(e) => setFormData({...formData, address: e.target.value})}
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 min-h-[80px] text-slate-700"
+            />
+          </div>
+
+          <div className="flex gap-3 justify-end">
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="outline"
+              className="border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            >
+              Update Employee
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}

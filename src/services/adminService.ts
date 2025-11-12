@@ -145,7 +145,7 @@ export interface Manager {
   email: string
   phone: string
   joinDate: string
-  status: 'Active' | 'Under Review' | 'Frozen'
+  status: 'Active' | 'Deactivated'
 }
 
 export interface Employee {
@@ -155,7 +155,7 @@ export interface Employee {
   email: string
   phone: string
   rating: number
-  status: 'Active' | 'On Leave' | 'Frozen'
+  status: 'Active' | 'Deactivated'
 }
 
 // --- Services Analytics Page Types ---
@@ -795,15 +795,13 @@ export const fetchFinancialReports = async (
 export const fetchWorkforceOverview = async (): Promise<WorkforceOverview> => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
-    const token = localStorage.getItem('authToken')
     
     const response = await fetch(`${baseUrl}/api/admin/workforce/overview`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
       },
-      credentials: 'include'
+      credentials: 'include' // Use cookies for authentication
     })
     
     if (!response.ok) {
@@ -854,10 +852,9 @@ export const fetchTopEmployees = async (): Promise<TopEmployee[]> => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
     const response = await fetch(`${baseUrl}/api/admin/workforce/top-employees`, {
       method: 'GET',
-      credentials: 'include',
+      credentials: 'include', // Use cookies for authentication
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
     })
     
@@ -892,10 +889,9 @@ export const fetchManagerPerformance = async (): Promise<ManagerPerformance[]> =
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
     const response = await fetch(`${baseUrl}/api/admin/workforce/manager-performance`, {
       method: 'GET',
-      credentials: 'include',
+      credentials: 'include', // Use cookies for authentication
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
     })
     
@@ -930,10 +926,9 @@ export const fetchAllManagers = async (): Promise<Manager[]> => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
     const response = await fetch(`${baseUrl}/api/admin/workforce/managers`, {
       method: 'GET',
-      credentials: 'include',
+      credentials: 'include', // Use cookies for authentication
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
     })
     
@@ -968,10 +963,9 @@ export const fetchAllEmployees = async (): Promise<Employee[]> => {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
     const response = await fetch(`${baseUrl}/api/admin/workforce/employees`, {
       method: 'GET',
-      credentials: 'include',
+      credentials: 'include', // Use cookies for authentication
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
     })
     
@@ -1017,15 +1011,13 @@ export interface AddManagerRequest {
 export const addManager = async (data: AddManagerRequest): Promise<{ success: boolean; message: string; manager: Manager }> => {
   try {
     const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
-    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     
     const response = await fetch(`${API_BASE_URL}/api/admin/workforce/managers`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
       },
-      credentials: 'include',
+      credentials: 'include', // Use cookies for authentication
       body: JSON.stringify(data)
     })
     
@@ -1064,15 +1056,13 @@ export interface AddEmployeeRequest {
 export const addEmployee = async (data: AddEmployeeRequest): Promise<{ success: boolean; message: string; employee: Employee }> => {
   try {
     const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
-    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     
     const response = await fetch(`${API_BASE_URL}/api/admin/workforce/employees`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
       },
-      credentials: 'include',
+      credentials: 'include', // Use cookies for authentication
       body: JSON.stringify(data)
     })
     
@@ -1095,25 +1085,23 @@ export const addEmployee = async (data: AddEmployeeRequest): Promise<{ success: 
  */
 export const updateManager = async (managerId: string, data: Partial<AddManagerRequest>): Promise<{ success: boolean; message: string }> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch(`/api/admin/workforce/managers/${managerId}`, {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${getAuthToken()}`
-    //   },
-    //   body: JSON.stringify(data)
-    // })
-    // if (!response.ok) throw new Error('Failed to update manager')
-    // return await response.json()
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
 
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 800))
-    console.log('Update manager data:', data) // Log for development
-    return {
-      success: true,
-      message: `Manager ${managerId} updated successfully.`
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/managers/${managerId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Use cookies for authentication
+      body: JSON.stringify(data)
+    })
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to update manager')
     }
+    
+    return await response.json()
   } catch (error) {
     console.error('Error updating manager:', error)
     throw error
@@ -1127,25 +1115,23 @@ export const updateManager = async (managerId: string, data: Partial<AddManagerR
  */
 export const updateEmployee = async (employeeId: string, data: Partial<AddEmployeeRequest>): Promise<{ success: boolean; message: string }> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch(`/api/admin/workforce/employees/${employeeId}`, {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${getAuthToken()}`
-    //   },
-    //   body: JSON.stringify(data)
-    // })
-    // if (!response.ok) throw new Error('Failed to update employee')
-    // return await response.json()
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
 
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 800))
-    console.log('Update employee data:', data) // Log for development
-    return {
-      success: true,
-      message: `Employee ${employeeId} updated successfully.`
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/employees/${employeeId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Use cookies for authentication
+      body: JSON.stringify(data)
+    })
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to update employee')
     }
+    
+    return await response.json()
   } catch (error) {
     console.error('Error updating employee:', error)
     throw error
@@ -1159,25 +1145,24 @@ export const updateEmployee = async (employeeId: string, data: Partial<AddEmploy
  */
 export const freezeManager = async (managerId: string): Promise<{ success: boolean; message: string }> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch(`/api/admin/workforce/managers/${managerId}/freeze`, {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${getAuthToken()}`
-    //   }
-    // })
-    // if (!response.ok) throw new Error('Failed to freeze manager')
-    // return await response.json()
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
 
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 800))
-    return {
-      success: true,
-      message: `Manager ${managerId} has been frozen. They can no longer access the system.`
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/managers/${managerId}/freeze`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include' // Use cookies for authentication
+    })
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to deactivate manager')
     }
+    
+    return await response.json()
   } catch (error) {
-    console.error('Error freezing manager:', error)
+    console.error('Error deactivating manager:', error)
     throw error
   }
 }
@@ -1189,25 +1174,24 @@ export const freezeManager = async (managerId: string): Promise<{ success: boole
  */
 export const freezeEmployee = async (employeeId: string): Promise<{ success: boolean; message: string }> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch(`/api/admin/workforce/employees/${employeeId}/freeze`, {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${getAuthToken()}`
-    //   }
-    // })
-    // if (!response.ok) throw new Error('Failed to freeze employee')
-    // return await response.json()
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
 
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 800))
-    return {
-      success: true,
-      message: `Employee ${employeeId} has been frozen. They can no longer access the system.`
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/employees/${employeeId}/freeze`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include' // Use cookies for authentication
+    })
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to deactivate employee')
     }
+    
+    return await response.json()
   } catch (error) {
-    console.error('Error freezing employee:', error)
+    console.error('Error deactivating employee:', error)
     throw error
   }
 }
@@ -1219,25 +1203,53 @@ export const freezeEmployee = async (employeeId: string): Promise<{ success: boo
  */
 export const activateEmployee = async (employeeId: string): Promise<{ success: boolean; message: string }> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch(`/api/admin/workforce/employees/${employeeId}/activate`, {
-    //   method: 'PUT',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${getAuthToken()}`
-    //   }
-    // })
-    // if (!response.ok) throw new Error('Failed to activate employee')
-    // return await response.json()
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
 
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 800))
-    return {
-      success: true,
-      message: `Employee ${employeeId} has been activated and is available for task assignments.`
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/employees/${employeeId}/activate`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include' // Use cookies for authentication
+    })
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to activate employee')
     }
+    
+    return await response.json()
   } catch (error) {
     console.error('Error activating employee:', error)
+    throw error
+  }
+}
+
+/**
+ * WORKFORCE: Activate manager
+ * Used in: Workforce Overview Page
+ * Backend: PUT /api/admin/workforce/managers/:id/activate
+ */
+export const activateManager = async (managerId: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
+
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/managers/${managerId}/activate`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include' // Use cookies for authentication
+    })
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to activate manager')
+    }
+    
+    return await response.json()
+  } catch (error) {
+    console.error('Error activating manager:', error)
     throw error
   }
 }

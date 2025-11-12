@@ -9,17 +9,18 @@ import { UserPlus, Edit, Lock, CheckCircle, Loader } from "lucide-react";
 import {
   fetchWorkforceOverview,
   fetchTopEmployees,
-  fetchManagerPerformance,
   fetchAllManagers,
   fetchAllEmployees,
   addManager,
   addEmployee,
+  updateManager,
+  updateEmployee,
   freezeManager as freezeManagerApi,
   freezeEmployee as freezeEmployeeApi,
   activateEmployee as activateEmployeeApi,
+  activateManager as activateManagerApi,
   type WorkforceOverview,
   type TopEmployee,
-  type ManagerPerformance,
   type Manager,
   type Employee,
   type AddManagerRequest,
@@ -28,6 +29,8 @@ import {
 import {
   AddManagerModal,
   AddEmployeeModal,
+  EditManagerModal,
+  EditEmployeeModal,
 } from "@/components/modals/WorkforceModals";
 import { showToast } from "@/lib/toast";
 
@@ -36,9 +39,6 @@ export default function WorkforceOverviewPage() {
     null
   );
   const [topEmployees, setTopEmployees] = useState<TopEmployee[]>([]);
-  const [managerPerformance, setManagerPerformance] = useState<
-    ManagerPerformance[]
-  >([]);
   const [managers, setManagers] = useState<Manager[]>([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,13 +50,12 @@ export default function WorkforceOverviewPage() {
   const [topEmployeesError, setTopEmployeesError] = useState<string | null>(
     null
   );
-  const [loadingManagerPerformance, setLoadingManagerPerformance] =
-    useState(false);
-  const [managerPerformanceError, setManagerPerformanceError] = useState<
-    string | null
-  >(null);
   const [showAddManagerModal, setShowAddManagerModal] = useState(false);
   const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
+  const [showEditManagerModal, setShowEditManagerModal] = useState(false);
+  const [showEditEmployeeModal, setShowEditEmployeeModal] = useState(false);
+  const [selectedManager, setSelectedManager] = useState<Manager | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
 
   const loadAllData = useCallback(async () => {
     try {
@@ -64,13 +63,11 @@ export default function WorkforceOverviewPage() {
       setLoadingManagers(true);
       setLoadingEmployees(true);
       setLoadingTopEmployees(true);
-      setLoadingManagerPerformance(true);
       setManagersError(null);
       setEmployeesError(null);
       setTopEmployeesError(null);
-      setManagerPerformanceError(null);
 
-      const [overviewData, topEmps, managerPerf, managersData, employeesData] =
+      const [overviewData, topEmps, managersData, employeesData] =
         await Promise.all([
           fetchWorkforceOverview().catch((err) => {
             console.error("Error loading workforce overview:", err);
@@ -99,12 +96,6 @@ export default function WorkforceOverviewPage() {
             );
             return [] as TopEmployee[];
           }),
-          fetchManagerPerformance().catch((err) => {
-            setManagerPerformanceError(
-              err?.message || "Failed to load manager performance"
-            );
-            return [] as ManagerPerformance[];
-          }),
           fetchAllManagers().catch((err) => {
             setManagersError(err?.message || "Failed to load managers");
             return [] as Manager[];
@@ -117,7 +108,6 @@ export default function WorkforceOverviewPage() {
 
       setWorkforceData(overviewData);
       setTopEmployees(topEmps);
-      setManagerPerformance(managerPerf);
       setManagers(managersData);
       setEmployees(employeesData);
     } catch (error) {
@@ -127,7 +117,6 @@ export default function WorkforceOverviewPage() {
       setLoadingManagers(false);
       setLoadingEmployees(false);
       setLoadingTopEmployees(false);
-      setLoadingManagerPerformance(false);
     }
   }, []);
 
@@ -170,81 +159,102 @@ export default function WorkforceOverviewPage() {
   };
 
   const handleEditManager = (managerId: string) => {
-    showToast.info(
-      "Edit Manager",
-      `Opening edit form for Manager ${managerId}...`
-    );
-    // TODO: Open edit manager modal with prefilled data
+    const manager = managers.find(m => m.id === managerId);
+    if (manager) {
+      setSelectedManager(manager);
+      setShowEditManagerModal(true);
+    }
+  };
+
+  const handleSubmitEditManager = async (data: Partial<AddManagerRequest>) => {
+    if (!selectedManager) return;
+    
+    try {
+      const result = await updateManager(selectedManager.id, data);
+      showToast.success("Manager Updated", result.message);
+      setShowEditManagerModal(false);
+      setSelectedManager(null);
+      await loadAllData(); // Reload all data
+    } catch (error) {
+      showToast.error("Error", "Failed to update manager. Please try again.");
+      console.error("Error updating manager:", error);
+    }
   };
 
   const handleFreezeManager = async (managerId: string) => {
-    if (
-      window.confirm(
-        `Are you sure you want to freeze Manager ${managerId}?\n\nThis will:\n- Revoke their access to the system\n- Prevent them from assigning tasks\n- Require admin approval to reactivate\n\nProceed?`
-      )
-    ) {
-      try {
-        const result = await freezeManagerApi(managerId);
-        showToast.success("Manager Frozen", result.message);
-        await loadAllData(); // Reload all data
-      } catch (error) {
-        showToast.error("Error", "Failed to freeze manager. Please try again.");
-        console.error("Error freezing manager:", error);
-      }
+    try {
+      const result = await freezeManagerApi(managerId);
+      showToast.success("Manager Deactivated", result.message);
+      await loadAllData(); // Reload all data
+    } catch (error) {
+      showToast.error("Error", "Failed to deactivate manager. Please try again.");
+      console.error("Error deactivating manager:", error);
+    }
+  };
+
+  const handleActivateManager = async (managerId: string) => {
+    try {
+      const result = await activateManagerApi(managerId);
+      showToast.success("Manager Activated", result.message);
+      await loadAllData(); // Reload all data
+    } catch (error) {
+      showToast.error(
+        "Error",
+        "Failed to activate manager. Please try again."
+      );
+      console.error("Error activating manager:", error);
     }
   };
 
   const handleEditEmployee = (employeeId: string) => {
-    showToast.info(
-      "Edit Employee",
-      `Opening edit form for Employee ${employeeId}...`
-    );
-    // TODO: Open edit employee modal with prefilled data
+    const employee = employees.find(e => e.id === employeeId);
+    if (employee) {
+      setSelectedEmployee(employee);
+      setShowEditEmployeeModal(true);
+    }
+  };
+
+  const handleSubmitEditEmployee = async (data: Partial<AddEmployeeRequest>) => {
+    if (!selectedEmployee) return;
+    
+    try {
+      const result = await updateEmployee(selectedEmployee.id, data);
+      showToast.success("Employee Updated", result.message);
+      setShowEditEmployeeModal(false);
+      setSelectedEmployee(null);
+      await loadAllData(); // Reload all data
+    } catch (error) {
+      showToast.error("Error", "Failed to update employee. Please try again.");
+      console.error("Error updating employee:", error);
+    }
   };
 
   const handleFreezeEmployee = async (employeeId: string) => {
-    if (
-      window.confirm(
-        `Are you sure you want to freeze Employee ${employeeId}?\n\nThis will:\n- Revoke their access to the system\n- Remove them from active task assignments\n- Require admin approval to reactivate\n\nProceed?`
-      )
-    ) {
-      try {
-        const result = await freezeEmployeeApi(employeeId);
-        showToast.success("Employee Frozen", result.message);
-        await loadAllData(); // Reload all data
-      } catch (error) {
-        showToast.error(
-          "Error",
-          "Failed to freeze employee. Please try again."
-        );
-        console.error("Error freezing employee:", error);
-      }
+    try {
+      const result = await freezeEmployeeApi(employeeId);
+      showToast.success("Employee Deactivated", result.message);
+      await loadAllData(); // Reload all data
+    } catch (error) {
+      showToast.error(
+        "Error",
+        "Failed to deactivate employee. Please try again."
+      );
+      console.error("Error deactivating employee:", error);
     }
   };
 
   const handleActivateEmployee = async (employeeId: string) => {
-    if (
-      window.confirm(
-        `Activate Employee ${employeeId} and return them to active duty?`
-      )
-    ) {
-      try {
-        const result = await activateEmployeeApi(employeeId);
-        showToast.success("Employee Activated", result.message);
-        await loadAllData(); // Reload all data
-      } catch (error) {
-        showToast.error(
-          "Error",
-          "Failed to activate employee. Please try again."
-        );
-        console.error("Error activating employee:", error);
-      }
+    try {
+      const result = await activateEmployeeApi(employeeId);
+      showToast.success("Employee Activated", result.message);
+      await loadAllData(); // Reload all data
+    } catch (error) {
+      showToast.error(
+        "Error",
+        "Failed to activate employee. Please try again."
+      );
+      console.error("Error activating employee:", error);
     }
-  };
-
-  const handleViewManagerDetails = (managerId: string) => {
-    console.log("View manager details:", managerId);
-    // TODO: Navigate to manager details page
   };
 
   const getRankIcon = (rank: number) => {
@@ -289,7 +299,7 @@ export default function WorkforceOverviewPage() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="bg-white border-[#020079]/20 hover:border-[#020079]/40 transition-colors">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-roboto text-[#020079]/60">
@@ -302,24 +312,7 @@ export default function WorkforceOverviewPage() {
               </div>
               <p className="text-sm font-roboto text-[#020079]/70">
                 {workforceData?.stats?.activeEmployees || 0} Active |{" "}
-                {workforceData?.stats?.onLeave || 0} Leave |{" "}
-                {workforceData?.stats?.frozen || 0} Frozen
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white border-[#020079]/20 hover:border-[#FFD700]/40 transition-colors">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-roboto text-[#020079]/60">
-                Avg Rating
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bebas text-[#020079] mb-2">
-                {workforceData?.stats?.avgRating || 0}
-              </div>
-              <p className="text-sm font-roboto text-[#020079]">
-                {workforceData?.stats?.ratingChange || 0} from last month
+                {workforceData?.stats?.frozen || 0} Deactivated
               </p>
             </CardContent>
           </Card>
@@ -327,31 +320,33 @@ export default function WorkforceOverviewPage() {
           <Card className="bg-white border-[#020079]/20 hover:border-[#020079]/40 transition-colors">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-roboto text-[#020079]/60">
-                Avg Workload
+                Total Managers
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bebas text-[#020079] mb-2">
-                {workforceData?.stats?.avgWorkload || 0}
+                {managers.length}
               </div>
               <p className="text-sm font-roboto text-[#020079]/70">
-                Tasks per employee
+                {managers.filter(m => m.status === 'Active').length} Active |{" "}
+                {managers.filter(m => m.status === 'Deactivated').length} Deactivated
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-[#020079]/20 hover:border-[#FFD700]/40 transition-colors">
+          <Card className="bg-white border-[#020079]/20 hover:border-[#020079]/40 transition-colors">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-roboto text-[#020079]/60">
-                Avg Salary + Bonus
+                Total Employees Only
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bebas text-[#020079] mb-2">
-                {workforceData?.stats?.avgSalary || "0K"}
+                {employees.length}
               </div>
               <p className="text-sm font-roboto text-[#020079]/70">
-                Base + Demand Bonus
+                {employees.filter(e => e.status === 'Active').length} Active |{" "}
+                {employees.filter(e => e.status === 'Deactivated').length} Deactivated
               </p>
             </CardContent>
           </Card>
@@ -389,9 +384,9 @@ export default function WorkforceOverviewPage() {
               )}
             {!loadingTopEmployees &&
               !topEmployeesError &&
-              topEmployees.length > 0 && (
+              topEmployees.filter(e => e.rating > 4.5).length > 0 && (
                 <div className="space-y-4">
-                  {topEmployees.map((employee, index) => (
+                  {topEmployees.filter(e => e.rating > 4.5).map((employee, index) => (
                     <div
                       key={employee.id}
                       className="flex items-center gap-4 p-4 border border-[#020079]/10 rounded-lg hover:border-[#020079]/30 transition-colors bg-white"
@@ -410,11 +405,6 @@ export default function WorkforceOverviewPage() {
                       <div className="flex items-center gap-1 text-[#020079] font-roboto font-medium">
                         <span className="text-xl">{employee.rating}</span>
                       </div>
-                      {employee.rewardEligible && (
-                        <Badge className="bg-[#FFD700]/20 text-[#020079] hover:bg-[#FFD700]/30 border-0 font-roboto">
-                          Reward Eligible
-                        </Badge>
-                      )}
                       {employee.overloaded && (
                         <Badge className="bg-[#020079]/10 text-[#020079] hover:bg-[#020079]/20 border-0 font-roboto">
                           OVERLOADED
@@ -473,147 +463,6 @@ export default function WorkforceOverviewPage() {
                   </p>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Manager Performance Summary */}
-        <Card className="mb-8 bg-white border-[#020079]/20">
-          <CardHeader className="border-b border-[#020079]/20">
-            <CardTitle className="text-xl font-bebas text-[#020079]">
-              Manager Performance Summary
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b-2 border-[#020079]/20">
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Manager Name
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Tasks Assigned
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Completion Rate
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Avg Employee Rating
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#020079]/10">
-                  {loadingManagerPerformance && (
-                    <tr>
-                      <td colSpan={6} className="px-6 py-8 text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          <Loader className="w-5 h-5 animate-spin text-[#020079]" />
-                          <span className="font-roboto text-[#020079]">
-                            Loading manager performance…
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                  {!loadingManagerPerformance && managerPerformanceError && (
-                    <tr>
-                      <td colSpan={6} className="px-6 py-8 text-center">
-                        <p className="font-roboto text-red-600">
-                          {managerPerformanceError}
-                        </p>
-                      </td>
-                    </tr>
-                  )}
-                  {!loadingManagerPerformance &&
-                    !managerPerformanceError &&
-                    managerPerformance.length === 0 && (
-                      <tr>
-                        <td colSpan={6} className="px-6 py-8 text-center">
-                          <p className="font-roboto text-[#020079]/60">
-                            No manager performance data available.
-                          </p>
-                        </td>
-                      </tr>
-                    )}
-                  {!loadingManagerPerformance &&
-                    !managerPerformanceError &&
-                    managerPerformance.map((manager) => (
-                      <tr
-                        key={manager.id}
-                        className="hover:bg-[#020079]/5 transition-colors"
-                      >
-                        <td className="px-6 py-4">
-                          <span className="font-roboto font-semibold text-[#020079]">
-                            {manager.name}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 font-roboto text-[#020079]/70">
-                          {manager.tasksAssigned} tasks
-                        </td>
-                        <td className="px-6 py-4">
-                          <span
-                            className={`font-roboto font-semibold ${
-                              manager.completionRate >= 90
-                                ? "text-[#020079]"
-                                : manager.completionRate >= 80
-                                ? "text-[#020079]"
-                                : "text-[#020079]/60"
-                            }`}
-                          >
-                            {manager.completionRate}%
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-1 font-roboto text-[#020079] font-semibold">
-                            {manager.avgEmployeeRating}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <Badge
-                            variant="secondary"
-                            className={
-                              manager.status === "Active"
-                                ? "bg-[#FFD700]/20 text-[#020079] hover:bg-[#FFD700]/30 border-0 font-roboto"
-                                : "bg-[#020079]/10 text-[#020079] hover:bg-[#020079]/20 border-0 font-roboto"
-                            }
-                          >
-                            {manager.status}
-                          </Badge>
-                        </td>
-                        <td className="px-6 py-4">
-                          {manager.status === "Under Review" ? (
-                            <Button
-                              onClick={() =>
-                                handleViewManagerDetails(manager.id)
-                              }
-                              size="sm"
-                              className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
-                            >
-                              Review Performance
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={() =>
-                                handleViewManagerDetails(manager.id)
-                              }
-                              size="sm"
-                              className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
-                            >
-                              View Details
-                            </Button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
             </div>
           </CardContent>
         </Card>
@@ -752,14 +601,27 @@ export default function WorkforceOverviewPage() {
                               <Edit className="w-3 h-3 mr-1" />
                               Edit
                             </Button>
-                            <Button
-                              onClick={() => handleFreezeManager(manager.id)}
-                              size="sm"
-                              className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
-                            >
-                              <Lock className="w-3 h-3 mr-1" />
-                              Freeze
-                            </Button>
+                            {manager.status === "Deactivated" ? (
+                              <Button
+                                onClick={() =>
+                                  handleActivateManager(manager.id)
+                                }
+                                size="sm"
+                                className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold"
+                              >
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                                Activate
+                              </Button>
+                            ) : (
+                              <Button
+                                onClick={() => handleFreezeManager(manager.id)}
+                                size="sm"
+                                className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
+                              >
+                                <Lock className="w-3 h-3 mr-1" />
+                                Deactivate
+                              </Button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -793,8 +655,7 @@ export default function WorkforceOverviewPage() {
                 Multiple employees required for operations. Currently:{" "}
                 {workforceData?.stats?.totalEmployees || 0} total employees (
                 {workforceData?.stats?.activeEmployees || 0} active,{" "}
-                {workforceData?.stats?.onLeave || 0} on leave,{" "}
-                {workforceData?.stats?.frozen || 0} frozen).
+                {workforceData?.stats?.frozen || 0} deactivated).
               </p>
             </div>
 
@@ -896,8 +757,6 @@ export default function WorkforceOverviewPage() {
                             className={
                               employee.status === "Active"
                                 ? "bg-[#FFD700]/20 text-[#020079] hover:bg-[#FFD700]/30 border-0 font-roboto"
-                                : employee.status === "On Leave"
-                                ? "bg-[#020079]/10 text-[#020079] hover:bg-[#020079]/20 border-0 font-roboto"
                                 : "bg-[#020079]/10 text-[#020079]/70 hover:bg-[#020079]/20 border-0 font-roboto"
                             }
                           >
@@ -915,7 +774,7 @@ export default function WorkforceOverviewPage() {
                               <Edit className="w-3 h-3 mr-1" />
                               Edit
                             </Button>
-                            {employee.status === "On Leave" ? (
+                            {employee.status === "Deactivated" ? (
                               <Button
                                 onClick={() =>
                                   handleActivateEmployee(employee.id)
@@ -935,7 +794,7 @@ export default function WorkforceOverviewPage() {
                                 className="bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
                               >
                                 <Lock className="w-3 h-3 mr-1" />
-                                Freeze
+                                Deactivate
                               </Button>
                             )}
                           </div>
@@ -959,6 +818,24 @@ export default function WorkforceOverviewPage() {
         isOpen={showAddEmployeeModal}
         onClose={() => setShowAddEmployeeModal(false)}
         onSubmit={handleSubmitAddEmployee}
+      />
+      <EditManagerModal
+        isOpen={showEditManagerModal}
+        onClose={() => {
+          setShowEditManagerModal(false);
+          setSelectedManager(null);
+        }}
+        onSubmit={handleSubmitEditManager}
+        managerData={selectedManager}
+      />
+      <EditEmployeeModal
+        isOpen={showEditEmployeeModal}
+        onClose={() => {
+          setShowEditEmployeeModal(false);
+          setSelectedEmployee(null);
+        }}
+        onSubmit={handleSubmitEditEmployee}
+        employeeData={selectedEmployee}
       />
     </AdminDashboardLayout>
   );
