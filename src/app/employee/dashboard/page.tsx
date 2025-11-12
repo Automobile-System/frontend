@@ -88,12 +88,12 @@ export default function EmployeeDashboard() {
         if (charts.dailyHoursData && charts.dailyHoursData.length > 0) {
           // Get last 5 days or available days
           const recentDays = charts.dailyHoursData.slice(-5);
-          const labels = recentDays.map((item: any) => {
+          const labels = recentDays.map((item: Record<string, unknown>) => {
             // Format date to show day name (Mon, Tue, etc.)
-            const date = new Date(item.date);
+            const date = new Date(String(item.date));
             return date.toLocaleDateString("en-US", { weekday: "short" });
           });
-          const hours = recentDays.map((item: any) => item.hours || 0);
+          const hours = recentDays.map((item: Record<string, unknown>) => Number(item.hours || 0));
 
           setDailyHoursData({
             labels,
@@ -111,15 +111,14 @@ export default function EmployeeDashboard() {
         if (charts.ratingTrendData && charts.ratingTrendData.length > 0) {
           // Get recent rating data (last 4 weeks or available data)
           const recentRatings = charts.ratingTrendData.slice(-4);
-          const labels = recentRatings.map((item: any, index: number) => {
+          const labels = recentRatings.map((item: Record<string, unknown>, index: number) => {
             // Format as "Week X" or use date
             if (item.date) {
-              const date = new Date(item.date);
               return `Week ${index + 1}`;
             }
             return `Week ${index + 1}`;
           });
-          const ratings = recentRatings.map((item: any) => item.rating || 0);
+          const ratings = recentRatings.map((item: Record<string, unknown>) => Number(item.rating || 0));
 
           setRatingData({
             labels,

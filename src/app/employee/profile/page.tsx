@@ -77,8 +77,6 @@ export default function ProfilePage() {
     const loadProfile = async () => {
       setIsLoading(true);
       let backendAvailable = false;
-      let currentProfile: EmployeeProfile = MOCK_PROFILE;
-      let currentRating = MOCK_PROFILE.rating;
       
       // Try to load profile from backend
       try {
@@ -104,60 +102,58 @@ export default function ProfilePage() {
           avatar: profileData.profileImageUrl || MOCK_PROFILE.avatar,
         };
         
-        currentProfile = transformedProfile;
-        currentRating = transformedProfile.rating;
         setProfile(transformedProfile);
         setEditForm(transformedProfile);
         backendAvailable = true;
-      } catch (error) {
-        console.error("Error loading profile from backend, using mock data:", error);
-        // Keep mock data - already set as initial state
-      }
+        
+        // Try to load performance stats from backend
+        try {
+          const [dashboardSummary, chartsData] = await Promise.all([
+            getDashboardSummary().catch(() => null),
+            getChartsData().catch(() => null),
+          ]);
 
-      // Try to load performance stats from backend
-      try {
-        const [dashboardSummary, chartsData] = await Promise.all([
-          getDashboardSummary().catch(() => null),
-          getChartsData().catch(() => null),
-        ]);
+          // Calculate tasks completed (sum from monthly tasks data if available, or use this month's count)
+          let tasksCompleted = MOCK_STATS.tasksCompleted;
+          if (chartsData?.monthlyTasksData && chartsData.monthlyTasksData.length > 0) {
+            // Sum all completed tasks from monthly data
+            tasksCompleted = chartsData.monthlyTasksData.reduce(
+              (sum: number, month: { completedTasks?: number }) => sum + (month.completedTasks || 0),
+              0
+            );
+          } else if (dashboardSummary?.tasksCompletedThisMonth) {
+            // If we only have this month's data, use it as approximation
+            tasksCompleted = dashboardSummary.tasksCompletedThisMonth;
+          }
 
-        // Calculate tasks completed (sum from monthly tasks data if available, or use this month's count)
-        let tasksCompleted = MOCK_STATS.tasksCompleted;
-        if (chartsData?.monthlyTasksData && chartsData.monthlyTasksData.length > 0) {
-          // Sum all completed tasks from monthly data
-          tasksCompleted = chartsData.monthlyTasksData.reduce(
-            (sum: number, month: { completedTasks?: number }) => sum + (month.completedTasks || 0),
-            0
-          );
-        } else if (dashboardSummary?.tasksCompletedThisMonth) {
-          // If we only have this month's data, use it as approximation
-          tasksCompleted = dashboardSummary.tasksCompletedThisMonth;
+          // Calculate total hours worked
+          let hoursWorked = MOCK_STATS.hoursWorked;
+          if (chartsData?.dailyHoursData && chartsData.dailyHoursData.length > 0) {
+            // Sum all daily hours
+            hoursWorked = Math.round(
+              chartsData.dailyHoursData.reduce((sum: number, day: { hours?: number }) => sum + (day.hours || 0), 0)
+            );
+          } else if (dashboardSummary?.totalHoursLoggedThisMonth) {
+            // Use this month as approximation (multiply by 12 for yearly estimate)
+            hoursWorked = Math.round(dashboardSummary.totalHoursLoggedThisMonth * 12);
+          }
+
+          // Calculate customer satisfaction from rating
+          let customerSatisfaction = MOCK_STATS.customerSatisfaction;
+          if (transformedProfile.rating > 0) {
+            // Convert rating (0-5) to satisfaction percentage
+            customerSatisfaction = Math.round((transformedProfile.rating / 5) * 100);
+          }
+
+          setStats({
+            tasksCompleted,
+            hoursWorked,
+            customerSatisfaction,
+          });
+        } catch (statsError) {
+          console.error("Error loading stats from backend, using mock data:", statsError);
+          // Keep mock stats - already set as initial state
         }
-
-        // Calculate total hours worked
-        let hoursWorked = MOCK_STATS.hoursWorked;
-        if (chartsData?.dailyHoursData && chartsData.dailyHoursData.length > 0) {
-          // Sum all daily hours
-          hoursWorked = Math.round(
-            chartsData.dailyHoursData.reduce((sum: number, day: { hours?: number }) => sum + (day.hours || 0), 0)
-          );
-        } else if (dashboardSummary?.totalHoursLoggedThisMonth) {
-          // Use this month as approximation (multiply by 12 for yearly estimate)
-          hoursWorked = Math.round(dashboardSummary.totalHoursLoggedThisMonth * 12);
-        }
-
-        // Calculate customer satisfaction from rating (use current profile rating or fallback)
-        let customerSatisfaction = MOCK_STATS.customerSatisfaction;
-        if (currentRating > 0) {
-          // Convert rating (0-5) to satisfaction percentage
-          customerSatisfaction = Math.round((currentRating / 5) * 100);
-        }
-
-        setStats({
-          tasksCompleted,
-          hoursWorked,
-          customerSatisfaction,
-        });
         backendAvailable = true;
       } catch (error) {
         console.error("Error loading stats from backend, using mock data:", error);
