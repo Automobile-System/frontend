@@ -794,43 +794,49 @@ export const fetchFinancialReports = async (
  */
 export const fetchWorkforceOverview = async (): Promise<WorkforceOverview> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/workforce/overview', {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${getAuthToken()}`
-    //   }
-    // })
-    // if (!response.ok) throw new Error('Failed to fetch workforce overview')
-    // return await response.json()
-
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    const token = localStorage.getItem('authToken')
+    
+    const response = await fetch(`${baseUrl}/api/admin/workforce/overview`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      credentials: 'include'
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch workforce overview')
+    }
+    
+    const data = await response.json()
+    
+    // Map backend fields to frontend interface with flexible field mapping
     return {
       stats: {
-        totalEmployees: 27,
-        activeEmployees: 24,
-        onLeave: 2,
-        frozen: 1,
-        avgRating: 4.7,
-        ratingChange: 0.2,
-        avgWorkload: 3.2,
-        avgSalary: '85K'
+        totalEmployees: data.stats?.totalEmployees || data.stats?.total || 0,
+        activeEmployees: data.stats?.activeEmployees || data.stats?.active || 0,
+        onLeave: data.stats?.onLeave || data.stats?.leave || 0,
+        frozen: data.stats?.frozen || data.stats?.frozenEmployees || 0,
+        avgRating: data.stats?.avgRating || data.stats?.averageRating || data.stats?.rating || 0,
+        ratingChange: data.stats?.ratingChange || data.stats?.ratingDelta || 0,
+        avgWorkload: data.stats?.avgWorkload || data.stats?.averageWorkload || data.stats?.workload || 0,
+        avgSalary: data.stats?.avgSalary || data.stats?.averageSalary || data.stats?.salary || '0K'
       },
       centerInfo: {
-        totalCenters: 1,
-        activeManagers: 3,
-        minimumManagers: 1,
-        totalEmployees: 27
+        totalCenters: data.centerInfo?.totalCenters || data.centerInfo?.centers || 1,
+        activeManagers: data.centerInfo?.activeManagers || data.centerInfo?.managers || 0,
+        minimumManagers: data.centerInfo?.minimumManagers || data.centerInfo?.minManagers || 1,
+        totalEmployees: data.centerInfo?.totalEmployees || data.centerInfo?.employees || 0
       },
-      overloadedEmployee: {
-        name: 'Kamal Perera',
-        specialization: 'Electrical Systems',
-        capacityPercentage: 100,
-        activeTasks: 5,
-        maxTasks: 5
-      }
+      overloadedEmployee: data.overloadedEmployee ? {
+        name: data.overloadedEmployee.name || `${data.overloadedEmployee.firstName || ''} ${data.overloadedEmployee.lastName || ''}`.trim(),
+        specialization: data.overloadedEmployee.specialization || data.overloadedEmployee.specialty || data.overloadedEmployee.skill || data.overloadedEmployee.jobType || 'N/A',
+        capacityPercentage: data.overloadedEmployee.capacityPercentage || data.overloadedEmployee.capacity || 100,
+        activeTasks: data.overloadedEmployee.activeTasks || data.overloadedEmployee.tasks || data.overloadedEmployee.currentTasks || 0,
+        maxTasks: data.overloadedEmployee.maxTasks || data.overloadedEmployee.maximumTasks || data.overloadedEmployee.taskLimit || 5
+      } : undefined
     }
   } catch (error) {
     console.error('Error fetching workforce overview:', error)
@@ -845,42 +851,31 @@ export const fetchWorkforceOverview = async (): Promise<WorkforceOverview> => {
  */
 export const fetchTopEmployees = async (): Promise<TopEmployee[]> => {
   try {
-    // TODO: Replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 800))
-    return [
-      {
-        id: 'EMP-003',
-        name: 'Nimal Fernando',
-        specialization: 'Bodywork & Paint Specialist',
-        rating: 4.9,
-        rewardEligible: true,
-        overloaded: false
-      },
-      {
-        id: 'EMP-001',
-        name: 'Ruwan Silva',
-        specialization: 'Engine Specialist',
-        rating: 4.8,
-        rewardEligible: true,
-        overloaded: false
-      },
-      {
-        id: 'EMP-005',
-        name: 'Amal Wickramasinghe',
-        specialization: 'Transmission Specialist',
-        rating: 4.7,
-        rewardEligible: true,
-        overloaded: false
-      },
-      {
-        id: 'EMP-002',
-        name: 'Kamal Perera',
-        specialization: 'Electrical Systems',
-        rating: 4.6,
-        rewardEligible: false,
-        overloaded: true
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    const response = await fetch(`${baseUrl}/api/admin/workforce/top-employees`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
-    ]
+    })
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch top employees: ${response.statusText}`)
+    }
+    
+    const data = await response.json()
+    
+    // Map backend response to TopEmployee interface
+    return Array.isArray(data) ? data.map((item: any) => ({
+      id: item.id || item.employeeId || item.empId,
+      name: item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim(),
+      specialization: item.specialization || item.specialty || item.skill || '-',
+      rating: Number(item.rating || item.employeeRating || 0),
+      rewardEligible: item.rewardEligible ?? item.eligible ?? true,
+      overloaded: item.overloaded ?? item.isOverloaded ?? false
+    })) : []
   } catch (error) {
     console.error('Error fetching top employees:', error)
     throw error
@@ -894,34 +889,31 @@ export const fetchTopEmployees = async (): Promise<TopEmployee[]> => {
  */
 export const fetchManagerPerformance = async (): Promise<ManagerPerformance[]> => {
   try {
-    // TODO: Replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 800))
-    return [
-      {
-        id: 'MGR-001',
-        name: 'Rajesh Kumar',
-        tasksAssigned: 48,
-        completionRate: 94,
-        avgEmployeeRating: 4.7,
-        status: 'Active'
-      },
-      {
-        id: 'MGR-002',
-        name: 'Priya Fernando',
-        tasksAssigned: 52,
-        completionRate: 91,
-        avgEmployeeRating: 4.6,
-        status: 'Active'
-      },
-      {
-        id: 'MGR-003',
-        name: 'Chaminda Silva',
-        tasksAssigned: 38,
-        completionRate: 82,
-        avgEmployeeRating: 4.3,
-        status: 'Under Review'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    const response = await fetch(`${baseUrl}/api/admin/workforce/manager-performance`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
-    ]
+    })
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch manager performance: ${response.statusText}`)
+    }
+    
+    const data = await response.json()
+    
+    // Map backend response to ManagerPerformance interface
+    return Array.isArray(data) ? data.map((item: any) => ({
+      id: item.id || item.managerId || item.empId,
+      name: item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim(),
+      tasksAssigned: Number(item.tasksAssigned || item.totalTasks || 0),
+      completionRate: Number(item.completionRate || item.completionPercentage || 0),
+      avgEmployeeRating: Number(item.avgEmployeeRating || item.averageRating || item.rating || 0),
+      status: item.status || 'Active'
+    })) : []
   } catch (error) {
     console.error('Error fetching manager performance:', error)
     throw error
@@ -935,34 +927,31 @@ export const fetchManagerPerformance = async (): Promise<ManagerPerformance[]> =
  */
 export const fetchAllManagers = async (): Promise<Manager[]> => {
   try {
-    // TODO: Replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 800))
-    return [
-      {
-        id: 'MGR-001',
-        name: 'Rajesh Kumar',
-        email: 'rajesh.kumar@center.com',
-        phone: '+94 77 123 4567',
-        joinDate: 'Jan 15, 2023',
-        status: 'Active'
-      },
-      {
-        id: 'MGR-002',
-        name: 'Priya Fernando',
-        email: 'priya.fernando@center.com',
-        phone: '+94 77 234 5678',
-        joinDate: 'Mar 22, 2023',
-        status: 'Active'
-      },
-      {
-        id: 'MGR-003',
-        name: 'Chaminda Silva',
-        email: 'chaminda.silva@center.com',
-        phone: '+94 77 345 6789',
-        joinDate: 'Jul 10, 2023',
-        status: 'Under Review'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    const response = await fetch(`${baseUrl}/api/admin/workforce/managers`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
-    ]
+    })
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch managers: ${response.statusText}`)
+    }
+    
+    const data = await response.json()
+    
+    // Map backend response to Manager interface
+    return Array.isArray(data) ? data.map((item: any) => ({
+      id: item.id || item.managerId || item.employeeId,
+      name: item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim(),
+      email: item.email || '',
+      phone: item.phone || item.phoneNumber || '',
+      joinDate: item.joinDate || item.createdAt || item.hireDate || '-',
+      status: item.status || 'Active'
+    })) : []
   } catch (error) {
     console.error('Error fetching all managers:', error)
     throw error
@@ -976,64 +965,32 @@ export const fetchAllManagers = async (): Promise<Manager[]> => {
  */
 export const fetchAllEmployees = async (): Promise<Employee[]> => {
   try {
-    // TODO: Replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 800))
-    return [
-      {
-        id: 'EMP-001',
-        name: 'Ruwan Silva',
-        specialization: 'Engine Specialist',
-        email: 'ruwan.silva@center.com',
-        phone: '+94 71 111 2222',
-        rating: 4.8,
-        status: 'Active'
-      },
-      {
-        id: 'EMP-002',
-        name: 'Kamal Perera',
-        specialization: 'Electrical Systems',
-        email: 'kamal.perera@center.com',
-        phone: '+94 71 222 3333',
-        rating: 4.6,
-        status: 'Active'
-      },
-      {
-        id: 'EMP-003',
-        name: 'Nimal Fernando',
-        specialization: 'Bodywork & Paint',
-        email: 'nimal.fernando@center.com',
-        phone: '+94 71 333 4444',
-        rating: 4.9,
-        status: 'Active'
-      },
-      {
-        id: 'EMP-004',
-        name: 'Sunil Jayasinghe',
-        specialization: 'Engine Specialist',
-        email: 'sunil.j@center.com',
-        phone: '+94 71 444 5555',
-        rating: 4.5,
-        status: 'On Leave'
-      },
-      {
-        id: 'EMP-005',
-        name: 'Amal Wickramasinghe',
-        specialization: 'Transmission Specialist',
-        email: 'amal.w@center.com',
-        phone: '+94 71 555 6666',
-        rating: 4.7,
-        status: 'Active'
-      },
-      {
-        id: 'EMP-006',
-        name: 'Kasun Mendis',
-        specialization: 'Brake Systems',
-        email: 'kasun.mendis@center.com',
-        phone: '+94 71 666 7777',
-        rating: 4.4,
-        status: 'Active'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    const response = await fetch(`${baseUrl}/api/admin/workforce/employees`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
       }
-    ]
+    })
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch employees: ${response.statusText}`)
+    }
+    
+    const data = await response.json()
+    
+    // Map backend response to Employee interface
+    return Array.isArray(data) ? data.map((item: any) => ({
+      id: item.id || item.employeeId || item.empId,
+      name: item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim(),
+      specialization: item.specialization || item.specialty || item.skill || item.jobType || '-',
+      email: item.email || '',
+      phone: item.phone || item.phoneNumber || item.contact || '',
+      rating: Number(item.rating || item.employeeRating || 0),
+      status: item.status || 'Active'
+    })) : []
   } catch (error) {
     console.error('Error fetching all employees:', error)
     throw error
@@ -1059,35 +1016,25 @@ export interface AddManagerRequest {
 
 export const addManager = async (data: AddManagerRequest): Promise<{ success: boolean; message: string; manager: Manager }> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/workforce/managers', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${getAuthToken()}`
-    //   },
-    //   body: JSON.stringify(data)
-    // })
-    // if (!response.ok) throw new Error('Failed to add manager')
-    // return await response.json()
-
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 800))
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     
-    const newManager: Manager = {
-      id: data.managerId,
-      name: `${data.firstName} ${data.lastName}`,
-      email: data.email,
-      phone: data.phone,
-      joinDate: new Date(data.joinDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-      status: 'Active'
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/managers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      credentials: 'include',
+      body: JSON.stringify(data)
+    })
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Failed to add manager' }))
+      throw new Error(error.message || 'Failed to add manager')
     }
-
-    return {
-      success: true,
-      message: `Manager Added Successfully!\n\nName: ${newManager.name}\nID: ${data.managerId}\nEmail: ${data.email}\n\nCredentials have been sent to the manager's email. They can log in with their username and change the temporary password.`,
-      manager: newManager
-    }
+    
+    return await response.json()
   } catch (error) {
     console.error('Error adding manager:', error)
     throw error
@@ -1116,36 +1063,25 @@ export interface AddEmployeeRequest {
 
 export const addEmployee = async (data: AddEmployeeRequest): Promise<{ success: boolean; message: string; employee: Employee }> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/workforce/employees', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${getAuthToken()}`
-    //   },
-    //   body: JSON.stringify(data)
-    // })
-    // if (!response.ok) throw new Error('Failed to add employee')
-    // return await response.json()
-
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 800))
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     
-    const newEmployee: Employee = {
-      id: data.employeeId,
-      name: `${data.firstName} ${data.lastName}`,
-      specialization: data.specialization,
-      email: data.email,
-      phone: data.phone,
-      rating: 0, // New employee starts with 0 rating
-      status: 'Active'
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/employees`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      credentials: 'include',
+      body: JSON.stringify(data)
+    })
+    
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Failed to add employee' }))
+      throw new Error(error.message || 'Failed to add employee')
     }
-
-    return {
-      success: true,
-      message: `Employee Added Successfully!\n\nName: ${newEmployee.name}\nID: ${data.employeeId}\nSpecialization: ${data.specialization}\nEmail: ${data.email}\n\nCredentials have been sent to the employee's email. They can log in and managers can assign tasks.`,
-      employee: newEmployee
-    }
+    
+    return await response.json()
   } catch (error) {
     console.error('Error adding employee:', error)
     throw error
@@ -1963,31 +1899,42 @@ export const fetchCompensationRules = async (): Promise<CompensationRules> => {
  */
 export const fetchCustomerOverview = async (): Promise<CustomerOverview> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch(`${API_BASE_URL}/customers/overview`, {
-    //   headers: { Authorization: `Bearer ${token}` }
-    // })
-    // if (!response.ok) throw new Error('Failed to fetch customer overview')
-    // return await response.json()
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    const token = localStorage.getItem('authToken')
     
-    console.log('API: Fetch customer overview endpoint called')
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          totalCustomers: 1247,
-          newThisMonth: 89,
-          activeCustomers: 1103,
-          activityRate: 88.5,
-          topCustomer: {
-            name: "Nimal Perera",
-            email: "nimal.perera@email.com",
-            totalSpent: 45780,
-            servicesUsed: 24
-          }
-        })
-      }, 800)
+    const response = await fetch(`${baseUrl}/api/admin/customers/overview`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      credentials: 'include'
     })
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch customer overview')
+    }
+    
+    const data = await response.json()
+    
+    // Map backend fields to frontend interface with flexible field mapping
+    return {
+      totalCustomers: data.totalCustomers || data.total || data.count || 0,
+      newThisMonth: data.newThisMonth || data.newCustomers || data.recentCustomers || 0,
+      activeCustomers: data.activeCustomers || data.active || 0,
+      activityRate: data.activityRate || data.rate || data.activeRate || 0,
+      topCustomer: data.topCustomer ? {
+        name: data.topCustomer.name || `${data.topCustomer.firstName || ''} ${data.topCustomer.lastName || ''}`.trim(),
+        email: data.topCustomer.email || '',
+        totalSpent: data.topCustomer.totalSpent || data.topCustomer.spent || data.topCustomer.amount || 0,
+        servicesUsed: data.topCustomer.servicesUsed || data.topCustomer.services || data.topCustomer.bookings || 0
+      } : {
+        name: 'N/A',
+        email: 'N/A',
+        totalSpent: 0,
+        servicesUsed: 0
+      }
+    }
   } catch (error) {
     console.error('Failed to fetch customer overview:', error)
     throw error
@@ -2017,141 +1964,43 @@ export const fetchCustomerOverview = async (): Promise<CustomerOverview> => {
  */
 export const fetchCustomerList = async (): Promise<Customer[]> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch(`${API_BASE_URL}/customers/list`, {
-    //   headers: { Authorization: `Bearer ${token}` }
-    // })
-    // if (!response.ok) throw new Error('Failed to fetch customer list')
-    // return await response.json()
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    const token = localStorage.getItem('authToken')
     
-    console.log('API: Fetch customer list endpoint called')
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          {
-            id: 'CUST001',
-            name: 'Nimal Perera',
-            email: 'nimal.perera@email.com',
-            phone: '+94 77 123 4567',
-            vehicleCount: 2,
-            totalSpent: 45780,
-            lastServiceDate: '2024-10-28',
-            status: 'Active'
-          },
-          {
-            id: 'CUST002',
-            name: 'Saman Silva',
-            email: 'saman.silva@email.com',
-            phone: '+94 71 234 5678',
-            vehicleCount: 1,
-            totalSpent: 12450,
-            lastServiceDate: '2024-10-25',
-            status: 'Active'
-          },
-          {
-            id: 'CUST003',
-            name: 'Kamal Fernando',
-            email: 'kamal.fernando@email.com',
-            phone: '+94 76 345 6789',
-            vehicleCount: 3,
-            totalSpent: 67890,
-            lastServiceDate: '2024-11-02',
-            status: 'Active'
-          },
-          {
-            id: 'CUST004',
-            name: 'Dilani Jayawardena',
-            email: 'dilani.j@email.com',
-            phone: '+94 77 456 7890',
-            vehicleCount: 1,
-            totalSpent: 8900,
-            lastServiceDate: '2024-09-15',
-            status: 'Active'
-          },
-          {
-            id: 'CUST005',
-            name: 'Ruwan Bandara',
-            email: 'ruwan.b@email.com',
-            phone: '+94 71 567 8901',
-            vehicleCount: 2,
-            totalSpent: 23450,
-            lastServiceDate: '2024-10-30',
-            status: 'Active'
-          },
-          {
-            id: 'CUST006',
-            name: 'Chaminda Rathnayake',
-            email: 'chaminda.r@email.com',
-            phone: '+94 76 678 9012',
-            vehicleCount: 1,
-            totalSpent: 5600,
-            lastServiceDate: '2024-07-20',
-            status: 'Inactive'
-          },
-          {
-            id: 'CUST007',
-            name: 'Priyantha Gunawardena',
-            email: 'priyantha.g@email.com',
-            phone: '+94 77 789 0123',
-            vehicleCount: 2,
-            totalSpent: 34560,
-            lastServiceDate: '2024-11-01',
-            status: 'Active'
-          },
-          {
-            id: 'CUST008',
-            name: 'Sanduni Wickramasinghe',
-            email: 'sanduni.w@email.com',
-            phone: '+94 71 890 1234',
-            vehicleCount: 1,
-            totalSpent: 15670,
-            lastServiceDate: '2024-10-18',
-            status: 'Active'
-          },
-          {
-            id: 'CUST009',
-            name: 'Nuwan Kumara',
-            email: 'nuwan.k@email.com',
-            phone: '+94 76 901 2345',
-            vehicleCount: 4,
-            totalSpent: 89120,
-            lastServiceDate: '2024-11-03',
-            status: 'Active'
-          },
-          {
-            id: 'CUST010',
-            name: 'Amali De Silva',
-            email: 'amali.ds@email.com',
-            phone: '+94 77 012 3456',
-            vehicleCount: 1,
-            totalSpent: 7890,
-            lastServiceDate: '2024-08-12',
-            status: 'Inactive'
-          },
-          {
-            id: 'CUST011',
-            name: 'Thisara Perera',
-            email: 'thisara.p@email.com',
-            phone: '+94 71 123 4567',
-            vehicleCount: 2,
-            totalSpent: 28900,
-            lastServiceDate: '2024-10-27',
-            status: 'Active'
-          },
-          {
-            id: 'CUST012',
-            name: 'Nadeesha Kumari',
-            email: 'nadeesha.k@email.com',
-            phone: '+94 76 234 5678',
-            vehicleCount: 1,
-            totalSpent: 19450,
-            lastServiceDate: '2024-10-22',
-            status: 'Active'
-          }
-        ])
-      }, 800)
+    const response = await fetch(`${baseUrl}/api/admin/customers/list`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      credentials: 'include'
     })
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch customer list')
+    }
+    
+    const data = await response.json()
+    
+    // Map backend fields to frontend interface with flexible field mapping
+    const customers = Array.isArray(data) ? data : (data.customers || data.data || [])
+    
+    return customers.map((customer: any) => ({
+      id: customer.id || customer.customerId || customer.customer_id || '',
+      name: customer.name || `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      email: customer.email || '',
+      phone: customer.phone || customer.phoneNumber || customer.contactNumber || '',
+      vehicleCount: typeof customer.vehicleCount === 'number' ? customer.vehicleCount : 
+                   typeof customer.vehicles === 'number' ? customer.vehicles : 
+                   typeof customer.vehicle_count === 'number' ? customer.vehicle_count : 0,
+      totalSpent: typeof customer.totalSpent === 'number' ? customer.totalSpent :
+                 typeof customer.spent === 'number' ? customer.spent :
+                 typeof customer.total_spent === 'number' ? customer.total_spent :
+                 typeof customer.amount === 'number' ? customer.amount : 0,
+      lastServiceDate: customer.lastServiceDate || customer.last_service_date || 
+                      customer.lastService || customer.recentService || '',
+      status: (customer.status === 'Inactive' || customer.status === 'inactive') ? 'Inactive' : 'Active'
+    }))
   } catch (error) {
     console.error('Failed to fetch customer list:', error)
     throw error
