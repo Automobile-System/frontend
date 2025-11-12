@@ -73,198 +73,6 @@ interface DaySchedule {
   isToday: boolean;
 }
 
-// Mock data generator function - simulates backend response
-const generateMockTasks = (weekStart: Date): Task[] => {
-  // This simulates fetching tasks from backend API
-  // In production: await fetch(`/api/tasks?startDate=${weekStart.toISOString()}&endDate=${weekEnd.toISOString()}`)
-
-  const tasks: Task[] = [
-    {
-      id: "1",
-      title: "Oil Change",
-      time: "09:00 AM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate()
-      ).toISOString(),
-      type: "normal",
-      customer: "John Doe",
-      vehicle: "Toyota Corolla",
-      status: "completed",
-    },
-    {
-      id: "2",
-      title: "Brake Inspection",
-      time: "11:30 AM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate()
-      ).toISOString(),
-      type: "normal",
-      customer: "Jane Smith",
-      vehicle: "Honda Civic",
-      status: "completed",
-    },
-    {
-      id: "3",
-      title: "Engine Diagnosis",
-      time: "02:00 PM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate()
-      ).toISOString(),
-      type: "urgent",
-      customer: "Mike Johnson",
-      vehicle: "Ford F-150",
-      status: "completed",
-    },
-    {
-      id: "4",
-      title: "Tire Rotation",
-      time: "10:00 AM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate() + 1
-      ).toISOString(),
-      type: "normal",
-      customer: "Sarah Williams",
-      vehicle: "Mazda CX-5",
-      status: "in_progress",
-    },
-    {
-      id: "5",
-      title: "Transmission Check",
-      time: "01:00 PM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate() + 1
-      ).toISOString(),
-      type: "urgent",
-      customer: "David Brown",
-      vehicle: "BMW 3 Series",
-      status: "pending",
-    },
-    {
-      id: "6",
-      title: "AC Service",
-      time: "03:30 PM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate() + 1
-      ).toISOString(),
-      type: "normal",
-      customer: "Emily Davis",
-      vehicle: "Audi A4",
-      status: "pending",
-    },
-    {
-      id: "7",
-      title: "Battery Replacement",
-      time: "09:30 AM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate() + 2
-      ).toISOString(),
-      type: "normal",
-      customer: "Robert Taylor",
-      vehicle: "Tesla Model 3",
-      status: "pending",
-    },
-    {
-      id: "8",
-      title: "Full Service",
-      time: "02:00 PM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate() + 2
-      ).toISOString(),
-      type: "urgent",
-      customer: "Lisa Anderson",
-      vehicle: "Mercedes E-Class",
-      status: "pending",
-    },
-    {
-      id: "9",
-      title: "Wheel Alignment",
-      time: "10:00 AM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate() + 3
-      ).toISOString(),
-      type: "normal",
-      customer: "James Wilson",
-      vehicle: "Volkswagen Golf",
-      status: "pending",
-    },
-    {
-      id: "10",
-      title: "Coolant Flush",
-      time: "12:00 PM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate() + 3
-      ).toISOString(),
-      type: "normal",
-      customer: "Maria Garcia",
-      vehicle: "Hyundai Tucson",
-      status: "pending",
-    },
-    {
-      id: "11",
-      title: "Suspension Repair",
-      time: "03:00 PM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate() + 3
-      ).toISOString(),
-      type: "urgent",
-      customer: "Christopher Lee",
-      vehicle: "Jeep Wrangler",
-      status: "pending",
-    },
-    {
-      id: "12",
-      title: "Headlight Replacement",
-      time: "09:00 AM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate() + 4
-      ).toISOString(),
-      type: "normal",
-      customer: "Patricia Martinez",
-      vehicle: "Nissan Altima",
-      status: "pending",
-    },
-    {
-      id: "13",
-      title: "Exhaust System Check",
-      time: "11:00 AM",
-      deadline: new Date(
-        weekStart.getFullYear(),
-        weekStart.getMonth(),
-        weekStart.getDate() + 4
-      ).toISOString(),
-      type: "normal",
-      customer: "Daniel Rodriguez",
-      vehicle: "Chevrolet Silverado",
-      status: "pending",
-    },
-  ];
-
-  return tasks;
-};
 
 export default function Calendar() {
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => {
@@ -287,13 +95,31 @@ export default function Calendar() {
   const loadWeekData = async (weekStart: Date) => {
     setIsLoading(true);
 
-    // Simulate API call delay
-    // In production: const response = await fetch(`/api/employee/tasks?startDate=${weekStart.toISOString()}`);
-    // In production: const tasks = await response.json();
+    try {
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6);
+      weekEnd.setHours(23, 59, 59, 999);
 
-    await new Promise((resolve) => setTimeout(resolve, 300)); // Simulate network delay
+      // Fetch from API
+      const { getCalendarEvents } = await import("@/services/employeeService");
+      const events = await getCalendarEvents(weekStart, weekEnd);
 
-    const tasks = generateMockTasks(weekStart);
+      // Transform API response to match your Task interface
+      const tasks: Task[] = events.map((event: Record<string, unknown>) => ({
+        id: String(event.id || ""),
+        title: String(event.title || ""),
+        time: event.startTime
+          ? new Date(String(event.startTime)).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
+          : "09:00 AM",
+        deadline: String(event.startTime || event.endTime || weekStart.toISOString()),
+        type: "normal" as const, // Calendar events don't have priority in response
+        vehicle: String(event.vehicleRegNo || ""),
+        status: "pending" as const,
+      }));
 
     // Generate 7 days of the week
     const weekData: DaySchedule[] = [];
@@ -324,17 +150,23 @@ export default function Calendar() {
       });
     }
 
-    setCalendarData(weekData);
+      setCalendarData(weekData);
 
-    // Calculate workload based on tasks
-    const totalTasks = tasks.length;
-    const calculatedWorkload = Math.min(
-      100,
-      Math.round((totalTasks / 15) * 100)
-    );
-    setWorkloadStatus(calculatedWorkload);
-
-    setIsLoading(false);
+      // Calculate workload based on tasks
+      const totalTasks = tasks.length;
+      const calculatedWorkload = Math.min(
+        100,
+        Math.round((totalTasks / 15) * 100)
+      );
+      setWorkloadStatus(calculatedWorkload);
+    } catch (error) {
+      console.error("Error loading calendar data:", error);
+      // Set empty data on error
+      setCalendarData([]);
+      setWorkloadStatus(0);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Load data when component mounts or week changes

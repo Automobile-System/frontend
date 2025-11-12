@@ -1,18 +1,22 @@
-// Manager Service - API functions for manager operations
+// Manager Service - API functions for manager dashboard operations
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:8080';
 
 // Helper function for API calls
-async function apiFetch(path: string, options: RequestInit = {}) {
-  const token = localStorage.getItem('authToken');
-  
+async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+
+  const headers = new Headers(options.headers ?? {});
+  if (!headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json');
+  }
+  if (token && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
   const response = await fetch(`${BASE_URL}${path}`, {
     ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
+    headers,
     credentials: 'include',
   });
 
@@ -22,14 +26,219 @@ async function apiFetch(path: string, options: RequestInit = {}) {
   }
 
   if (response.status === 204) {
-    return null;
+    return null as T;
   }
 
-  return response.json();
+  return (await response.json()) as T;
 }
 
 // ============================================================================
 // TYPES AND INTERFACES
+// ============================================================================
+
+export interface DashboardOverviewResponse {
+  activeEmployees: {
+    total: number;
+    available: number;
+  };
+  ongoingServices: {
+    total: number;
+    status: string;
+  };
+  projectsPending: {
+    total: number;
+    status: string;
+  };
+  avgCompletionTime: {
+    value: number;
+    unit: string;
+  };
+  systemAlerts: Array<{
+    message: string;
+    employee: string;
+    reason: string;
+  }>;
+  taskDistribution: Record<string, string>;
+  completionRateTrend: Record<string, string>;
+}
+
+export interface EmployeeListItem {
+  id: string;
+  name: string;
+  skill: string;
+  currentTasks: string;
+  rating: number;
+  status: string;
+}
+
+export interface EmployeeHistoryEntry {
+  serviceId: string;
+  vehicle: string;
+  serviceType: string;
+  date: string;
+  customerRating: number;
+}
+
+export interface CreateSubTaskPayload {
+  projectId: number;
+  title: string;
+  description?: string;
+  estimatedHours?: number;
+  status?: string;
+}
+
+export interface CreateServicePayload {
+  title: string;
+  description: string;
+  category?: string;
+  imageUrl?: string;
+  estimatedHours?: number;
+  cost?: number;
+}
+
+export interface UpdateEmployeeStatusPayload {
+  status: string;
+}
+
+export interface UpdateSchedulePayload {
+  newDate: string;
+  newTime?: string;
+  assignedEmployeeId?: string;
+}
+
+export interface ProjectBoardResponse {
+  status: string;
+  projects: ProjectSummary[];
+}
+
+export interface ProjectSummary {
+  id: string | null;
+  projectId: number | null;
+  title: string | null;
+  description: string | null;
+  estimatedHours: number | null;
+  cost: number | null;
+  customer: string | null;
+  status: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  customerDetails?: CustomerInfo;
+  vehicle?: VehicleInfo;
+  job?: JobInfo;
+  tasks?: TaskSummary[];
+}
+
+export interface CustomerInfo {
+  id: string | null;
+  customerId: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+  phoneNumber: string | null;
+}
+
+export interface VehicleInfo {
+  vehicleId: string | null;
+  registrationNumber: string | null;
+  brandName: string | null;
+  model: string | null;
+  capacity: number | null;
+  createdBy: string | null;
+}
+
+export interface JobInfo {
+  jobId: number | null;
+  type: string | null;
+  typeId: number | null;
+  status: string | null;
+  arrivingDate: string | null;
+  completionDate: string | null;
+  cost: number | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+export interface TaskSummary {
+  taskId: number | null;
+  title: string | null;
+  description: string | null;
+  status: string | null;
+  estimatedHours: number | null;
+  completedAt: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+export interface ServiceSummary {
+  serviceId: number;
+  title: string;
+  description: string | null;
+  category: string | null;
+  imageUrl: string | null;
+  estimatedHours: number | null;
+  cost: number | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+}
+
+export interface AvailableEmployee {
+  id: string;
+  name: string;
+  skill: string;
+  tasks: string;
+  disabled: boolean;
+}
+
+export interface ScheduleTask {
+  id: string;
+  employee: string;
+  task: string;
+  taskId: string;
+  text?: string;
+}
+
+export interface ScheduleResponse {
+  weekOf: string;
+  schedule: Record<string, ScheduleTask[]>;
+}
+
+export interface ReportsDataPoint {
+  name?: string;
+  requests?: number;
+  month?: string;
+  delays?: number;
+  type?: string;
+  value?: number;
+}
+
+export interface ReportsResponse {
+  data?: Record<string, number>;
+  dataList?: ReportsDataPoint[];
+  averageDelayDays?: number;
+  mostCommonReason?: string;
+  type?: string;
+}
+
+export interface CompletionRateDataPoint {
+  month: string;
+  rate: number;
+  completedTasks: number;
+  totalTasks: number;
+}
+
+export interface CompletionRatePercentageResponse {
+  chartType: string;
+  title: string;
+  data: CompletionRateDataPoint[];
+}
+
+export interface ApiMessageResponse {
+  message: string;
+  [key: string]: unknown;
+}
+
+// ============================================================================
+// CUSTOMER MANAGEMENT TYPES
 // ============================================================================
 
 export interface CustomerOverview {
@@ -73,8 +282,8 @@ export interface CustomerDetails {
   totalServices: number;
   totalProjects: number;
   totalSpent: number;
-  address?: string;
-  notes?: string;
+  address: string;
+  notes: string;
 }
 
 export interface CustomerService {
@@ -86,7 +295,7 @@ export interface CustomerService {
   expectedCompletion: string;
   assignedEmployee: string;
   cost: number;
-  progress?: number;
+  progress: number;
   notes?: string;
 }
 
@@ -99,239 +308,124 @@ export interface CustomerProject {
   expectedCompletion: string;
   progress: number;
   budget: number;
-  assignedTeam?: string[];
+  assignedTeam: string[];
   notes?: string;
 }
 
-export interface AddCustomerRequest {
-  name: string;
-  email: string;
-  phone: string;
-  address?: string;
-}
-
-export interface UpdateCustomerRequest {
-  name?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  notes?: string;
-}
-
-export interface Vehicle {
-  id: string;
-  make: string;
-  model: string;
-  year: number;
-  licensePlate: string;
-  color: string;
-  vin: string;
-}
-
-export interface Payment {
-  id: string;
-  date: string;
-  amount: number;
-  method: string;
-  status: string;
-  serviceId: string;
-  description: string;
-}
-
-export interface SpendingAnalytics {
-  totalSpent: number;
-  averagePerService: number;
-  monthlySpending: Array<{ month: string; amount: number }>;
-  categoryBreakdown: Record<string, number>;
-}
-
-export interface SatisfactionMetrics {
-  averageRating: number;
-  totalReviews: number;
-  ratingDistribution: Record<string, number>;
-  recentFeedback: Array<{
-    date: string;
-    rating: number;
-    comment: string;
-    serviceId: string;
-  }>;
-}
-
 // ============================================================================
-// CUSTOMER OVERVIEW & STATISTICS
+// MANAGER DASHBOARD API CALLS
 // ============================================================================
 
-/**
- * Fetch customer overview statistics
- * GET /api/manager/customers/overview
- */
-export async function fetchCustomerOverview(): Promise<CustomerOverview> {
-  return apiFetch('/api/manager/customers/overview');
+export async function fetchDashboardOverview(): Promise<DashboardOverviewResponse> {
+  return apiFetch<DashboardOverviewResponse>('/api/manager/dashboard/overview');
 }
 
-// ============================================================================
-// CUSTOMER LIST & MANAGEMENT
-// ============================================================================
-
-/**
- * Fetch list of all customers
- * GET /api/manager/customers/list
- */
-export async function fetchCustomerList(): Promise<Customer[]> {
-  return apiFetch('/api/manager/customers/list');
+export async function fetchEmployees(): Promise<EmployeeListItem[]> {
+  return apiFetch<EmployeeListItem[]>('/api/employees');
 }
 
-/**
- * Search customers by query
- * GET /api/manager/customers/search?q={query}
- */
-export async function searchCustomers(query: string): Promise<Customer[]> {
-  return apiFetch(`/api/manager/customers/search?q=${encodeURIComponent(query)}`);
+export async function updateEmployeeStatus(
+  employeeId: string,
+  payload: UpdateEmployeeStatusPayload
+): Promise<ApiMessageResponse> {
+  return apiFetch<ApiMessageResponse>(`/api/employees/${employeeId}/status`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
 }
 
-/**
- * Filter customers by status
- * GET /api/manager/customers/filter?status={status}
- */
-export async function filterCustomersByStatus(status: string): Promise<Customer[]> {
-  return apiFetch(`/api/manager/customers/filter?status=${encodeURIComponent(status)}`);
+export async function fetchEmployeeHistory(employeeId: string): Promise<EmployeeHistoryEntry[]> {
+  return apiFetch<EmployeeHistoryEntry[]>(`/api/employees/${employeeId}/history`);
 }
 
-/**
- * Add a new customer
- * POST /api/manager/customers
- */
-export async function addCustomer(customerData: AddCustomerRequest): Promise<Customer> {
-  return apiFetch('/api/manager/customers', {
+export async function createSubTask(
+  payload: CreateSubTaskPayload
+): Promise<ApiMessageResponse> {
+  return apiFetch<ApiMessageResponse>('/api/subtasks', {
     method: 'POST',
-    body: JSON.stringify(customerData),
+    body: JSON.stringify(payload),
   });
 }
 
-/**
- * Update customer status (Active/Inactive)
- * PUT /api/manager/customers/:id/status
- */
-export async function updateCustomerStatus(
-  customerId: string,
-  newStatus: string
-): Promise<Customer> {
-  return apiFetch(`/api/manager/customers/${customerId}/status`, {
+export async function createService(
+  payload: CreateServicePayload
+): Promise<ApiMessageResponse> {
+   return apiFetch<ApiMessageResponse>('/api/services', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateService(
+  serviceId: number,
+  payload: CreateServicePayload
+): Promise<ApiMessageResponse> {
+  return apiFetch<ApiMessageResponse>(`/api/services/${serviceId}`, {
     method: 'PUT',
-    body: JSON.stringify({ status: newStatus }),
+    body: JSON.stringify(payload),
   });
 }
 
-/**
- * Update customer information
- * PUT /api/manager/customers/:id
- */
-export async function updateCustomer(
-  customerId: string,
-  customerData: UpdateCustomerRequest
-): Promise<Customer> {
-  return apiFetch(`/api/manager/customers/${customerId}`, {
-    method: 'PUT',
-    body: JSON.stringify(customerData),
-  });
-}
-
-/**
- * Delete a customer
- * DELETE /api/manager/customers/:id
- */
-export async function deleteCustomer(customerId: string): Promise<{ message: string }> {
-  return apiFetch(`/api/manager/customers/${customerId}`, {
+export async function deleteService(serviceId: number): Promise<ApiMessageResponse> {
+  return apiFetch<ApiMessageResponse>(`/api/services/${serviceId}`, {
     method: 'DELETE',
   });
 }
 
-// ============================================================================
-// CUSTOMER DETAILS
-// ============================================================================
-
-/**
- * Fetch detailed information about a specific customer
- * GET /api/manager/customers/:id
- */
-export async function fetchCustomerDetails(customerId: string): Promise<CustomerDetails> {
-  return apiFetch(`/api/manager/customers/${customerId}`);
+export async function fetchProjects(): Promise<ProjectBoardResponse[]> {
+  return apiFetch<ProjectBoardResponse[]>('/api/projects');
 }
 
-// ============================================================================
-// CUSTOMER ACTIVE SERVICES & PROJECTS
-// ============================================================================
-
-/**
- * Fetch customer's currently active services
- * GET /api/manager/customers/:id/services/active
- */
-export async function fetchCustomerActiveServices(customerId: string): Promise<CustomerService[]> {
-  return apiFetch(`/api/manager/customers/${customerId}/services/active`);
+export async function fetchServices(): Promise<ServiceSummary[]> {
+  return apiFetch<ServiceSummary[]>('/api/services');
 }
 
-/**
- * Fetch customer's currently active projects
- * GET /api/manager/customers/:id/projects/active
- */
-export async function fetchCustomerActiveProjects(customerId: string): Promise<CustomerProject[]> {
-  return apiFetch(`/api/manager/customers/${customerId}/projects/active`);
+export async function fetchAvailableEmployees(): Promise<AvailableEmployee[]> {
+  return apiFetch<AvailableEmployee[]>('/api/manager/employees/available');
 }
 
-// ============================================================================
-// CUSTOMER HISTORY
-// ============================================================================
-
-/**
- * Fetch customer's complete service history
- * GET /api/manager/customers/:id/services/history
- */
-export async function fetchCustomerServiceHistory(customerId: string): Promise<CustomerService[]> {
-  return apiFetch(`/api/manager/customers/${customerId}/services/history`);
+export async function fetchSchedule(
+  startDate: string,
+  endDate: string
+): Promise<ScheduleResponse> {
+  const params = new URLSearchParams({ startDate, endDate });
+  return apiFetch<ScheduleResponse>(`/api/manager/schedule?${params.toString()}`);
 }
 
-/**
- * Fetch customer's complete project history
- * GET /api/manager/customers/:id/projects/history
- */
-export async function fetchCustomerProjectHistory(customerId: string): Promise<CustomerProject[]> {
-  return apiFetch(`/api/manager/customers/${customerId}/projects/history`);
+export async function updateScheduleTask(
+  taskId: number,
+  payload: UpdateSchedulePayload
+): Promise<ApiMessageResponse> {
+  return apiFetch<ApiMessageResponse>(`/api/manager/schedule/task/${taskId}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
 }
 
-/**
- * Fetch customer's vehicles
- * GET /api/manager/customers/:id/vehicles
- */
-export async function fetchCustomerVehicles(customerId: string): Promise<Vehicle[]> {
-  return apiFetch(`/api/manager/customers/${customerId}/vehicles`);
+export async function autoBalanceWorkload(): Promise<ApiMessageResponse> {
+  return apiFetch<ApiMessageResponse>('/api/manager/schedule/auto-balance', {
+    method: 'POST',
+  });
 }
 
-/**
- * Fetch customer's payment history
- * GET /api/manager/customers/:id/payments
- */
-export async function fetchCustomerPayments(customerId: string): Promise<Payment[]> {
-  return apiFetch(`/api/manager/customers/${customerId}/payments`);
+export async function fetchEmployeeEfficiencyReport(): Promise<ReportsResponse> {
+  return apiFetch<ReportsResponse>('/api/manager/reports/employee-efficiency');
 }
 
-// ============================================================================
-// CUSTOMER ANALYTICS
-// ============================================================================
-
-/**
- * Fetch customer spending analytics
- * GET /api/manager/customers/:id/analytics/spending
- */
-export async function fetchCustomerSpendingAnalytics(customerId: string): Promise<SpendingAnalytics> {
-  return apiFetch(`/api/manager/customers/${customerId}/analytics/spending`);
+export async function fetchMostRequestedEmployeesReport(): Promise<ReportsResponse> {
+  return apiFetch<ReportsResponse>('/api/manager/reports/most-requested-employees');
 }
 
-/**
- * Fetch customer satisfaction metrics
- * GET /api/manager/customers/:id/analytics/satisfaction
- */
-export async function fetchCustomerSatisfactionMetrics(customerId: string): Promise<SatisfactionMetrics> {
-  return apiFetch(`/api/manager/customers/${customerId}/analytics/satisfaction`);
+export async function fetchPartsDelayAnalyticsReport(): Promise<ReportsResponse> {
+  return apiFetch<ReportsResponse>('/api/manager/reports/parts-delay-analytics');
+}
+
+export async function fetchCompletedProjectsByTypeReport(): Promise<ReportsResponse> {
+  return apiFetch<ReportsResponse>('/api/manager/reports/completed-projects-by-type');
+}
+
+export async function fetchCompletionRateTrendReport(): Promise<CompletionRatePercentageResponse> {
+  return apiFetch<CompletionRatePercentageResponse>('/api/manager/reports/completion-rate-trend');
 }
 
 // ============================================================================
@@ -339,34 +433,25 @@ export async function fetchCustomerSatisfactionMetrics(customerId: string): Prom
 // ============================================================================
 
 const managerService = {
-  // Overview
-  fetchCustomerOverview,
-  
-  // List & Management
-  fetchCustomerList,
-  searchCustomers,
-  filterCustomersByStatus,
-  addCustomer,
-  updateCustomerStatus,
-  updateCustomer,
-  deleteCustomer,
-  
-  // Details
-  fetchCustomerDetails,
-  
-  // Active
-  fetchCustomerActiveServices,
-  fetchCustomerActiveProjects,
-  
-  // History
-  fetchCustomerServiceHistory,
-  fetchCustomerProjectHistory,
-  fetchCustomerVehicles,
-  fetchCustomerPayments,
-  
-  // Analytics
-  fetchCustomerSpendingAnalytics,
-  fetchCustomerSatisfactionMetrics,
+  fetchDashboardOverview,
+  fetchEmployees,
+  updateEmployeeStatus,
+  fetchEmployeeHistory,
+  createSubTask,
+  createService,
+  updateService,
+  deleteService,
+  fetchProjects,
+  fetchServices,
+  fetchAvailableEmployees,
+  fetchSchedule,
+  updateScheduleTask,
+  autoBalanceWorkload,
+  fetchEmployeeEfficiencyReport,
+  fetchMostRequestedEmployeesReport,
+  fetchPartsDelayAnalyticsReport,
+  fetchCompletedProjectsByTypeReport,
+  fetchCompletionRateTrendReport,
 };
 
 export default managerService;

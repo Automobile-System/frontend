@@ -82,7 +82,21 @@ export function AddManagerModal({ isOpen, onClose, onSubmit }: AddManagerModalPr
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(formData)
+    
+    // Auto-generate managerId (MGR-XXX format with random 3-digit number)
+    const randomId = Math.floor(100 + Math.random() * 900) // 100-999
+    const managerId = `MGR-${randomId}`
+    
+    // Auto-generate username from email (part before @)
+    const username = formData.email.split('@')[0]
+    
+    // Submit with auto-generated fields
+    onSubmit({
+      ...formData,
+      managerId,
+      username
+    })
+    
     setFormData({
       firstName: "",
       lastName: "",
@@ -106,7 +120,7 @@ export function AddManagerModal({ isOpen, onClose, onSubmit }: AddManagerModalPr
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto"
+      className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto"
       onClick={handleBackdropClick}
     >
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full my-8">
@@ -146,7 +160,7 @@ export function AddManagerModal({ isOpen, onClose, onSubmit }: AddManagerModalPr
                 placeholder="Enter first name"
                 value={formData.firstName}
                 onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
               />
             </div>
             <div>
@@ -160,7 +174,7 @@ export function AddManagerModal({ isOpen, onClose, onSubmit }: AddManagerModalPr
                 placeholder="Enter last name"
                 value={formData.lastName}
                 onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
               />
             </div>
           </div>
@@ -178,7 +192,7 @@ export function AddManagerModal({ isOpen, onClose, onSubmit }: AddManagerModalPr
                 placeholder="manager@center.com"
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
               />
             </div>
             <div>
@@ -192,59 +206,27 @@ export function AddManagerModal({ isOpen, onClose, onSubmit }: AddManagerModalPr
                 placeholder="+94 77 XXX XXXX"
                 value={formData.phone}
                 onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
               />
             </div>
           </div>
 
-          {/* ID and Join Date */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <Label htmlFor="managerId" className="text-slate-700 mb-2 block">
-                Manager ID <span className="text-rose-500">*</span>
-              </Label>
-              <Input
-                id="managerId"
-                type="text"
-                required
-                placeholder="MGR-XXX"
-                pattern="MGR-[0-9]{3}"
-                value={formData.managerId}
-                onChange={(e) => setFormData({...formData, managerId: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <Label htmlFor="managerJoinDate" className="text-slate-700 mb-2 block">
-                Join Date <span className="text-rose-500">*</span>
-              </Label>
-              <Input
-                id="managerJoinDate"
-                type="date"
-                required
-                value={formData.joinDate}
-                onChange={(e) => setFormData({...formData, joinDate: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-
-          {/* Credentials */}
+          {/* Join Date */}
           <div className="mb-6">
-            <Label htmlFor="managerUsername" className="text-slate-700 mb-2 block">
-              Username <span className="text-rose-500">*</span>
+            <Label htmlFor="managerJoinDate" className="text-slate-700 mb-2 block">
+              Join Date <span className="text-rose-500">*</span>
             </Label>
             <Input
-              id="managerUsername"
-              type="text"
+              id="managerJoinDate"
+              type="date"
               required
-              placeholder="Username for login"
-              value={formData.username}
-              onChange={(e) => setFormData({...formData, username: e.target.value})}
-              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+              value={formData.joinDate}
+              onChange={(e) => setFormData({...formData, joinDate: e.target.value})}
+              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
             />
           </div>
 
+          {/* Credentials */}
           <div className="mb-6">
             <Label htmlFor="managerPassword" className="text-slate-700 mb-2 block">
               Temporary Password <span className="text-rose-500">*</span>
@@ -256,7 +238,7 @@ export function AddManagerModal({ isOpen, onClose, onSubmit }: AddManagerModalPr
               placeholder="Initial password (user can change later)"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
             />
           </div>
 
@@ -270,7 +252,7 @@ export function AddManagerModal({ isOpen, onClose, onSubmit }: AddManagerModalPr
               placeholder="Optional: Enter address"
               value={formData.address}
               onChange={(e) => setFormData({...formData, address: e.target.value})}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[80px]"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] text-slate-700"
             />
           </div>
 
@@ -326,7 +308,21 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(formData)
+    
+    // Auto-generate employeeId (EMP-XXX format with random 3-digit number)
+    const randomId = Math.floor(100 + Math.random() * 900) // 100-999
+    const employeeId = `EMP-${randomId}`
+    
+    // Auto-generate username from email (part before @)
+    const username = formData.email.split('@')[0]
+    
+    // Submit with auto-generated fields
+    onSubmit({
+      ...formData,
+      employeeId,
+      username
+    })
+    
     setFormData({
       firstName: "",
       lastName: "",
@@ -353,7 +349,7 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto"
+      className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto"
       onClick={handleBackdropClick}
     >
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full my-8">
@@ -393,7 +389,7 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
                 placeholder="Enter first name"
                 value={formData.firstName}
                 onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
               />
             </div>
             <div>
@@ -407,7 +403,7 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
                 placeholder="Enter last name"
                 value={formData.lastName}
                 onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
               />
             </div>
           </div>
@@ -425,7 +421,7 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
                 placeholder="employee@center.com"
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
               />
             </div>
             <div>
@@ -439,45 +435,28 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
                 placeholder="+94 71 XXX XXXX"
                 value={formData.phone}
                 onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
               />
             </div>
           </div>
 
-          {/* ID and Specialization */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <Label htmlFor="employeeId" className="text-slate-700 mb-2 block">
-                Employee ID <span className="text-rose-500">*</span>
-              </Label>
-              <Input
-                id="employeeId"
-                type="text"
-                required
-                placeholder="EMP-XXX"
-                pattern="EMP-[0-9]{3}"
-                value={formData.employeeId}
-                onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <Label htmlFor="employeeSpecialization" className="text-slate-700 mb-2 block">
-                Specialization <span className="text-rose-500">*</span>
-              </Label>
-              <select
-                id="employeeSpecialization"
-                required
-                value={formData.specialization}
-                onChange={(e) => setFormData({...formData, specialization: e.target.value})}
-                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-              >
-                <option value="">Select Specialization</option>
-                {specializations.map((spec) => (
-                  <option key={spec} value={spec}>{spec}</option>
-                ))}
-              </select>
-            </div>
+          {/* Specialization */}
+          <div className="mb-6">
+            <Label htmlFor="employeeSpecialization" className="text-slate-700 mb-2 block">
+              Specialization <span className="text-rose-500">*</span>
+            </Label>
+            <select
+              id="employeeSpecialization"
+              required
+              value={formData.specialization}
+              onChange={(e) => setFormData({...formData, specialization: e.target.value})}
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-slate-700"
+            >
+              <option value="">Select Specialization</option>
+              {specializations.map((spec) => (
+                <option key={spec} value={spec}>{spec}</option>
+              ))}
+            </select>
           </div>
 
           {/* Join Date and Salary */}
@@ -492,7 +471,7 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
                 required
                 value={formData.joinDate}
                 onChange={(e) => setFormData({...formData, joinDate: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
               />
             </div>
             <div>
@@ -506,27 +485,12 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
                 placeholder="65000"
                 value={formData.salary}
                 onChange={(e) => setFormData({...formData, salary: e.target.value})}
-                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+                className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
               />
             </div>
           </div>
 
           {/* Credentials */}
-          <div className="mb-6">
-            <Label htmlFor="employeeUsername" className="text-slate-700 mb-2 block">
-              Username <span className="text-rose-500">*</span>
-            </Label>
-            <Input
-              id="employeeUsername"
-              type="text"
-              required
-              placeholder="Username for login"
-              value={formData.username}
-              onChange={(e) => setFormData({...formData, username: e.target.value})}
-              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-
           <div className="mb-6">
             <Label htmlFor="employeePassword" className="text-slate-700 mb-2 block">
               Temporary Password <span className="text-rose-500">*</span>
@@ -538,7 +502,7 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
               placeholder="Initial password (user can change later)"
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
             />
           </div>
 
@@ -554,7 +518,7 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
               placeholder="Optional: e.g., 5"
               value={formData.experience}
               onChange={(e) => setFormData({...formData, experience: e.target.value})}
-              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500"
+              className="border-slate-300 focus:border-blue-500 focus:ring-blue-500 text-slate-700"
             />
           </div>
 
@@ -568,7 +532,7 @@ export function AddEmployeeModal({ isOpen, onClose, onSubmit }: AddEmployeeModal
               placeholder="Optional: Enter address"
               value={formData.address}
               onChange={(e) => setFormData({...formData, address: e.target.value})}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[80px]"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-h-[80px] text-slate-700"
             />
           </div>
 

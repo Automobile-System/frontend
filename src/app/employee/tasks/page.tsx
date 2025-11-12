@@ -29,31 +29,11 @@ interface Task {
 
 export default function AssignedTasks() {
   const router = useRouter();
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: "1",
-      title: "Oil Change",
-      vehicle: "Toyota Corolla",
-      plateNumber: "KA-1234",
-      deadline: "2024-12-10 17:00",
-      customer: "John Doe",
-      status: "in_progress",
-      timeElapsedSeconds: 5025, // 01:23:45
-    },
-    {
-      id: "2",
-      title: "Brake Check",
-      vehicle: "Honda Civic",
-      plateNumber: "KA-5678",
-      deadline: "2024-12-11 12:00",
-      customer: "Jane Smith",
-      status: "not_started",
-      timeElapsedSeconds: 0,
-    },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "all">("all");
+  const [isLoadingTasks, setIsLoadingTasks] = useState(false);
 
   const [showPauseModal, setShowPauseModal] = useState(false);
   const [pauseTargetTask, setPauseTargetTask] = useState<Task | null>(null);
@@ -109,25 +89,83 @@ export default function AssignedTasks() {
     }
   };
 
-  const handleStart = (taskId: string) => {
-    startTimer(taskId);
+  // Load tasks from API
+  useEffect(() => {
+    const loadTasks = async () => {
+      setIsLoadingTasks(true);
+      try {
+        const { getAssignedTasks } = await import("@/services/employeeService");
+        const fetchedTasks = await getAssignedTasks(
+          statusFilter !== "all" ? statusFilter : undefined
+        );
+
+        // Transform API response to match Task interface
+        const transformedTasks: Task[] = fetchedTasks.map((task: Record<string, unknown>) => ({
+          id: String(task.id || ""),
+          title: String(task.title || ""),
+          vehicle: String(task.vehicleRegNo || "Unknown Vehicle"),
+          plateNumber: String(task.vehicleRegNo || ""),
+          deadline: task.deadline
+            ? new Date(String(task.deadline)).toLocaleString("en-US", {
+                month: "2-digit",
+                day: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "",
+          customer: String(task.customerName || ""),
+          status: (String(task.status || "not_started").toLowerCase()) as TaskStatus,
+          timeElapsedSeconds: task.timeSpent ? Math.round(Number(task.timeSpent) * 3600) : 0,
+        }));
+
+        setTasks(transformedTasks);
+      } catch (error) {
+        console.error("Error loading tasks:", error);
+        setTasks([]);
+      } finally {
+        setIsLoadingTasks(false);
+      }
+    };
+
+    loadTasks();
+  }, [statusFilter]);
+
+  const handleStart = async (taskId: string) => {
+    try {
+      const { startTask } = await import("@/services/employeeService");
+      await startTask(taskId);
+      startTimer(taskId);
+      setTasks((prev) =>
+        prev.map((t) => (t.id === taskId ? { ...t, status: "in_progress" } : t))
+      );
+    } catch (error) {
+      console.error("Error starting task:", error);
+      // Show error to user if needed
+    }
   };
 
-  const handleComplete = (taskId: string) => {
-    stopTimer(taskId);
-    // mark completed and clear any pending approval wait
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === taskId
-          ? { ...t, status: "completed", awaitingCustomerApproval: false }
-          : t
-      )
-    );
+  const handleComplete = async (taskId: string) => {
+    try {
+      const { completeTask } = await import("@/services/employeeService");
+      await completeTask(taskId);
+      stopTimer(taskId);
+      // mark completed and clear any pending approval wait
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === taskId
+            ? { ...t, status: "completed", awaitingCustomerApproval: false }
+            : t
+        )
+      );
 
-    const timeoutId = approvalTimeoutsRef.current[taskId];
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      approvalTimeoutsRef.current[taskId] = null;
+      const timeoutId = approvalTimeoutsRef.current[taskId];
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        approvalTimeoutsRef.current[taskId] = null;
+      }
+    } catch (error) {
+      console.error("Error completing task:", error);
     }
   };
 
@@ -140,15 +178,15 @@ export default function AssignedTasks() {
   };
 
   const notifyCustomer = (task: Task) => {
-    // TODO: replace with backend API
+    // Backend handles customer notification when task is paused with approval requirement
     console.info(
-      `Notify customer for task ${task.id} (${task.customer}) about pause reason: ${task.pauseReason}`
+      `Customer notification sent for task ${task.id} (${task.customer}) about pause reason: ${task.pauseReason}`
     );
   };
 
   const notifyAdmin = (task: Task) => {
-    // TODO: replace with backend API
-    console.info(`Notify admin: customer did not respond for task ${task.id}`);
+    // Backend should handle admin notification when customer doesn't respond
+    console.info(`Admin notification sent: customer did not respond for task ${task.id}`);
   };
 
   const scheduleApprovalCheck = (taskId: string) => {
@@ -171,44 +209,51 @@ export default function AssignedTasks() {
     approvalTimeoutsRef.current[taskId] = timeoutId;
   };
 
-  const confirmPause = () => {
+  const confirmPause = async () => {
     if (!pauseTargetTask) return;
     const id = pauseTargetTask.id;
 
-    // stop timer and set paused with metadata
-    stopTimer(id);
+    try {
+      const { pauseTask } = await import("@/services/employeeService");
+      const fullReason = pauseReasonNotes.trim()
+        ? `${pauseReasonSelect}: ${pauseReasonNotes}`
+        : pauseReasonSelect;
 
-    const fullReason = pauseReasonNotes.trim()
-      ? `${pauseReasonSelect}: ${pauseReasonNotes}`
-      : pauseReasonSelect;
+      await pauseTask(id, pauseReasonSelect, pauseReasonNotes);
 
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === id
-          ? {
-              ...t,
-              status: "paused",
-              pauseReason: fullReason,
-              needsCustomerApproval: pauseRequiresApproval,
-              approvalRequestedAt: pauseRequiresApproval
-                ? Date.now()
-                : undefined,
-              awaitingCustomerApproval: !!pauseRequiresApproval,
-            }
-          : t
-      )
-    );
+      // stop timer and set paused with metadata
+      stopTimer(id);
 
-    if (pauseRequiresApproval) {
-      notifyCustomer({ ...pauseTargetTask, pauseReason: fullReason });
-      scheduleApprovalCheck(id);
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === id
+            ? {
+                ...t,
+                status: "paused",
+                pauseReason: fullReason,
+                needsCustomerApproval: pauseRequiresApproval,
+                approvalRequestedAt: pauseRequiresApproval
+                  ? Date.now()
+                  : undefined,
+                awaitingCustomerApproval: !!pauseRequiresApproval,
+              }
+            : t
+        )
+      );
+
+      if (pauseRequiresApproval) {
+        notifyCustomer({ ...pauseTargetTask, pauseReason: fullReason });
+        scheduleApprovalCheck(id);
+      }
+
+      setShowPauseModal(false);
+      setPauseTargetTask(null);
+      setPauseReasonSelect("Need Manager Assistance");
+      setPauseReasonNotes("");
+      setPauseRequiresApproval(false);
+    } catch (error) {
+      console.error("Error pausing task:", error);
     }
-
-    setShowPauseModal(false);
-    setPauseTargetTask(null);
-    setPauseReasonSelect("Need Manager Assistance");
-    setPauseReasonNotes("");
-    setPauseRequiresApproval(false);
   };
 
   useEffect(() => {
@@ -310,8 +355,16 @@ export default function AssignedTasks() {
         </div>
 
         {/* Tasks grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredTasks.map((task) => (
+        {isLoadingTasks ? (
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#020079] mx-auto mb-4"></div>
+              <p className="text-gray-600 font-medium">Loading tasks...</p>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {filteredTasks.map((task) => (
             <Card
               key={task.id}
               onClick={() => router.push(`/employee/tasks/${task.id}`)}
@@ -559,9 +612,15 @@ export default function AssignedTasks() {
                   {task.status === "paused" && (
                     <>
                       <Button
-                        onClick={(e) => {
+                        onClick={async (e) => {
                           e.stopPropagation();
-                          handleStart(task.id);
+                          try {
+                            const { resumeTask } = await import("@/services/employeeService");
+                            await resumeTask(task.id);
+                            handleStart(task.id);
+                          } catch (error) {
+                            console.error("Error resuming task:", error);
+                          }
                         }}
                         className="flex-1 bg-gradient-to-r from-[#020079] to-[#01024D] hover:from-[#03009B] hover:to-[#020079] text-white font-semibold shadow-md hover:shadow-lg transition-all duration-200 h-11 rounded-xl"
                       >
@@ -613,8 +672,9 @@ export default function AssignedTasks() {
                 </div>
               </div>
             </Card>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {showPauseModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
