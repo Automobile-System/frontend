@@ -62,151 +62,6 @@ interface TimeLog {
   status: "completed" | "in_progress";
 }
 
-// Mock data generator - simulates backend response
-const generateMockTimeLogs = (): TimeLog[] => {
-  return [
-    {
-      id: "log-1",
-      date: "2024-12-04",
-      taskId: "1",
-      taskName: "Oil Change",
-      vehicle: "Toyota Corolla",
-      plateNumber: "KA-1234",
-      customer: "John Doe",
-      startTime: "09:00 AM",
-      endTime: "10:30 AM",
-      totalHours: 1.5,
-      remarks: "Completed on time. Customer satisfied.",
-      status: "completed",
-    },
-    {
-      id: "log-2",
-      date: "2024-12-04",
-      taskId: "2",
-      taskName: "Brake Inspection",
-      vehicle: "Honda Civic",
-      plateNumber: "KA-5678",
-      customer: "Jane Smith",
-      startTime: "11:00 AM",
-      endTime: "12:45 PM",
-      totalHours: 1.75,
-      remarks: "Found worn brake pads, recommended replacement.",
-      status: "completed",
-    },
-    {
-      id: "log-3",
-      date: "2024-12-05",
-      taskId: "3",
-      taskName: "Engine Diagnosis",
-      vehicle: "Ford F-150",
-      plateNumber: "KA-9012",
-      customer: "Mike Johnson",
-      startTime: "09:30 AM",
-      endTime: "11:30 AM",
-      totalHours: 2.0,
-      remarks: "Identified faulty spark plugs. Replaced all four.",
-      status: "completed",
-    },
-    {
-      id: "log-4",
-      date: "2024-12-05",
-      taskId: "4",
-      taskName: "Tire Rotation",
-      vehicle: "Mazda CX-5",
-      plateNumber: "KA-3456",
-      customer: "Sarah Williams",
-      startTime: "01:00 PM",
-      endTime: "02:00 PM",
-      totalHours: 1.0,
-      remarks: "Standard rotation completed.",
-      status: "completed",
-    },
-    {
-      id: "log-5",
-      date: "2024-12-06",
-      taskId: "5",
-      taskName: "Transmission Check",
-      vehicle: "BMW 3 Series",
-      plateNumber: "KA-7890",
-      customer: "David Brown",
-      startTime: "10:00 AM",
-      endTime: "12:30 PM",
-      totalHours: 2.5,
-      remarks: "Transmission fluid changed. Test drive successful.",
-      status: "completed",
-    },
-    {
-      id: "log-6",
-      date: "2024-12-06",
-      taskId: "6",
-      taskName: "AC Service",
-      vehicle: "Audi A4",
-      plateNumber: "KA-2468",
-      customer: "Emily Davis",
-      startTime: "02:00 PM",
-      endTime: "03:30 PM",
-      totalHours: 1.5,
-      remarks: "AC refrigerant recharged. Working perfectly.",
-      status: "completed",
-    },
-    {
-      id: "log-7",
-      date: "2024-12-07",
-      taskId: "7",
-      taskName: "Battery Replacement",
-      vehicle: "Tesla Model 3",
-      plateNumber: "KA-1357",
-      customer: "Robert Taylor",
-      startTime: "09:00 AM",
-      endTime: "10:15 AM",
-      totalHours: 1.25,
-      remarks: "12V battery replaced. All systems functional.",
-      status: "completed",
-    },
-    {
-      id: "log-8",
-      date: "2024-12-07",
-      taskId: "8",
-      taskName: "Full Service",
-      vehicle: "Mercedes E-Class",
-      plateNumber: "KA-9753",
-      customer: "Lisa Anderson",
-      startTime: "11:00 AM",
-      endTime: "02:30 PM",
-      totalHours: 3.5,
-      remarks: "Complete service including oil, filters, and inspection.",
-      status: "completed",
-    },
-    {
-      id: "log-9",
-      date: "2024-12-08",
-      taskId: "9",
-      taskName: "Wheel Alignment",
-      vehicle: "Volkswagen Golf",
-      plateNumber: "KA-8642",
-      customer: "James Wilson",
-      startTime: "09:30 AM",
-      endTime: "11:00 AM",
-      totalHours: 1.5,
-      remarks: "Four-wheel alignment completed. Adjusted camber.",
-      status: "completed",
-    },
-    {
-      id: "log-10",
-      date: "2024-12-08",
-      taskId: "10",
-      taskName: "Coolant Flush",
-      vehicle: "Hyundai Tucson",
-      plateNumber: "KA-5791",
-      customer: "Maria Garcia",
-      startTime: "12:00 PM",
-      endTime: "01:15 PM",
-      totalHours: 1.25,
-      remarks: "Coolant system flushed and refilled.",
-      status: "completed",
-    },
-  ];
-};
 
 export default function TimeLogs() {
   const [timeLogs, setTimeLogs] = useState<TimeLog[]>([]);
@@ -230,19 +85,57 @@ export default function TimeLogs() {
   const loadTimeLogs = async () => {
     setIsLoading(true);
 
-    // Simulate API call
-    // In production:
-    // const response = await fetch(`/api/employee/time-logs?startDate=${startDate}&endDate=${endDate}`);
-    // const data = await response.json();
-
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    const mockData = generateMockTimeLogs();
-    setTimeLogs(mockData);
-    setIsLoading(false);
+    try {
+      // Calculate date range for the week
+      const weekEnd = new Date(currentWeekStart);
+      weekEnd.setDate(currentWeekStart.getDate() + 6);
+      const dateRange = `${currentWeekStart.toISOString().split('T')[0]},${weekEnd.toISOString().split('T')[0]}`;
+      
+      const { getTimeLogs } = await import("@/services/employeeService");
+      const logs = await getTimeLogs(dateRange);
+      
+      // Transform API response to match TimeLog interface
+      const transformedLogs: TimeLog[] = logs.map((log: Record<string, unknown>) => ({
+        id: String(log.id || ""),
+        date: log.date 
+          ? new Date(String(log.date)).toISOString().split('T')[0]
+          : (log.startTime ? new Date(String(log.startTime)).toISOString().split('T')[0] : ""),
+        taskId: String(log.taskId || ""),
+        taskName: String(log.taskTitle || log.taskName || ""),
+        vehicle: String(log.vehicleRegNo || "Unknown Vehicle"),
+        plateNumber: String(log.vehicleRegNo || ""),
+        customer: String(log.customer || ""),
+        startTime: log.startTime
+          ? new Date(String(log.startTime)).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
+          : "",
+        endTime: log.endTime
+          ? new Date(String(log.endTime)).toLocaleTimeString("en-US", {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })
+          : "",
+        totalHours: Number(log.durationHours || 0),
+        remarks: String(log.remarks || ""),
+        status: log.endTime ? "completed" : "in_progress",
+      }));
+      
+      setTimeLogs(transformedLogs);
+    } catch (error) {
+      console.error("Error loading time logs:", error);
+      setTimeLogs([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
     loadTimeLogs();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentWeekStart]);
 
   // Filter logs
@@ -313,21 +206,24 @@ export default function TimeLogs() {
   const handleSaveRemarks = async () => {
     if (!editingLog) return;
 
-    // In production:
-    // await fetch(`/api/employee/time-logs/${editingLog.id}`, {
-    //   method: 'PUT',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ remarks: editRemarks })
-    // });
-
-    setTimeLogs((prevLogs) =>
-      prevLogs.map((log) =>
-        log.id === editingLog.id ? { ...log, remarks: editRemarks } : log
-      )
-    );
-    setShowEditModal(false);
-    setEditingLog(null);
-    setEditRemarks("");
+    try {
+      // Note: If backend doesn't have update endpoint, you may need to add it
+      // For now, we'll update locally. Backend may need PUT /api/timelogs/{id} endpoint
+      // const { updateTimeLogRemarks } = await import("@/services/employeeService");
+      // await updateTimeLogRemarks(editingLog.id, editRemarks);
+      
+      // Update locally for now
+      setTimeLogs((prevLogs) =>
+        prevLogs.map((log) =>
+          log.id === editingLog.id ? { ...log, remarks: editRemarks } : log
+        )
+      );
+      setShowEditModal(false);
+      setEditingLog(null);
+      setEditRemarks("");
+    } catch (error) {
+      console.error("Error updating remarks:", error);
+    }
   };
 
   const handleCancelEdit = () => {

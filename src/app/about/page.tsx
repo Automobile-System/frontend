@@ -29,9 +29,9 @@ const AboutUs: React.FC = () => {
 
       {/* HERO SECTION */}
       <section className="relative h-[60vh] flex items-center justify-center text-white bg-[url('https://images.unsplash.com/photo-1606220838316-8c8199ae7f6b')] bg-cover bg-center">
-        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#020079]/80 via-[#020079]/70 to-black/80"></div>
         <div className="relative text-center px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-nitroYellow tracking-wide">
+          <h1 className="text-4xl md:text-5xl font-bold text-yellow-400 tracking-wide">
             About NITROLINE
           </h1>
           <p className="mt-3 text-lg text-gray-200">
@@ -87,7 +87,7 @@ const AboutUs: React.FC = () => {
               alt="NITROLINE Service Center"
               width={800}
               height={500}
-              className="rounded-xl shadow-lg border-4 border-nitroYellow"
+              className="rounded-xl shadow-lg border-4 border-yellow-400"
             />
           </div>
         </div>
@@ -124,7 +124,7 @@ const AboutUs: React.FC = () => {
       </section>
 
       {/* STATS SECTION */}
-      <section className="bg-nitroBlack text-nitroYellow py-16 text-center">
+      <section className="bg-[#020079] text-yellow-400 py-16 text-center">
         <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
           <div>
             <div className="stat text-5xl font-bold" data-count="15">0</div>
@@ -150,19 +150,19 @@ const AboutUs: React.FC = () => {
               <h3 className="text-xl font-bold text-white mb-6 font-roboto">CITY NETWORK</h3>
               <div className="grid grid-cols-2 gap-4 text-gray-400 font-inter">
                 <div className="space-y-2">
-                  <div className="hover:text-red-400 transition-colors cursor-pointer">Colombo</div>
-                  <div className="hover:text-red-400 transition-colors cursor-pointer">Kandy</div>
-                  <div className="hover:text-red-400 transition-colors cursor-pointer">Matara</div>
+                  <div className="hover:text-yellow-400 transition-colors cursor-pointer">Colombo</div>
+                  <div className="hover:text-yellow-400 transition-colors cursor-pointer">Kandy</div>
+                  <div className="hover:text-yellow-400 transition-colors cursor-pointer">Matara</div>
                 </div>
                 <div className="space-y-2">
-                  <div className="hover:text-red-400 transition-colors cursor-pointer">Galle</div>
-                  <div className="hover:text-red-400 transition-colors cursor-pointer">Badulla</div>
-                  <div className="hover:text-red-400 transition-colors cursor-pointer">Kalutara</div>
+                  <div className="hover:text-yellow-400 transition-colors cursor-pointer">Galle</div>
+                  <div className="hover:text-yellow-400 transition-colors cursor-pointer">Badulla</div>
+                  <div className="hover:text-yellow-400 transition-colors cursor-pointer">Kalutara</div>
                 </div>
                 <div className="space-y-2">
-                  <div className="hover:text-red-400 transition-colors cursor-pointer">Gampaha</div>
-                  <div className="hover:text-red-400 transition-colors cursor-pointer">Kadana</div>
-                  <div className="hover:text-red-400 transition-colors cursor-pointer">Panadura</div>
+                  <div className="hover:text-yellow-400 transition-colors cursor-pointer">Gampaha</div>
+                  <div className="hover:text-yellow-400 transition-colors cursor-pointer">Kadana</div>
+                  <div className="hover:text-yellow-400 transition-colors cursor-pointer">Panadura</div>
                 </div>
               </div>
             </div>
