@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -507,14 +508,17 @@ export default function ManagerServicesPage() {
                   <span className="block text-xs uppercase tracking-wide text-[#020079]/50">
                     Image Preview
                   </span>
-                  <img
-                    src={viewingService.imageUrl}
-                    alt={viewingService.title ?? "Service image"}
-                    className="w-full rounded-lg border border-[#020079]/20 object-cover max-h-64 shadow-sm"
-                    onError={(event) => {
-                      (event.target as HTMLImageElement).style.display = "none";
-                    }}
-                  />
+                  <div className="relative w-full h-64 rounded-lg border border-[#020079]/20 shadow-sm overflow-hidden">
+                    <Image
+                      src={viewingService.imageUrl}
+                      alt={viewingService.title ?? "Service image"}
+                      fill
+                      className="object-cover"
+                      onError={(event) => {
+                        (event.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
                 </div>
               )}
               <DialogFooter className="pt-2 gap-3 justify-end">

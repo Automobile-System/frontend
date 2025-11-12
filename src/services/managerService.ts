@@ -238,6 +238,81 @@ export interface ApiMessageResponse {
 }
 
 // ============================================================================
+// CUSTOMER MANAGEMENT TYPES
+// ============================================================================
+
+export interface CustomerOverview {
+  totalCustomers: number;
+  newThisMonth: number;
+  activeCustomers: number;
+  activityRate: number;
+  topCustomer: {
+    name: string;
+    email: string;
+    totalSpent: number;
+    servicesUsed: number;
+  };
+  ratingDistribution: {
+    five: number;
+    four: number;
+    three: number;
+    below: number;
+  };
+}
+
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  vehicleCount: number;
+  totalSpent: number;
+  lastServiceDate: string;
+  status: string;
+}
+
+export interface CustomerDetails {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  status: string;
+  memberSince: string;
+  vehicleCount: number;
+  totalServices: number;
+  totalProjects: number;
+  totalSpent: number;
+  address: string;
+  notes: string;
+}
+
+export interface CustomerService {
+  id: string;
+  serviceName: string;
+  vehicleInfo: string;
+  status: string;
+  startDate: string;
+  expectedCompletion: string;
+  assignedEmployee: string;
+  cost: number;
+  progress: number;
+  notes?: string;
+}
+
+export interface CustomerProject {
+  id: string;
+  projectName: string;
+  description: string;
+  status: string;
+  startDate: string;
+  expectedCompletion: string;
+  progress: number;
+  budget: number;
+  assignedTeam: string[];
+  notes?: string;
+}
+
+// ============================================================================
 // MANAGER DASHBOARD API CALLS
 // ============================================================================
 

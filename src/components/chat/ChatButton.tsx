@@ -13,7 +13,7 @@ export function ChatButton() {
       <div className="fixed right-6 bottom-6 z-50">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105"
+          className="flex items-center gap-2 bg-gradient-to-r from-[#020079] to-[#0300a8] text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group hover:scale-105"
         >
           {isOpen ? (
             <>

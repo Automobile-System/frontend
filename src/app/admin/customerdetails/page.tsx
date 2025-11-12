@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout"
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
 import {
   fetchCustomerOverview,
   fetchCustomerList,
@@ -17,133 +17,190 @@ import {
   type CustomerOverview,
   type Customer,
   type AddCustomerRequest,
-} from "@/services/adminService"
-import { Search, UserPlus, Mail, Phone, Calendar, Car, Edit, Trash2, X } from "lucide-react"
+} from "@/services/adminService";
+import {
+  Search,
+  UserPlus,
+  Mail,
+  Phone,
+  Calendar,
+  Car,
+  Edit,
+  Trash2,
+  X,
+} from "lucide-react";
 
 export default function CustomerDetailsPage() {
-  const [overview, setOverview] = useState<CustomerOverview | null>(null)
-  const [customers, setCustomers] = useState<Customer[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [filterStatus, setFilterStatus] = useState<"all" | "active" | "inactive">("all")
-  const [showAddModal, setShowAddModal] = useState(false)
+  const [overview, setOverview] = useState<CustomerOverview | null>(null);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "active" | "inactive"
+  >("all");
+  const [showAddModal, setShowAddModal] = useState(false);
   const [newCustomerData, setNewCustomerData] = useState<AddCustomerRequest>({
     name: "",
     email: "",
     phone: "",
-  })
+  });
 
   useEffect(() => {
-    loadCustomerData()
-  }, [])
+    loadCustomerData();
+  }, []);
 
   const loadCustomerData = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
+      setError(null);
+
       const [overviewData, customerData] = await Promise.all([
-        fetchCustomerOverview(),
-        fetchCustomerList()
-      ])
-      setOverview(overviewData)
-      setCustomers(customerData)
+        fetchCustomerOverview().catch((err) => {
+          console.error("Error fetching overview:", err);
+          // Return default overview data on error
+          return {
+            totalCustomers: 0,
+            newThisMonth: 0,
+            activeCustomers: 0,
+            activityRate: 0,
+            topCustomer: {
+              name: "N/A",
+              email: "N/A",
+              totalSpent: 0,
+              servicesUsed: 0,
+            },
+          };
+        }),
+        fetchCustomerList().catch((err) => {
+          console.error("Error fetching customers:", err);
+          // Return empty array on error
+          return [];
+        }),
+      ]);
+
+      setOverview(overviewData);
+      setCustomers(customerData);
     } catch (error) {
-      console.error('Error loading customer data:', error)
+      console.error("Error loading customer data:", error);
+      setError("Failed to load customer data. Please try again.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   // Filter customers based on search and status
-  const filteredCustomers = customers.filter(customer => {
-    const matchesSearch = 
+  const filteredCustomers = customers.filter((customer) => {
+    const matchesSearch =
       customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.phone.includes(searchTerm)
-    
-    const matchesStatus = 
-      filterStatus === "all" || 
+      customer.phone.includes(searchTerm);
+
+    const matchesStatus =
+      filterStatus === "all" ||
       (filterStatus === "active" && customer.status === "Active") ||
-      (filterStatus === "inactive" && customer.status === "Inactive")
-    
-    return matchesSearch && matchesStatus
-  })
+      (filterStatus === "inactive" && customer.status === "Inactive");
+
+    return matchesSearch && matchesStatus;
+  });
 
   const handleAddCustomer = async () => {
     try {
       // Validate form
-      if (!newCustomerData.name || !newCustomerData.email || !newCustomerData.phone) {
-        alert('Please fill in all fields')
-        return
+      if (
+        !newCustomerData.name ||
+        !newCustomerData.email ||
+        !newCustomerData.phone
+      ) {
+        alert("Please fill in all fields");
+        return;
       }
-      
-      await addCustomer(newCustomerData)
-      await loadCustomerData() // Refresh data
-      setShowAddModal(false)
-      setNewCustomerData({ name: "", email: "", phone: "" }) // Reset form
-      alert('Customer added successfully!')
+
+      await addCustomer(newCustomerData);
+      await loadCustomerData(); // Refresh data
+      setShowAddModal(false);
+      setNewCustomerData({ name: "", email: "", phone: "" }); // Reset form
+      alert("Customer added successfully!");
     } catch (error) {
-      console.error('Error adding customer:', error)
-      alert('Failed to add customer')
+      console.error("Error adding customer:", error);
+      alert("Failed to add customer");
     }
-  }
+  };
 
   const handleActivate = async (customerId: string) => {
     try {
-      await activateCustomer(customerId)
-      await loadCustomerData() // Refresh data
-      alert('Customer activated successfully!')
+      await activateCustomer(customerId);
+      await loadCustomerData(); // Refresh data
+      alert("Customer activated successfully!");
     } catch (error) {
-      console.error('Error activating customer:', error)
-      alert('Failed to activate customer')
+      console.error("Error activating customer:", error);
+      alert("Failed to activate customer");
     }
-  }
+  };
 
   const handleDeactivate = async (customerId: string) => {
     try {
-      if (confirm('Are you sure you want to deactivate this customer?')) {
-        await deactivateCustomer(customerId)
-        await loadCustomerData() // Refresh data
-        alert('Customer deactivated successfully!')
+      if (confirm("Are you sure you want to deactivate this customer?")) {
+        await deactivateCustomer(customerId);
+        await loadCustomerData(); // Refresh data
+        alert("Customer deactivated successfully!");
       }
     } catch (error) {
-      console.error('Error deactivating customer:', error)
-      alert('Failed to deactivate customer')
+      console.error("Error deactivating customer:", error);
+      alert("Failed to deactivate customer");
     }
-  }
+  };
 
   const handleDeleteCustomer = async (customerId: string) => {
     try {
-      if (confirm('Are you sure you want to delete this customer?')) {
-        await deleteCustomer(customerId)
-        await loadCustomerData() // Refresh data
+      if (confirm("Are you sure you want to delete this customer?")) {
+        await deleteCustomer(customerId);
+        await loadCustomerData(); // Refresh data
       }
     } catch (error) {
-      console.error('Error deleting customer:', error)
+      console.error("Error deleting customer:", error);
     }
-  }
+  };
 
-  if (loading || !overview) {
+  if (loading) {
     return (
       <AdminDashboardLayout>
         <div className="flex items-center justify-center h-screen">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#020079] mx-auto"></div>
-            <p className="mt-4 font-roboto text-slate-600">Loading customer data...</p>
+            <p className="mt-4 font-roboto text-slate-600">
+              Loading customer data...
+            </p>
           </div>
         </div>
       </AdminDashboardLayout>
-    )
+    );
   }
 
   return (
     <AdminDashboardLayout>
       <div className="p-8 bg-white min-h-screen">
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600 font-roboto">{error}</p>
+            <button
+              onClick={loadCustomerData}
+              className="mt-2 text-sm text-red-700 underline font-roboto"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
         {/* Page Header */}
         <div className="mb-10">
           <h1 className="text-4xl font-bebas text-[#020079] mb-2">
             Customer Overview
           </h1>
-          <p className="font-roboto text-slate-500">Manage and monitor all customer information</p>
+          <p className="font-roboto text-slate-500">
+            Manage and monitor all customer information
+          </p>
         </div>
 
         {/* Summary Cards */}
@@ -156,10 +213,10 @@ export default function CustomerDetailsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bebas text-[#020079] mb-2">
-                {overview.totalCustomers}
+                {overview?.totalCustomers || 0}
               </div>
               <p className="text-sm font-roboto text-slate-500">
-                +{overview.newThisMonth} new this month
+                +{overview?.newThisMonth || 0} new this month
               </p>
             </CardContent>
           </Card>
@@ -172,10 +229,10 @@ export default function CustomerDetailsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-4xl font-bebas text-[#020079] mb-2">
-                {overview.activeCustomers}
+                {overview?.activeCustomers || 0}
               </div>
               <p className="text-sm font-roboto text-slate-500">
-                {overview.activityRate}% activity rate
+                {overview?.activityRate || 0}% activity rate
               </p>
             </CardContent>
           </Card>
@@ -193,29 +250,34 @@ export default function CustomerDetailsPage() {
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-[#020079]/10 flex items-center justify-center">
                   <span className="text-2xl font-bebas text-[#020079]">
-                    {overview.topCustomer.name.charAt(0)}
+                    {overview?.topCustomer?.name?.charAt(0) || "N"}
                   </span>
                 </div>
                 <div>
                   <p className="text-lg font-roboto font-semibold text-[#020079]">
-                    {overview.topCustomer.name}
+                    {overview?.topCustomer?.name || "N/A"}
                   </p>
                   <p className="text-sm font-roboto text-slate-500">
-                    {overview.topCustomer.email}
+                    {overview?.topCustomer?.email || "N/A"}
                   </p>
                 </div>
               </div>
               <div className="flex gap-8">
                 <div className="text-right">
-                  <p className="text-sm font-roboto text-slate-600 mb-1">Total Spent</p>
+                  <p className="text-sm font-roboto text-slate-600 mb-1">
+                    Total Spent
+                  </p>
                   <p className="text-2xl font-bebas text-[#020079]">
-                    LKR {overview.topCustomer.totalSpent.toLocaleString()}
+                    LKR{" "}
+                    {(overview?.topCustomer?.totalSpent || 0).toLocaleString()}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-roboto text-slate-600 mb-1">Services Used</p>
+                  <p className="text-sm font-roboto text-slate-600 mb-1">
+                    Services Used
+                  </p>
                   <p className="text-2xl font-bebas text-[#020079]">
-                    {overview.topCustomer.servicesUsed}
+                    {overview?.topCustomer?.servicesUsed || 0}
                   </p>
                 </div>
               </div>
@@ -319,12 +381,18 @@ export default function CustomerDetailsPage() {
                 </thead>
                 <tbody>
                   {filteredCustomers.map((customer) => (
-                    <tr key={customer.id} className="hover:bg-[#020079]/5 transition-colors">
+                    <tr
+                      key={customer.id}
+                      className="hover:bg-[#020079]/5 transition-colors"
+                    >
                       <td className="px-6 py-4 border-b border-[#020079]/10">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-[#020079]/10 flex items-center justify-center">
                             <span className="text-base font-bebas text-[#020079]">
-                              {customer.name.split(' ').map(n => n[0]).join('')}
+                              {customer.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")}
                             </span>
                           </div>
                           <div>
@@ -356,7 +424,9 @@ export default function CustomerDetailsPage() {
                             {customer.vehicleCount}
                           </span>
                           <span className="text-sm font-roboto text-slate-500">
-                            {customer.vehicleCount === 1 ? 'vehicle' : 'vehicles'}
+                            {customer.vehicleCount === 1
+                              ? "vehicle"
+                              : "vehicles"}
                           </span>
                         </div>
                       </td>
@@ -424,7 +494,9 @@ export default function CustomerDetailsPage() {
 
             {filteredCustomers.length === 0 && (
               <div className="text-center py-12">
-                <p className="text-slate-400 font-roboto">No customers found matching your criteria</p>
+                <p className="text-slate-400 font-roboto">
+                  No customers found matching your criteria
+                </p>
               </div>
             )}
           </CardContent>
@@ -435,7 +507,9 @@ export default function CustomerDetailsPage() {
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-2xl w-full max-w-md mx-4">
               <div className="flex items-center justify-between p-6 border-b border-[#020079]/20">
-                <h2 className="text-2xl font-bebas text-[#020079]">Add New Customer</h2>
+                <h2 className="text-2xl font-bebas text-[#020079]">
+                  Add New Customer
+                </h2>
                 <button
                   onClick={() => setShowAddModal(false)}
                   className="text-slate-400 hover:text-slate-600 transition-colors"
@@ -445,7 +519,10 @@ export default function CustomerDetailsPage() {
               </div>
               <div className="p-6 space-y-4">
                 <div>
-                  <Label htmlFor="name" className="text-sm font-roboto font-medium text-[#020079] mb-2 block">
+                  <Label
+                    htmlFor="name"
+                    className="text-sm font-roboto font-medium text-[#020079] mb-2 block"
+                  >
                     Full Name *
                   </Label>
                   <Input
@@ -453,12 +530,20 @@ export default function CustomerDetailsPage() {
                     type="text"
                     placeholder="Enter customer name"
                     value={newCustomerData.name}
-                    onChange={(e) => setNewCustomerData({ ...newCustomerData, name: e.target.value })}
+                    onChange={(e) =>
+                      setNewCustomerData({
+                        ...newCustomerData,
+                        name: e.target.value,
+                      })
+                    }
                     className="border-[#020079]/30 focus:border-[#020079] font-roboto"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="email" className="text-sm font-roboto font-medium text-[#020079] mb-2 block">
+                  <Label
+                    htmlFor="email"
+                    className="text-sm font-roboto font-medium text-[#020079] mb-2 block"
+                  >
                     Email Address *
                   </Label>
                   <Input
@@ -466,12 +551,20 @@ export default function CustomerDetailsPage() {
                     type="email"
                     placeholder="Enter email address"
                     value={newCustomerData.email}
-                    onChange={(e) => setNewCustomerData({ ...newCustomerData, email: e.target.value })}
+                    onChange={(e) =>
+                      setNewCustomerData({
+                        ...newCustomerData,
+                        email: e.target.value,
+                      })
+                    }
                     className="border-[#020079]/30 focus:border-[#020079] font-roboto"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="phone" className="text-sm font-roboto font-medium text-[#020079] mb-2 block">
+                  <Label
+                    htmlFor="phone"
+                    className="text-sm font-roboto font-medium text-[#020079] mb-2 block"
+                  >
                     Phone Number *
                   </Label>
                   <Input
@@ -479,7 +572,12 @@ export default function CustomerDetailsPage() {
                     type="tel"
                     placeholder="+94 77 123 4567"
                     value={newCustomerData.phone}
-                    onChange={(e) => setNewCustomerData({ ...newCustomerData, phone: e.target.value })}
+                    onChange={(e) =>
+                      setNewCustomerData({
+                        ...newCustomerData,
+                        phone: e.target.value,
+                      })
+                    }
                     className="border-[#020079]/30 focus:border-[#020079] font-roboto"
                   />
                 </div>
@@ -504,5 +602,5 @@ export default function CustomerDetailsPage() {
         )}
       </div>
     </AdminDashboardLayout>
-  )
+  );
 }

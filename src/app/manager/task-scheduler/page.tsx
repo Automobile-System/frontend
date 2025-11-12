@@ -9,6 +9,7 @@ import ProjectFormModal from "@/components/modals/ProjectFormModal";
 import EmployeeAssignmentModal from "@/components/modals/EmployeeAssignmentModal";
 import TaskDetailsModal from "@/components/modals/TaskDetailsModal";
 import { getAvailableEmployees } from "@/services/api";
+import { Loader } from "lucide-react";
 
 interface PendingTask {
   id: string;
@@ -120,7 +121,6 @@ const SCHEDULED_TASKS: ScheduledTask[] = [
     status: "Scheduled",
   },
 ];
-
 
 export default function TaskSchedulerPage() {
   const [tasks, setTasks] = useState<PendingTask[]>(PENDING_TASKS);
@@ -502,7 +502,10 @@ export default function TaskSchedulerPage() {
         </CardHeader>
         <CardContent className="pt-6">
           {loadingEmployees && (
-            <p className="font-roboto text-[#020079]">Loading employees…</p>
+            <div className="flex items-center justify-center gap-2 py-8">
+              <Loader className="w-5 h-5 animate-spin text-[#020079]" />
+              <p className="font-roboto text-[#020079]">Loading employees…</p>
+            </div>
           )}
           {employeesError && !loadingEmployees && (
             <p className="font-roboto text-red-700">{employeesError}</p>
