@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProjectFormModal from "@/components/modals/ProjectFormModal";
 import SubTaskModal from "@/components/modals/SubTaskModal";
+import { fetchProjects, type ProjectSummary } from "@/services/managerService";
+import { showToast } from "@/lib/toast";
 
 interface Project {
   id: string;
@@ -18,81 +20,111 @@ interface Project {
   status: "Discussion" | "In Progress" | "Waiting for Parts" | "Completed";
   requirements?: boolean;
   onHold?: string;
+  projectId?: number | null;
 }
 
-const INITIAL_PROJECTS: Project[] = [
-  {
-    id: "PRJ-001",
-    title: "Custom Modification",
-    customer: "John Smith",
-    estimatedCost: "Rs. 150,000",
-    startDate: "Nov 1, 2025",
-    status: "Discussion",
-    requirements: true
-  },
-  {
-    id: "PRJ-002",
-    title: "Full Restoration",
-    customer: "Sarah Johnson",
-    estimatedCost: "Rs. 500,000",
-    startDate: "Nov 3, 2025",
-    status: "Discussion",
-    requirements: true
-  },
-  {
-    id: "PRJ-003",
-    title: "Engine Overhaul",
-    customer: "Mike Davis",
-    estimatedCost: "Rs. 250,000",
-    startDate: "Nov 2",
-    team: ["Ruwan", "Amal"],
-    timeline: "Nov 2 - Nov 10",
-    status: "In Progress"
-  },
-  {
-    id: "PRJ-004",
-    title: "Custom Paint Job",
-    customer: "Lisa Anderson",
-    estimatedCost: "Rs. 120,000",
-    startDate: "Oct 30",
-    team: ["Nimal"],
-    timeline: "Oct 30 - Nov 7",
-    status: "In Progress"
-  },
-  {
-    id: "PRJ-005",
-    title: "Suspension Upgrade",
-    customer: "David Wilson",
-    estimatedCost: "Rs. 180,000",
-    startDate: "Nov 2, 2025",
-    status: "Waiting for Parts",
-    onHold: "2 days"
-  },
-  {
-    id: "PRJ-006",
-    title: "AC System Replacement",
-    customer: "Emma Brown",
-    estimatedCost: "Rs. 95,000",
-    startDate: "Nov 1, 2025",
-    status: "Completed"
-  },
-  {
-    id: "PRJ-007",
-    title: "Wheel Alignment",
-    customer: "Tom Harris",
-    estimatedCost: "Rs. 25,000",
-    startDate: "Nov 1, 2025",
-    status: "Completed"
+// Helper function to format date
+function formatDate(dateString: string | null | undefined): string {
+  if (!dateString) return "N/A";
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString;
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric'
+    });
+  } catch {
+    return dateString;
   }
-];
+}
+
+// Helper function to format currency
+function formatCurrency(cost: number | null | undefined): string {
+  if (cost == null) return "Rs. 0";
+  return `Rs. ${cost.toLocaleString('en-US')}`;
+}
+
+// Map ProjectSummary to local Project interface
+function mapProjectSummary(summary: ProjectSummary): Project {
+  const status = (summary.status || "Discussion") as Project["status"];
+  
+  // Format start date from createdAt or job arrivingDate
+  const startDate = summary.job?.arrivingDate 
+    ? formatDate(summary.job.arrivingDate)
+    : formatDate(summary.createdAt);
+
+  // Build timeline from job dates if available
+  let timeline: string | undefined;
+  if (summary.job?.arrivingDate && summary.job?.completionDate) {
+    const start = formatDate(summary.job.arrivingDate);
+    const end = formatDate(summary.job.completionDate);
+    timeline = `${start} - ${end}`;
+  }
+
+  // Determine if requirements are gathered (has tasks)
+  const requirements = (summary.tasks && summary.tasks.length > 0) || false;
+
+  return {
+    id: summary.id || `proj-${summary.projectId || 'unknown'}`,
+    title: summary.title || "Untitled Project",
+    customer: summary.customer || "N/A",
+    estimatedCost: formatCurrency(summary.cost),
+    startDate,
+    status,
+    requirements,
+    projectId: summary.projectId,
+    timeline,
+  };
+}
 
 export default function ProjectsManagement() {
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [showSubTaskModal, setShowSubTaskModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [projects, setProjects] = useState(INITIAL_PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleCreateProject = (formData: {
+  // Helper function to transform API response to projects array
+  const transformProjects = (response: Awaited<ReturnType<typeof fetchProjects>>): Project[] => {
+    const allProjects: Project[] = [];
+    response.forEach((boardResponse) => {
+      if (boardResponse.projects && Array.isArray(boardResponse.projects)) {
+        const mappedProjects = boardResponse.projects.map(mapProjectSummary);
+        allProjects.push(...mappedProjects);
+      }
+    });
+    return allProjects;
+  };
+
+  // Helper function to refresh projects from API
+  const refreshProjects = async (showLoading = true) => {
+    try {
+      if (showLoading) {
+        setLoading(true);
+        setError(null);
+      }
+      const response = await fetchProjects();
+      setProjects(transformProjects(response));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to load projects";
+      if (showLoading) {
+        setError(message);
+      }
+      showToast.error(message);
+    } finally {
+      if (showLoading) {
+        setLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    refreshProjects();
+  }, []);
+
+  const handleCreateProject = async (formData: {
     customerName: string;
     contactNumber: string;
     vehicleRegistration: string;
@@ -104,21 +136,13 @@ export default function ProjectsManagement() {
     totalCost: string;
     subTasks: Array<{ name: string; hours: number }>;
   }) => {
-    const newProject: Project = {
-      id: `PRJ-${String(projects.length + 1).padStart(3, '0')}`,
-      title: formData.projectTitle,
-      customer: formData.customerName,
-      estimatedCost: `Rs. ${formData.totalCost}`,
-      startDate: new Date().toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric', 
-        year: 'numeric'
-      }),
-      status: "Discussion"
-    };
-    
-    setProjects([...projects, newProject]);
+    // TODO: Implement API call to create project
+    // For now, just close the modal and refresh the list
     setShowProjectModal(false);
+    
+    // Refresh projects list without showing loading state
+    await refreshProjects(false);
+    showToast.success("Project created successfully");
   };
 
   const getColumnProjects = (status: Project["status"]) => {
@@ -148,8 +172,24 @@ export default function ProjectsManagement() {
         </Button>
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-12">
+          <p className="font-roboto text-[#020079]">Loading projects...</p>
+        </div>
+      )}
+
+      {/* Error State */}
+      {!loading && error && (
+        <div className="mb-6 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+          <p className="font-medium">Unable to load projects</p>
+          <p className="mt-1">{error}</p>
+        </div>
+      )}
+
       {/* Project Columns */}
-      <div className="grid grid-cols-4 gap-6">
+      {!loading && !error && (
+        <div className="grid grid-cols-4 gap-6">
         {/* Discussion Column */}
         <Card className="border-[#020079]/20">
           <CardHeader className="border-b border-[#020079]/20">
@@ -306,6 +346,18 @@ export default function ProjectsManagement() {
           </CardContent>
         </Card>
       </div>
+      )}
+
+      {/* Empty State */}
+      {!loading && !error && projects.length === 0 && (
+        <Card className="border-[#020079]/20">
+          <CardContent className="py-12 text-center">
+            <p className="font-roboto text-[#020079]/70">
+              No projects found. Create your first project to get started.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Project Form Modal */}
       <ProjectFormModal
@@ -328,20 +380,13 @@ export default function ProjectsManagement() {
             customer: selectedProject.customer,
             requirements: selectedProject.requirements
           }}
-          onFinalize={(subTasks) => {
-            const updatedProjects = projects.map(p => {
-              if (p.id === selectedProject.id) {
-                return {
-                  ...p,
-                  status: "In Progress" as const,
-                  team: [...new Set(subTasks.map(task => task.assignedTo))]
-                };
-              }
-              return p;
-            });
-            setProjects(updatedProjects);
+          onFinalize={async (subTasks) => {
             setShowSubTaskModal(false);
             setSelectedProject(null);
+            
+            // Refresh projects list from API to get updated status (without loading state)
+            await refreshProjects(false);
+            showToast.success("Sub-tasks created successfully");
           }}
         />
       )}

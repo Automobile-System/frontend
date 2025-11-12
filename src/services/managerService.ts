@@ -246,7 +246,7 @@ export async function fetchDashboardOverview(): Promise<DashboardOverviewRespons
 }
 
 export async function fetchEmployees(): Promise<EmployeeListItem[]> {
-  return apiFetch<EmployeeListItem[]>('/api/employees');
+  return apiFetch<EmployeeListItem[]>('/api/manager/employees');
 }
 
 export async function updateEmployeeStatus(
@@ -298,7 +298,7 @@ export async function deleteService(serviceId: number): Promise<ApiMessageRespon
 }
 
 export async function fetchProjects(): Promise<ProjectBoardResponse[]> {
-  return apiFetch<ProjectBoardResponse[]>('/api/projects');
+  return apiFetch<ProjectBoardResponse[]>('/api/manager/projects');
 }
 
 export async function fetchServices(): Promise<ServiceSummary[]> {

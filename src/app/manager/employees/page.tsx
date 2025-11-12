@@ -10,21 +10,9 @@ import {
 } from "@/components/modals/EmployeeHistoryModal";
 import AddTaskModal from "@/components/modals/AddTaskModal";
 import { useState, useEffect } from "react";
-import { getEmployees, getEmployeeHistory } from "@/services/api";
+import { getEmployeeHistory } from "@/services/api";
+import { fetchEmployees, type EmployeeListItem } from "@/services/managerService";
 import { showToast } from "@/lib/toast";
-
-// Backend employee item (approximate fields used here)
-interface ApiEmployeeItem {
-  id?: string;
-  name: string; // full name
-  email?: string;
-  specialty?: string; // maps to skill
-  skill?: string; // sometimes backend returns skill here
-  currentTasks?: string | number; // often returned like "0/5"
-  rating?: number | string;
-  status?: string; // Available / Unavailable / Busy
-  roles?: string[];
-}
 
 // Local view model after mapping
 interface EmployeeRow {
@@ -38,8 +26,8 @@ interface EmployeeRow {
 }
 
 // Helper convert a backend record to a row with graceful fallbacks
-function mapEmployee(e: ApiEmployeeItem): EmployeeRow {
-  // Parse current/max from possible formats
+function mapEmployee(e: EmployeeListItem): EmployeeRow {
+  // Parse current/max from string format like "0/5"
   let current = 0;
   let max = 5;
   if (typeof e.currentTasks === "string") {
@@ -48,14 +36,12 @@ function mapEmployee(e: ApiEmployeeItem): EmployeeRow {
       current = Number(m[1]);
       max = Number(m[2]) || max;
     }
-  } else if (typeof e.currentTasks === "number") {
-    current = e.currentTasks;
   }
 
-  // Normalize rating to number with one decimal
-  const ratingNum = Number(e.rating ?? 0);
+  // Normalize rating to number
+  const ratingNum = typeof e.rating === "number" ? e.rating : Number(e.rating ?? 0);
 
-  // Status derivation: trust backend if provided, otherwise derive from load
+  // Use status from backend, or derive from task load
   let status = (e.status || "").trim();
   if (!status) {
     const ratio = max > 0 ? current / max : 0;
@@ -67,9 +53,9 @@ function mapEmployee(e: ApiEmployeeItem): EmployeeRow {
   return {
     id: e.id,
     name: e.name,
-    skill: e.specialty || e.skill || "General",
+    skill: e.skill || "General",
     tasks: `${current} / ${max}`,
-    rating: isNaN(ratingNum) ? 0 : Number(ratingNum),
+    rating: isNaN(ratingNum) ? 0 : ratingNum,
     status,
     serviceHistory: [],
   };
@@ -118,8 +104,8 @@ export default function EmployeesPage() {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    getEmployees()
-      .then((data: ApiEmployeeItem[]) => {
+    fetchEmployees()
+      .then((data: EmployeeListItem[]) => {
         const rows = Array.isArray(data) ? data.map(mapEmployee) : [];
         setEmployees(rows);
       })
