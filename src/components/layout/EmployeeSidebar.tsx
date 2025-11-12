@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -10,10 +10,20 @@ import {
   MessageCircle,
   LineChart,
   UserCircle,
+  LogOut,
 } from "lucide-react";
 
 export default function EmployeeSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  
+  const handleLogout = () => {
+    // Clear any auth tokens/data
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    // Redirect to login
+    router.push('/login');
+  };
 
   const navigationItems = [
     {
@@ -64,7 +74,7 @@ export default function EmployeeSidebar() {
 
   return (
     <aside className="w-[270px] bg-[#0200791F] border-r border-[#020079]/20 min-h-screen">
-      <div className="p-6">
+      <div className="p-6 flex flex-col h-screen">
         <nav className="space-y-2">
           {navigationItems.map((item) => {
             const Icon = item.icon;
@@ -84,6 +94,17 @@ export default function EmployeeSidebar() {
             );
           })}
         </nav>
+        
+        {/* Logout Button */}
+        <div className="mt-auto px-0 pb-6">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium bg-gradient-to-r from-yellow-500 to-yellow-400 text-black hover:shadow-lg transition-all duration-200"
+          >
+            <LogOut className="w-5 h-5" />
+            <span>Log Out</span>
+          </button>
+        </div>
       </div>
     </aside>
   );
