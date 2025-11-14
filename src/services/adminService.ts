@@ -29,6 +29,21 @@ export interface UserProfile {
   email: string
   role: string
   avatar?: string
+  firstName?: string
+  lastName?: string
+  phoneNumber?: string
+  nationalId?: string
+  profileImageUrl?: string
+  roles?: string[]
+  createdAt?: string
+  updatedAt?: string
+  lastLoginAt?: string
+  lockedUntil?: string
+  enabled?: boolean
+  accountNonExpired?: boolean
+  accountNonLocked?: boolean
+  credentialsNonExpired?: boolean
+  failedLoginAttempts?: number
 }
 
 // --- Dashboard Page Types ---
@@ -497,26 +512,48 @@ export const deleteNotification = async (notificationId: string): Promise<void> 
 /**
  * USER PROFILE: Fetch current user profile
  * Used in: Header profile dropdown (all pages)
- * Backend: GET /api/user/profile
+ * Backend: GET /api/auth/me
  */
 export const fetchUserProfile = async (): Promise<UserProfile> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/user/profile', {
-    //   headers: {
-    //     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-    //   }
-    // })
-    // return await response.json()
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080';
+
+    const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include' // Use cookies for authentication
+    })
     
-    console.log('API: Fetch user profile endpoint called')
+    if (!response.ok) {
+      throw new Error('Failed to fetch user profile')
+    }
     
-    // Dummy data
+    const data = await response.json()
+    
+    // Map backend UserInfoResponse to frontend UserProfile with all fields
     return {
-      id: '1',
-      name: 'Admin User',
-      email: 'admin@center.com',
-      role: 'admin'
+      id: data.userId,
+      name: `${data.firstName || ''} ${data.lastName || ''}`.trim() || data.email,
+      email: data.email,
+      role: data.roles && data.roles.length > 0 ? data.roles[0] : 'USER',
+      avatar: data.profileImageUrl,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phoneNumber: data.phoneNumber,
+      nationalId: data.nationalId,
+      profileImageUrl: data.profileImageUrl,
+      roles: data.roles,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+      lastLoginAt: data.lastLoginAt,
+      lockedUntil: data.lockedUntil,
+      enabled: data.enabled,
+      accountNonExpired: data.accountNonExpired,
+      accountNonLocked: data.accountNonLocked,
+      credentialsNonExpired: data.credentialsNonExpired,
+      failedLoginAttempts: data.failedLoginAttempts
     }
   } catch (error) {
     console.error('Failed to fetch user profile:', error)
