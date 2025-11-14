@@ -1301,26 +1301,18 @@ export const activateManager = async (managerId: string): Promise<{ success: boo
  */
 export const fetchMostProfitableService = async (): Promise<MostProfitableService> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/services/analytics/most-profitable', {
-    //   headers: {
-    //     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-    //   }
-    // })
-    // if (!response.ok) throw new Error('Failed to fetch most profitable service')
-    // return await response.json()
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
     
-    console.log('API: Fetch most profitable service endpoint called')
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          name: 'Engine Services',
-          profit: 310000,
-          margin: 50
-        })
-      }, 600)
+    const response = await fetch(`${baseUrl}/api/admin/services/analytics/most-profitable`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
     })
+    
+    if (!response.ok) throw new Error('Failed to fetch most profitable service')
+    return await response.json()
   } catch (error) {
     console.error('Failed to fetch most profitable service:', error)
     throw error
@@ -1333,25 +1325,18 @@ export const fetchMostProfitableService = async (): Promise<MostProfitableServic
  */
 export const fetchTotalServicesData = async (): Promise<TotalServicesData> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/services/analytics/total-services', {
-    //   headers: {
-    //     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-    //   }
-    // })
-    // if (!response.ok) throw new Error('Failed to fetch total services data')
-    // return await response.json()
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
     
-    console.log('API: Fetch total services data endpoint called')
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          totalServicesMonth: 148,
-          changeFromLastMonth: 12
-        })
-      }, 600)
+    const response = await fetch(`${baseUrl}/api/admin/services/analytics/total-services`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
     })
+    
+    if (!response.ok) throw new Error('Failed to fetch total services data')
+    return await response.json()
   } catch (error) {
     console.error('Failed to fetch total services data:', error)
     throw error
@@ -1364,25 +1349,18 @@ export const fetchTotalServicesData = async (): Promise<TotalServicesData> => {
  */
 export const fetchPartsReplacedData = async (): Promise<PartsReplacedData> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/services/analytics/parts-replaced', {
-    //   headers: {
-    //     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-    //   }
-    // })
-    // if (!response.ok) throw new Error('Failed to fetch parts replaced data')
-    // return await response.json()
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
     
-    console.log('API: Fetch parts replaced data endpoint called')
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          partsReplaced: 342,
-          partsUsageRate: 8
-        })
-      }, 600)
+    const response = await fetch(`${baseUrl}/api/admin/services/analytics/parts-replaced`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
     })
+    
+    if (!response.ok) throw new Error('Failed to fetch parts replaced data')
+    return await response.json()
   } catch (error) {
     console.error('Failed to fetch parts replaced data:', error)
     throw error
@@ -1395,25 +1373,18 @@ export const fetchPartsReplacedData = async (): Promise<PartsReplacedData> => {
  */
 export const fetchCustomerRetentionData = async (): Promise<CustomerRetentionData> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/services/analytics/customer-retention', {
-    //   headers: {
-    //     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-    //   }
-    // })
-    // if (!response.ok) throw new Error('Failed to fetch customer retention data')
-    // return await response.json()
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
     
-    console.log('API: Fetch customer retention data endpoint called')
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          customerRetention: 87,
-          retentionImprovement: 3
-        })
-      }, 600)
+    const response = await fetch(`${baseUrl}/api/admin/services/analytics/customer-retention`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
     })
+    
+    if (!response.ok) throw new Error('Failed to fetch customer retention data')
+    return await response.json()
   } catch (error) {
     console.error('Failed to fetch customer retention data:', error)
     throw error
@@ -1426,68 +1397,18 @@ export const fetchCustomerRetentionData = async (): Promise<CustomerRetentionDat
  */
 export const fetchServicePerformance = async (): Promise<ServicePerformance[]> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/services/analytics/service-performance', {
-    //   headers: {
-    //     'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-    //   }
-    // })
-    // if (!response.ok) throw new Error('Failed to fetch service performance')
-    // return await response.json()
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
     
-    console.log('API: Fetch service performance endpoint called')
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          {
-            id: 'S001',
-            name: 'Engine Oil Change',
-            totalBookings: 245,
-            avgDuration: '45 min',
-            profitPerService: 4500,
-            customerRating: 4.8,
-            trend: 15
-          },
-          {
-            id: 'S002',
-            name: 'Brake Service',
-            totalBookings: 189,
-            avgDuration: '2 hours',
-            profitPerService: 12500,
-            customerRating: 4.7,
-            trend: 8
-          },
-          {
-            id: 'S003',
-            name: 'Electrical Diagnostics',
-            totalBookings: 156,
-            avgDuration: '1.5 hours',
-            profitPerService: 8900,
-            customerRating: 4.9,
-            trend: -5
-          },
-          {
-            id: 'S004',
-            name: 'Transmission Repair',
-            totalBookings: 87,
-            avgDuration: '4 hours',
-            profitPerService: 35000,
-            customerRating: 4.6,
-            trend: 12
-          },
-          {
-            id: 'S005',
-            name: 'Custom Paint Jobs',
-            totalBookings: 54,
-            avgDuration: '6 hours',
-            profitPerService: 45000,
-            customerRating: 4.9,
-            trend: 20
-          }
-        ])
-      }, 800)
+    const response = await fetch(`${baseUrl}/api/admin/services/analytics/service-performance`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
     })
+    
+    if (!response.ok) throw new Error('Failed to fetch service performance')
+    return await response.json()
   } catch (error) {
     console.error('Failed to fetch service performance:', error)
     throw error
@@ -1531,6 +1452,142 @@ export const fetchServicesAnalytics = async (): Promise<ServicesAnalytics> => {
     }
   } catch (error) {
     console.error('Failed to fetch services analytics:', error)
+    throw error
+  }
+}
+
+/**
+ * Get all predefined services
+ * GET /api/admin/services
+ */
+export const getAllServices = async () => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    
+    const response = await fetch(`${baseUrl}/api/admin/services`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
+    })
+    
+    if (!response.ok) throw new Error('Failed to fetch services')
+    return await response.json()
+  } catch (error) {
+    console.error('Failed to fetch services:', error)
+    throw error
+  }
+}
+
+/**
+ * Get detailed service analytics with all charts
+ * GET /api/admin/services/analytics/detailed
+ */
+export const getDetailedServiceAnalytics = async () => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    
+    const response = await fetch(`${baseUrl}/api/admin/services/analytics/detailed`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
+    })
+    
+    if (!response.ok) throw new Error('Failed to fetch detailed analytics')
+    return await response.json()
+  } catch (error) {
+    console.error('Failed to fetch detailed analytics:', error)
+    throw error
+  }
+}
+
+/**
+ * Create a new predefined service
+ * POST /api/admin/services
+ */
+export const createService = async (data: {
+  title: string
+  description?: string
+  category: string
+  cost: number
+  estimatedHours?: number
+  imageUrl?: string
+}): Promise<{success: boolean; message: string; serviceId: number}> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    
+    const response = await fetch(`${baseUrl}/api/admin/services`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(data)
+    })
+    
+    if (!response.ok) throw new Error('Failed to create service')
+    return await response.json()
+  } catch (error) {
+    console.error('Failed to create service:', error)
+    throw error
+  }
+}
+
+/**
+ * Update a predefined service
+ * PUT /api/admin/services/{serviceId}
+ */
+export const updateService = async (serviceId: string, data: {
+  title: string
+  description?: string
+  category: string
+  cost: number
+  estimatedHours?: number
+  imageUrl?: string
+}): Promise<{success: boolean; message: string}> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    
+    const response = await fetch(`${baseUrl}/api/admin/services/${serviceId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify(data)
+    })
+    
+    if (!response.ok) throw new Error('Failed to update service')
+    return await response.json()
+  } catch (error) {
+    console.error('Failed to update service:', error)
+    throw error
+  }
+}
+
+/**
+ * Delete a predefined service
+ * DELETE /api/admin/services/{serviceId}
+ */
+export const deleteService = async (serviceId: string): Promise<{success: boolean; message: string}> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    
+    const response = await fetch(`${baseUrl}/api/admin/services/${serviceId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
+    })
+    
+    if (!response.ok) throw new Error('Failed to delete service')
+    return await response.json()
+  } catch (error) {
+    console.error('Failed to delete service:', error)
     throw error
   }
 }
