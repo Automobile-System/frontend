@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { BookingData, Vehicle, Service, Employee } from '@/types/booking';
+import { Vehicle, Service, Employee } from '@/types/booking';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
