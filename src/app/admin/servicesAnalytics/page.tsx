@@ -342,7 +342,7 @@ export default function ServicesAnalyticsPage() {
               <CardContent className="py-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <DollarSign className="h-8 w-8 text-white" />
+                    
                     <div>
                       <p className="text-sm font-roboto text-white/80">Average Service Cost</p>
                       <p className="text-3xl font-bebas text-white">
@@ -352,12 +352,7 @@ export default function ServicesAnalyticsPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-roboto text-white/80">Per Completed Service</p>
-                    <p className="text-lg font-roboto text-white">
-                      ${analytics?.serviceSummary?.averageCost?.toFixed(2) || '0.00'} USD
-                    </p>
-                  </div>
+                  
                 </div>
               </CardContent>
             </Card>
@@ -511,7 +506,7 @@ export default function ServicesAnalyticsPage() {
               <CardContent className="py-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <DollarSign className="h-8 w-8 text-white" />
+                  
                     <div>
                       <p className="text-sm font-roboto text-white/80">Average Project Cost</p>
                       <p className="text-3xl font-bebas text-white">
@@ -521,12 +516,7 @@ export default function ServicesAnalyticsPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-roboto text-white/80">Per Project</p>
-                    <p className="text-lg font-roboto text-white">
-                      ${analytics?.projectAnalytics?.summary?.averageCost?.toFixed(2) || '0.00'} USD
-                    </p>
-                  </div>
+                  
                 </div>
               </CardContent>
             </Card>

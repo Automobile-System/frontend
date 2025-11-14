@@ -42,7 +42,7 @@ export default function AdminHeader() {
     await markNotificationAsRead(notificationId)
   }
   return (
-    <header className="bg-[#020079]/5 border-b border-[#020079]/20">
+    <header className="bg-[#020079]/5 border-b border-[#020079]/20 fixed top-0 left-0 right-0 z-50">
       <div className="px-8 py-5">
         <div className="flex items-center justify-between">
           {/* Left Side - Logo */}

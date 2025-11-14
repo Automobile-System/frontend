@@ -64,8 +64,8 @@ export default function AdminSidebar() {
   const isActive = (href: string) => pathname === href
 
   return (
-    <aside className="w-[270px] bg-[#020079]/5 border-r border-[#020079]/20 min-h-screen">
-      <div className="p-6 flex flex-col h-screen">
+    <aside className="w-[270px] bg-[#020079]/5 border-r border-[#020079]/20 h-screen fixed left-0 top-[65px] overflow-y-auto">
+      <div className="p-6 flex flex-col h-full">
         <nav className="space-y-2">
           {navigationItems.map((item) => (
             <Link

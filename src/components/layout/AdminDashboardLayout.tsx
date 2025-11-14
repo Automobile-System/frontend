@@ -10,16 +10,16 @@ interface AdminDashboardLayoutProps {
 export default function AdminDashboardLayout({ children }: AdminDashboardLayoutProps) {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {/* Header - Fixed at top */}
       <AdminHeader />
 
       {/* Main Container with Sidebar and Content */}
-      <div className="flex">
-        {/* Sidebar */}
+      <div className="flex pt-[65px]">
+        {/* Sidebar - Fixed on left */}
         <AdminSidebar />
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
+        {/* Main Content - Account for sidebar width */}
+        <main className="flex-1 ml-[270px] overflow-y-auto">
           {children}
         </main>
       </div>
