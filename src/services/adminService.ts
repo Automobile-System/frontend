@@ -47,25 +47,67 @@ export interface UserProfile {
 }
 
 // --- Dashboard Page Types ---
+export interface DashboardKPIs {
+  totalCustomers: number
+  totalEmployees: number
+  totalManagers: number
+  ongoingJobs: number
+  ongoingProjects: number
+  monthlyRevenue: number
+  completedServices: number
+}
+
+export interface MonthlyProfitTrend {
+  labels: string[]
+  revenue: number[]
+  cost: number[]
+  profit: number[]
+}
+
+export interface JobProjectCompletion {
+  jobs: {
+    completed: number
+    in_progress: number
+    on_hold: number
+    pending: number
+  }
+  projects: {
+    completed: number
+    in_progress: number
+    on_hold: number
+    pending: number
+  }
+}
+
+export interface ServiceCategoryDistribution {
+  labels: string[]
+  data: number[]
+}
+
+export interface TopEmployeeByHours {
+  employeeId: string
+  name: string
+  specialty: string
+  totalHours: number
+}
+
+export interface BusinessAlert {
+  id: string
+  type: 'overdue_job' | 'delayed_project' | 'low_rating' | 'payment_error'
+  message: string
+  severity: 'high' | 'medium' | 'low'
+  createdAt: string
+  isRead: boolean
+  relatedId?: string
+}
+
 export interface DashboardStats {
-  profitThisMonth: {
-    value: string
-    change: string
-    percentage: number
-  }
-  activeCustomers: {
-    value: number
-    newThisMonth: number
-  }
-  ongoingServices: {
-    value: number
-    status: string
-  }
-  activeEmployees: {
-    value: number
-    onLeave: number
-    frozen: number
-  }
+  kpis: DashboardKPIs
+  profitTrend: MonthlyProfitTrend
+  jobProjectCompletion: JobProjectCompletion
+  serviceCategoryDistribution: ServiceCategoryDistribution
+  topEmployees: TopEmployeeByHours[]
+  alerts: BusinessAlert[]
 }
 
 export interface AIInsight {
@@ -646,35 +688,26 @@ export const updateUserSettings = async (settings: Record<string, unknown>) => {
  */
 export const fetchDashboardStats = async (): Promise<DashboardStats> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch('/api/admin/dashboard/stats', {
-    //   headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
-    // })
-    // return await response.json()
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080';
+
+    const response = await fetch(`${API_BASE_URL}/api/admin/dashboard/stats`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include'
+    })
     
-    console.log('API: Fetch dashboard stats')
-    return {
-      profitThisMonth: {
-        value: "LKR 1.8M",
-        change: "12% from last month",
-        percentage: 12
-      },
-      activeCustomers: {
-        value: 312,
-        newThisMonth: 23
-      },
-      ongoingServices: {
-        value: 23,
-        status: "In Progress"
-      },
-      activeEmployees: {
-        value: 27,
-        onLeave: 2,
-        frozen: 1
-      }
+    if (!response.ok) {
+      throw new Error(`Failed to fetch dashboard stats: ${response.statusText}`)
     }
+    
+    const data = await response.json()
+    console.log('Dashboard stats fetched successfully:', data)
+    return data
   } catch (error) {
-    console.error('Failed to fetch dashboard stats:', error)
+    console.error('Error fetching dashboard stats:', error)
+    // Re-throw to let the component handle the error
     throw error
   }
 }
