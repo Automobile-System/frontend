@@ -32,7 +32,7 @@ interface ServiceDetails {
   title: string;
   description: string;
   category: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  status: 'COMPLETED' | 'IN_PROGRESS' | 'WAITING_PARTS' | 'SCHEDULED' | 'CANCELLED';
   arrivingDate: string;
   cost: number;
   estimatedHours: number;
@@ -45,45 +45,47 @@ interface ServiceDetails {
 }
 
 interface ServiceDetailsModalProps {
-  serviceId: number;
+  jobId: number;
   onClose: () => void;
 }
 
 const statusColors = {
-  PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-300',
   COMPLETED: 'bg-green-100 text-green-800 border-green-300',
+  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-300',
+  WAITING_PARTS: 'bg-orange-100 text-orange-800 border-orange-300',
+  SCHEDULED: 'bg-yellow-100 text-yellow-800 border-yellow-300',
   CANCELLED: 'bg-red-100 text-red-800 border-red-300',
 };
 
-export default function ServiceDetailsModal({ serviceId, onClose }: ServiceDetailsModalProps) {
+export default function ServiceDetailsModal({ jobId, onClose }: ServiceDetailsModalProps) {
   const [service, setService] = useState<ServiceDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchServiceDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [serviceId]);
+  }, [jobId]);
 
   const fetchServiceDetails = async () => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/services/${serviceId}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/services/${jobId}`,
         {
           credentials: 'include',
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch service details");
+        const errorData = await response.json().catch(() => ({ message: 'Failed to fetch service details' }));
+        throw new Error(errorData.message || 'Failed to fetch service details');
       }
 
       const data = await response.json();
       setService(data);
     } catch (error) {
       console.error('Failed to fetch service details:', error);
-      showToast.error('Failed to load service details');
+      showToast.error(error instanceof Error ? error.message : 'Failed to load service details');
       onClose();
     } finally {
       setIsLoading(false);

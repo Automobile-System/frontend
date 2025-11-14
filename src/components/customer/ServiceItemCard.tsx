@@ -10,10 +10,11 @@ interface AssignedEmployee {
 
 interface CustomerService {
   serviceId: number;
+  jobId: number;
   title: string;
   description: string;
   category: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  status: 'COMPLETED' | 'IN_PROGRESS' | 'WAITING_PARTS' | 'SCHEDULED' | 'CANCELLED';
   arrivingDate: string;
   cost: number;
   estimatedHours: number;
@@ -26,13 +27,14 @@ interface CustomerService {
 
 interface ServiceItemCardProps {
   service: CustomerService;
-  onViewDetails: (serviceId: number) => void;
+  onViewDetails: (jobId: number) => void;
 }
 
 const statusColors = {
-  PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-300',
   COMPLETED: 'bg-green-100 text-green-800 border-green-300',
+  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-300',
+  WAITING_PARTS: 'bg-orange-100 text-orange-800 border-orange-300',
+  SCHEDULED: 'bg-yellow-100 text-yellow-800 border-yellow-300',
   CANCELLED: 'bg-red-100 text-red-800 border-red-300',
 };
 
@@ -76,7 +78,7 @@ export default function ServiceItemCard({ service, onViewDetails }: ServiceItemC
       </div>
 
       <button
-        onClick={() => onViewDetails(service.serviceId)}
+        onClick={() => onViewDetails(service.jobId)}
         className="mt-4 w-full text-center px-4 py-2 bg-gray-50 hover:bg-[#03009B] hover:text-white text-gray-700 rounded-lg transition-all font-medium text-sm border border-gray-200 hover:border-[#03009B]"
       >
         View Details

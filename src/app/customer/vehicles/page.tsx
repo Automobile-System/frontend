@@ -3,6 +3,8 @@
 import CustomerLayout from '@/components/layout/customer/CustomerLayout';
 import VehicleCard from '@/components/layout/customer/VehicleCard';
 import AddVehicleModal from '@/components/layout/customer/AddVehicleModal';
+import UpdateVehicleModal from '@/components/modals/UpdateVehicleModal';
+import VehicleServiceHistoryModal from '@/components/modals/VehicleServiceHistoryModal';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { getCustomerVehicles } from '@/services/api';
 import { CustomerVehicle } from '@/types/authTypes';
@@ -12,6 +14,8 @@ import { useState, useEffect } from 'react';
 
 export default function Vehicles() {
     const [showAddForm, setShowAddForm] = useState(false);
+    const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null);
+    const [selectedVehicleToEdit, setSelectedVehicleToEdit] = useState<CustomerVehicle | null>(null);
     const [vehicles, setVehicles] = useState<CustomerVehicle[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -106,6 +110,8 @@ export default function Vehicles() {
                                 key={vehicle.vehicleId} 
                                 vehicle={vehicle}
                                 onDelete={fetchVehicles}
+                                onViewHistory={(vehicleId) => setSelectedVehicleId(vehicleId)}
+                                onEdit={(vehicle) => setSelectedVehicleToEdit(vehicle)}
                             />
                         ))}
                     </div>
@@ -116,6 +122,26 @@ export default function Vehicles() {
                     <AddVehicleModal 
                         onClose={() => setShowAddForm(false)}
                         onVehicleAdded={handleVehicleAdded}
+                    />
+                )}
+
+                {/* Update Vehicle Modal */}
+                {selectedVehicleToEdit && (
+                    <UpdateVehicleModal
+                        vehicle={selectedVehicleToEdit}
+                        onClose={() => setSelectedVehicleToEdit(null)}
+                        onVehicleUpdated={() => {
+                            setSelectedVehicleToEdit(null);
+                            fetchVehicles();
+                        }}
+                    />
+                )}
+
+                {/* Service History Modal */}
+                {selectedVehicleId && (
+                    <VehicleServiceHistoryModal
+                        vehicleId={selectedVehicleId}
+                        onClose={() => setSelectedVehicleId(null)}
                     />
                 )}
             </div>
