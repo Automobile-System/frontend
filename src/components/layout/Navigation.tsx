@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { AuthButtons } from "@/components/layout/AuthButtons"
 import { User } from "@/hooks/useAuth"
+import { getServicesList } from "@/services/api"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -24,24 +25,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import {
-  Menu,
-  Wrench,
-  Calendar,
-  Car,
-  Settings,
-  Battery,
-  Snowflake,
-  Droplet,
-  Sparkles,
-  FileText,
-  Wand2,
-  Wind,
-  CircleDot,
-  Zap,
-  Shield,
-  Paintbrush,
-} from "lucide-react"
+import { Menu, Calendar, ArrowRight, Loader2, List } from "lucide-react"
+import { NormalizedService, normalizeServiceCollection } from "@/lib/serviceMapper"
 
 // Note: previously defined placeholder arrays (services, branches, packages)
 // were removed because the navigation no longer renders from data.
@@ -54,6 +39,31 @@ interface NavigationProps {
 
 export function Navigation({ className, initialUser }: NavigationProps) {
   const pathname = usePathname()
+  const [navServices, setNavServices] = React.useState<NormalizedService[]>([])
+  const [servicesError, setServicesError] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    let isMounted = true
+    const loadServices = async () => {
+      try {
+        const response = await getServicesList()
+        if (!isMounted) return
+        setNavServices(normalizeServiceCollection(response))
+        setServicesError(null)
+      } catch (error) {
+        console.error("Failed to load services for nav", error)
+        if (isMounted) {
+          setServicesError("Unable to load services")
+        }
+      }
+    }
+
+    loadServices()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   // Auto Miraj style: larger font, normal weight, bottom border on active
   const linkBase =
@@ -101,118 +111,66 @@ export function Navigation({ className, initialUser }: NavigationProps) {
                 SERVICES
               </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <div className="w-[1000px] p-8 bg-white">
-                  <div className="grid grid-cols-3 gap-8">
-                    {/* Column 1 - Periodic Maintenance */}
-                    <div>
-                      <div className="bg-brand text-white font-extrabold text-base px-4 py-3 mb-4 service-header tracking-wide">
-                        PERIODIC MAINTENANCE
+                <div className="w-[700px] bg-white">
+                  <div className="max-h-[360px] overflow-y-auto p-5">
+                    {navServices.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {(() => {
+                          const grouped = navServices.reduce<Record<string, NormalizedService[]>>((groups, service) => {
+                            const key = service.category?.toUpperCase() || "OTHER SERVICES"
+                            if (!groups[key]) {
+                              groups[key] = []
+                            }
+                            groups[key].push(service)
+                            return groups
+                          }, {})
+                          return Object.entries(grouped).map(([category, services]) => (
+                            <div key={category}>
+                              <div className="bg-brand text-white font-extrabold text-base px-4 py-3 mb-4 tracking-wide">
+                                {category}
+                              </div>
+                              <div className="space-y-2">
+                                {services.map((service, serviceIndex) => (
+                                  <Link
+                                    key={`${category}-${service.id}-${serviceIndex}`}
+                                    href={`/services/${service.id}`}
+                                    className="flex items-center justify-between border-b border-gray-200 pb-2 text-base font-medium text-[#020079] hover:text-brand"
+                                  >
+                                    <span>{service.name}</span>
+                                    <ArrowRight className="h-4 w-4" />
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+                          ))
+                        })()}
                       </div>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Snowflake className="h-4 w-4" />
-                          <span>Washing Packages</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Droplet className="h-4 w-4" />
-                          <span>Lube Services</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Sparkles className="h-4 w-4" />
-                          <span>Exterior & Interior Detailing</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Settings className="h-4 w-4" />
-                          <span>Engine Tune ups</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <FileText className="h-4 w-4" />
-                          <span>Inspection Reports</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Wand2 className="h-4 w-4" />
-                          <span>Waxing</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Wind className="h-4 w-4" />
-                          <span>Undercarriage Degreasing</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3">
-                          <Car className="h-4 w-4" />
-                          <span>Windscreean Treatments</span>
-                        </div>
+                    ) : (
+                      <div className="flex h-56 flex-col items-center justify-center text-center text-gray-500">
+                        {servicesError ? (
+                          <>
+                            <p className="font-medium">{servicesError}</p>
+                            <p className="text-sm">Please check back later.</p>
+                          </>
+                        ) : (
+                          <>
+                            <Loader2 className="h-6 w-6 animate-spin text-primary mb-2" />
+                            <p className="text-sm">Loading services...</p>
+                          </>
+                        )}
                       </div>
-                    </div>
-
-                    {/* Column 2 - Nano Coating & Tyre Services */}
-                    <div>
-                      <div className="bg-brand text-white font-extrabold text-base px-4 py-3 mb-4 service-header tracking-wide">
-                        NANO COATING
-                      </div>
-                      <div className="space-y-3 mb-6">
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Car className="h-4 w-4" />
-                          <span>Packages</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3">
-                          <Droplet className="h-4 w-4" />
-                          <span>Treatments</span>
-                        </div>
-                      </div>
-
-                      <div className="bg-brand text-white font-extrabold text-base px-4 py-3 mb-4 service-header tracking-wide mt-6">
-                        TYRE SERVICES
-                      </div>
-                      <div className="space-y-3 mb-6">
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Battery className="h-4 w-4" />
-                          <span>Battery Services</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3">
-                          <CircleDot className="h-4 w-4" />
-                          <span>Tyre Replacements</span>
-                        </div>
-                      </div>
-
-                      <div className="bg-brand text-white font-extrabold text-base px-4 py-3 mb-4 service-header tracking-wide mt-6">
-                        MECHANICAL REPAIR
-                      </div>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Wrench className="h-4 w-4" />
-                          <span>Spare Parts Replacements</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3">
-                          <Zap className="h-4 w-4" />
-                          <span>Hybrid Services</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Column 3 - Collision Repairs */}
-                    <div>
-                      <div className="bg-brand text-white font-extrabold text-base px-4 py-3 mb-4 service-header tracking-wide">
-                        COLLISION REPAIRS
-                      </div>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Shield className="h-4 w-4" />
-                          <span>Insurance Claims</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <CircleDot className="h-4 w-4" />
-                          <span>Wheel Alignment</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3 border-b border-gray-200">
-                          <Paintbrush className="h-4 w-4" />
-                          <span>Full Paints</span>
-                        </div>
-                        <div className="flex items-center gap-3 text-base font-medium hover:text-brand cursor-pointer pb-3">
-                          <Wrench className="h-4 w-4" />
-                          <span>Part Replacements</span>
-                        </div>
-                      </div>
-                    </div>
+                    )}
+                  </div>
+                  <div className="px-5 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
+                    <Link href="/services" className="text-base font-bold text-[#020079] hover:text-brand flex items-center gap-2 transition-colors">
+                      <List className="h-5 w-5" />
+                      View All Services
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                    <Link href="/booking" className="flex items-center text-sm font-semibold text-brand hover:text-[#020079] transition-colors">
+                      Book a service now
+                      <ArrowRight className="ml-1 h-4 w-4" />
+                    </Link>
                   </div>
                 </div>
               </NavigationMenuContent>
@@ -305,9 +263,31 @@ export function Navigation({ className, initialUser }: NavigationProps) {
                 <Link href="/about" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   ABOUT US
                 </Link>
-                <Link href="/services" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
-                  SERVICES
-                </Link>
+                <div className="space-y-2">
+                  <Link href="/services" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
+                    SERVICES
+                  </Link>
+                  {navServices.length > 0 && (
+                    <div className="pl-3 space-y-2">
+                      {navServices.map((service) => (
+                        <div key={service.id} className="flex items-center justify-between gap-2">
+                          <Link
+                            href={`/services/${service.id}`}
+                            className="text-sm font-medium text-gray-600 hover:text-brand"
+                          >
+                            {service.name}
+                          </Link>
+                          <Link
+                            href={`/booking?serviceId=${service.id}&serviceName=${encodeURIComponent(service.name)}`}
+                            className="text-xs text-brand font-semibold"
+                          >
+                            Book
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <Link href="/projects" className="py-2 text-lg font-medium text-[#020079] hover:text-brand transition-colors">
                   PROJECTS
                 </Link>

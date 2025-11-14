@@ -1,10 +1,11 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import EmployeeLayout from "@/components/layout/EmployeeLayout";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
+// Removed unused useMemo import
 
 // Dynamically import Chart.js components to reduce initial bundle size
 const Bar = dynamic(() => import("react-chartjs-2").then(mod => mod.Bar), {
@@ -34,38 +35,39 @@ if (typeof window !== "undefined") {
 }
 
 export default function EmployeeDashboard() {
-  // Sample data for the summary cards
-  const summaryData = useMemo(() => ({
-    name: "John Doe",
-    tasksToday: 4,
-    completedTasks: 21,
-    totalHours: 72,
-    rating: 4.8,
-  }), []);
-
-  // Sample data for the bar chart
-  const dailyHoursData = useMemo(() => ({
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+  const [isLoading, setIsLoading] = useState(true);
+  const [employeeName, setEmployeeName] = useState("Employee");
+  interface SummaryData {
+    tasksToday: number;
+    completedTasks: number;
+    totalHours: number;
+    rating: number;
+    weeklyHours: number;
+  }
+  const [summaryData, setSummaryData] = useState<SummaryData>({
+    tasksToday: 0,
+    completedTasks: 0,
+    totalHours: 0,
+    rating: 0,
+    weeklyHours: 0,
+  });
+  const [dailyHoursData, setDailyHoursData] = useState({
+    labels: [] as string[],
     datasets: [
       {
         label: "Hours Worked",
-        data: [8, 7.5, 8.2, 6.5, 8],
+        data: [] as number[],
         backgroundColor: "#020079",
-        borderRadius: 6,
-        hoverBackgroundColor: "#03009B",
       },
     ],
-  }), []);
-
-  // Sample data for the line chart
-  const ratingData = useMemo(() => ({
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
+  });
+  const [ratingData, setRatingData] = useState({
+    labels: [] as string[],
     datasets: [
       {
         label: "Customer Ratings",
-        data: [4.5, 4.7, 4.6, 4.8],
+        data: [] as number[],
         borderColor: "#E6C200",
-        backgroundColor: "rgba(230, 194, 0, 0.1)",
         tension: 0.4,
         pointRadius: 5,
         pointHoverRadius: 7,
@@ -77,44 +79,114 @@ export default function EmployeeDashboard() {
         fill: true,
       },
     ],
-  }), []);
+  });
 
-  const chartOptions = useMemo(() => ({
-    bar: {
-      responsive: true,
-      maintainAspectRatio: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 10,
-          grid: { color: "#f0f0f0" },
-          ticks: { font: { family: "Inter, system-ui, sans-serif" } },
-        },
-        x: {
-          grid: { display: false },
-          ticks: { font: { family: "Inter, system-ui, sans-serif" } },
-        },
-      },
-      plugins: { legend: { display: false } },
-    },
-    line: {
-      responsive: true,
-      maintainAspectRatio: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 5,
-          grid: { color: "#f0f0f0" },
-          ticks: { font: { family: "Inter, system-ui, sans-serif" } },
-        },
-        x: {
-          grid: { display: false },
-          ticks: { font: { family: "Inter, system-ui, sans-serif" } },
-        },
-      },
-      plugins: { legend: { display: false } },
-    },
-  }), []);
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      setIsLoading(true);
+      try {
+        const { getMyProfile, getDashboardSummary, getChartsData, getWeeklyTotalHours } = await import("@/services/employeeService");
+        
+        // Load all data in parallel
+        const [profile, summary, charts, weekly] = await Promise.all([
+          getMyProfile(),
+          getDashboardSummary(),
+          getChartsData(),
+          getWeeklyTotalHours().catch(() => ({ totalHoursThisWeek: 0 })),
+        ]);
+
+        // Set employee name
+        const name = profile.name || `${profile.firstName || ""} ${profile.lastName || ""}`.trim() || "Employee";
+        setEmployeeName(name);
+
+        // Set summary data
+        setSummaryData({
+          tasksToday: summary.tasksToday || 0,
+          completedTasks: summary.tasksCompletedThisMonth || 0,
+          totalHours: Math.round(summary.totalHoursLoggedThisMonth || 0),
+          rating: summary.averageRating || 0,
+          weeklyHours: Math.round(weekly.totalHoursThisWeek || 0),
+        });
+
+        // Transform daily hours data for chart
+        if (charts.dailyHoursData && charts.dailyHoursData.length > 0) {
+          // Get last 5 days or available days
+          const recentDays = charts.dailyHoursData.slice(-5);
+          const labels = recentDays.map((item: { date: string; hours: number }) => {
+            // Format date to show day name (Mon, Tue, etc.)
+            const date = new Date(item.date);
+            return date.toLocaleDateString("en-US", { weekday: "short" });
+          });
+          const hours = recentDays.map((item: { date: string; hours: number }) => item.hours || 0);
+
+          setDailyHoursData({
+            labels,
+            datasets: [
+              {
+                label: "Hours Worked",
+                data: hours,
+                backgroundColor: "#020079",
+              },
+            ],
+          });
+        }
+
+        // Transform rating trend data for chart
+        if (charts.ratingTrendData && charts.ratingTrendData.length > 0) {
+          // Get recent rating data (last 4 weeks or available data)
+          const recentRatings = charts.ratingTrendData.slice(-4);
+          const labels = recentRatings.map((item: { date?: string; rating: number }, index: number) => {
+            // Format as "Week X" or use date
+            if (item.date) {
+              return `Week ${index + 1}`;
+            }
+            return `Week ${index + 1}`;
+          });
+          const ratings = recentRatings.map((item: { date?: string; rating: number }) => item.rating || 0);
+
+          setRatingData({
+            labels,
+            datasets: [
+              {
+                label: "Customer Ratings",
+                data: ratings,
+                borderColor: "#E6C200",
+                tension: 0.4,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                pointBackgroundColor: "#ffffff",
+                pointBorderColor: "#E6C200",
+                pointBorderWidth: 2,
+                pointHoverBackgroundColor: "#E6C200",
+                pointHoverBorderColor: "#020079",
+                fill: true,
+              },
+            ],
+          });
+        }
+      } catch (error) {
+        console.error("Error loading dashboard data:", error);
+        // Keep default values on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <EmployeeLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#020079] mx-auto mb-4"></div>
+            <p className="text-gray-600 font-medium">Loading dashboard...</p>
+          </div>
+        </div>
+      </EmployeeLayout>
+    );
+  }
 
   return (
     <EmployeeLayout>
@@ -122,7 +194,7 @@ export default function EmployeeDashboard() {
         {/* Dashboard Header */}
         <div className="bg-white rounded-xl p-6 shadow-md border border-[#020079]/20">
           <h2 className="text-2xl font-bold text-[#020079] mb-2">
-            Welcome Back, {summaryData.name || "Employee"}
+            Welcome Back, {employeeName}
           </h2>
           <p className="text-gray-600 leading-relaxed">
             Track your daily performance metrics and task progress at a glance.
@@ -133,7 +205,7 @@ export default function EmployeeDashboard() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+  <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
           <Card className="p-6 bg-white shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 rounded-xl border border-[#FFD700]/30 hover:border-[#E6C200]">
             <h3 className="text-sm font-medium text-[#020079] mb-2">
               Tasks Today
@@ -179,6 +251,16 @@ export default function EmployeeDashboard() {
               <p className="text-sm text-gray-500 mb-1">Out of 5</p>
             </div>
           </Card>
+
+          <Card className="p-6 bg-white shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 rounded-xl border border-[#FFD700]/30 hover:border-[#E6C200]">
+            <h3 className="text-sm font-medium text-[#020079] mb-2">Hours This Week</h3>
+            <div className="flex items-end gap-2">
+              <p className="text-3xl font-bold text-[#020079]">
+                {summaryData.weeklyHours ?? 0}
+              </p>
+              <p className="text-sm text-gray-500 mb-1">Week Total</p>
+            </div>
+          </Card>
         </div>
 
         {/* Charts */}
@@ -187,7 +269,59 @@ export default function EmployeeDashboard() {
             <h3 className="text-xl font-semibold mb-6 text-[#020079]">
               Daily Work Hours
             </h3>
-            <Bar data={dailyHoursData} options={chartOptions.bar} />
+            {dailyHoursData.labels.length > 0 ? (
+              <Bar
+                data={{
+                  labels: dailyHoursData.labels,
+                  datasets: [
+                    {
+                      ...dailyHoursData.datasets[0],
+                      backgroundColor: "#020079",
+                      borderRadius: 6,
+                      hoverBackgroundColor: "#03009B",
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      max: dailyHoursData.datasets[0].data.length > 0
+                        ? Math.max(10, Math.ceil(Math.max(...dailyHoursData.datasets[0].data) + 2))
+                        : 10,
+                      grid: {
+                        color: "#f0f0f0",
+                      },
+                      ticks: {
+                        font: {
+                          family: "Inter, system-ui, sans-serif",
+                        },
+                      },
+                    },
+                    x: {
+                      grid: {
+                        display: false,
+                      },
+                      ticks: {
+                        font: {
+                          family: "Inter, system-ui, sans-serif",
+                        },
+                      },
+                    },
+                  },
+                  plugins: {
+                    legend: {
+                      display: false,
+                    },
+                  },
+                }}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-64 text-gray-500">
+                <p>No daily hours data available</p>
+              </div>
+            )}
           </Card>
 
           <Card className="p-6 bg-white shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 rounded-xl border border-[#020079]/20 hover:border-[#020079]">
@@ -202,7 +336,65 @@ export default function EmployeeDashboard() {
                 Last 30 Days
               </Badge>
             </div>
-            <Line data={ratingData} options={chartOptions.line} />
+            {ratingData.labels.length > 0 ? (
+              <Line
+                data={{
+                  labels: ratingData.labels,
+                  datasets: [
+                    {
+                      ...ratingData.datasets[0],
+                      borderColor: "#E6C200",
+                      backgroundColor: "rgba(230, 194, 0, 0.1)",
+                      tension: 0.4,
+                      pointRadius: 5,
+                      pointHoverRadius: 7,
+                      pointBackgroundColor: "#ffffff",
+                      pointBorderColor: "#E6C200",
+                      pointBorderWidth: 2,
+                      pointHoverBackgroundColor: "#E6C200",
+                      pointHoverBorderColor: "#020079",
+                      fill: true,
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      max: 5,
+                      grid: {
+                        color: "#f0f0f0",
+                      },
+                      ticks: {
+                        font: {
+                          family: "Inter, system-ui, sans-serif",
+                        },
+                      },
+                    },
+                    x: {
+                      grid: {
+                        display: false,
+                      },
+                      ticks: {
+                        font: {
+                          family: "Inter, system-ui, sans-serif",
+                        },
+                      },
+                    },
+                  },
+                  plugins: {
+                    legend: {
+                      display: false,
+                    },
+                  },
+                }}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-64 text-gray-500">
+                <p>No rating data available</p>
+              </div>
+            )}
           </Card>
         </div>
       </div>

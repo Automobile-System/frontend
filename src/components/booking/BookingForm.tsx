@@ -22,7 +22,6 @@ const services = [
   "Lube Services",
   "Exterior & Interior Detailing",
   "Engine Tune ups",
-  "Wash and Grooming",
   "Undercarriage Degreasing",
   "Windscreean Treatments",
   "Inspection Reports",
@@ -98,7 +97,7 @@ export default function BookingForm() {
                 required
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                className="border-black focus:border-[#020079]"
+                className="border-black focus:border-[#020079] text-gray-900 bg-white placeholder:text-gray-400"
               />
             </div>
             <div className="space-y-2">
@@ -110,7 +109,7 @@ export default function BookingForm() {
                 required
                 value={formData.lastName}
                 onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                className="border-black focus:border-[#020079]"
+                className="border-black focus:border-[#020079] text-gray-900 bg-white placeholder:text-gray-400"
               />
             </div>
           </div>
@@ -124,7 +123,7 @@ export default function BookingForm() {
               required
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="border-black focus:border-[#020079]"
+              className="border-black focus:border-[#020079] text-gray-900 bg-white placeholder:text-gray-400"
               placeholder="+94 XX XXX XXXX"
             />
           </div>
@@ -149,12 +148,12 @@ export default function BookingForm() {
               required
               value={formData.vehicleType}
               onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })}
-              className="w-full h-10 px-3 rounded-md border border-black focus:border-[#020079] focus:outline-none focus:ring-2 focus:ring-[#020079]/20"
+              className="w-full h-10 px-3 rounded-md border border-black focus:border-[#020079] focus:outline-none focus:ring-2 focus:ring-[#020079]/20 text-gray-900 bg-white"
               aria-label="Select Vehicle Type"
             >
-              <option value="">Select Vehicle Type</option>
+              <option value="" className="text-gray-500">Select Vehicle Type</option>
               {vehicleTypes.map((type) => (
-                <option key={type} value={type}>
+                <option key={type} value={type} className="text-gray-900">
                   {type}
                 </option>
               ))}
@@ -169,7 +168,7 @@ export default function BookingForm() {
               required
               value={formData.vehicleNumber}
               onChange={(e) => setFormData({ ...formData, vehicleNumber: e.target.value })}
-              className="border-black focus:border-[#020079]"
+              className="border-black focus:border-[#020079] text-gray-900 bg-white placeholder:text-gray-400"
               placeholder="ABC-1234"
             />
           </div>
@@ -226,7 +225,7 @@ export default function BookingForm() {
                 required
                 value={formData.date}
                 onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="border-black focus:border-[#020079]"
+                className="border-black focus:border-[#020079] text-gray-900 bg-white"
               />
             </div>
             <div className="space-y-2">
@@ -239,7 +238,7 @@ export default function BookingForm() {
                 required
                 value={formData.time}
                 onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                className="border-black focus:border-[#020079]"
+                className="border-black focus:border-[#020079] text-gray-900 bg-white"
               />
             </div>
           </div>
@@ -264,7 +263,7 @@ export default function BookingForm() {
               value={formData.additionalNotes}
               onChange={(e) => setFormData({ ...formData, additionalNotes: e.target.value })}
               rows={4}
-              className="w-full px-3 py-2 rounded-md border border-black focus:border-[#020079] focus:outline-none focus:ring-2 focus:ring-[#020079]/20 resize-none"
+              className="w-full px-3 py-2 rounded-md border border-black focus:border-[#020079] focus:outline-none focus:ring-2 focus:ring-[#020079]/20 resize-none text-gray-900 bg-white placeholder:text-gray-400"
               placeholder="Any special requests or additional information..."
             />
           </div>
