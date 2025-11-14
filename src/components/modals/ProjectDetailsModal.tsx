@@ -32,8 +32,8 @@ interface ProjectDetails {
   jobId: number;
   title: string;
   description: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-  projectStatus: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD';
+  status: 'PENDING' | 'APPROVED' | 'COMPLETED' | 'IN_PROGRESS' | 'WAITING_PARTS' | 'SCHEDULED' | 'CANCELLED';
+  projectStatus: 'PENDING' | 'APPROVED' | 'COMPLETED' | 'IN_PROGRESS' | 'WAITING_PARTS' | 'SCHEDULED' | 'CANCELLED';
   arrivingDate: string;
   completionDate: string | null;
   cost: number | null;
@@ -46,52 +46,49 @@ interface ProjectDetails {
 }
 
 interface ProjectDetailsModalProps {
-  projectId: number;
+  jobId: number;
   onClose: () => void;
 }
 
 const statusColors = {
   PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-300',
+  APPROVED: 'bg-cyan-100 text-cyan-800 border-cyan-300',
   COMPLETED: 'bg-green-100 text-green-800 border-green-300',
+  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-300',
+  WAITING_PARTS: 'bg-orange-100 text-orange-800 border-orange-300',
+  SCHEDULED: 'bg-purple-100 text-purple-800 border-purple-300',
   CANCELLED: 'bg-red-100 text-red-800 border-red-300',
 };
 
-const projectStatusColors = {
-  PLANNING: 'bg-purple-100 text-purple-800 border-purple-300',
-  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-300',
-  COMPLETED: 'bg-green-100 text-green-800 border-green-300',
-  ON_HOLD: 'bg-orange-100 text-orange-800 border-orange-300',
-};
-
-export default function ProjectDetailsModal({ projectId, onClose }: ProjectDetailsModalProps) {
+export default function ProjectDetailsModal({ jobId, onClose }: ProjectDetailsModalProps) {
   const [project, setProject] = useState<ProjectDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchProjectDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId]);
+  }, [jobId]);
 
   const fetchProjectDetails = async () => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/projects/${projectId}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/customer/projects/${jobId}`,
         {
           credentials: 'include',
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch project details");
+        const errorData = await response.json().catch(() => ({ message: 'Failed to fetch project details' }));
+        throw new Error(errorData.message || 'Failed to fetch project details');
       }
 
       const data = await response.json();
       setProject(data);
     } catch (error) {
       console.error('Failed to fetch project details:', error);
-      showToast.error('Failed to load project details');
+      showToast.error(error instanceof Error ? error.message : 'Failed to load project details');
       onClose();
     } finally {
       setIsLoading(false);
@@ -128,9 +125,6 @@ export default function ProjectDetailsModal({ projectId, onClose }: ProjectDetai
                 <div className="flex gap-2">
                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[project.status]}`}>
                     {project.status.replace('_', ' ')}
-                  </span>
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${projectStatusColors[project.projectStatus]}`}>
-                    {project.projectStatus.replace('_', ' ')}
                   </span>
                 </div>
               </div>
