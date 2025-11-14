@@ -136,6 +136,23 @@ export interface FinancialTotals {
   overallTrend: number
 }
 
+export interface MonthlyTrend {
+  labels: string[]
+  revenue: number[]
+  cost: number[]
+  profit: number[]
+}
+
+export interface RevenueDistribution {
+  name: string
+  value: number
+}
+
+export interface CostAnalysis {
+  category: string
+  amount: number
+}
+
 export interface FinancialReport {
   breakdown: ServiceTypeBreakdown[]
   totals: FinancialTotals
@@ -143,6 +160,9 @@ export interface FinancialReport {
     startDate: string
     endDate: string
   }
+  monthlyTrend: MonthlyTrend
+  revenueDistribution: RevenueDistribution[]
+  costAnalysis: CostAnalysis[]
 }
 
 // --- Workforce Overview Page Types ---
@@ -776,77 +796,24 @@ export const fetchFinancialReports = async (
   endDate: string
 ): Promise<FinancialReport> => {
   try {
-    // TODO: Replace with actual API call
-    // const response = await fetch(
-    //   `/api/admin/financial-reports?serviceFilter=${serviceFilter}&startDate=${startDate}&endDate=${endDate}`,
-    //   {
-    //     method: 'GET',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'Authorization': `Bearer ${getAuthToken()}`
-    //     }
-    //   }
-    // )
-    // if (!response.ok) throw new Error('Failed to fetch financial reports')
-    // return await response.json()
-
-    // Mock data for development
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    return {
-      breakdown: [
-        {
-          serviceType: 'Oil Changes',
-          revenue: 450000,
-          cost: 180000,
-          profit: 270000,
-          margin: 60,
-          trend: 8
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    
+    const response = await fetch(
+      `${baseUrl}/api/admin/financial-reports?serviceFilter=${serviceFilter}&startDate=${startDate}&endDate=${endDate}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        {
-          serviceType: 'Brake Services',
-          revenue: 380000,
-          cost: 190000,
-          profit: 190000,
-          margin: 50,
-          trend: -3
-        },
-        {
-          serviceType: 'Engine Services',
-          revenue: 620000,
-          cost: 310000,
-          profit: 310000,
-          margin: 50,
-          trend: 12
-        },
-        {
-          serviceType: 'Electrical Diagnostics',
-          revenue: 280000,
-          cost: 140000,
-          profit: 140000,
-          margin: 50,
-          trend: 15
-        },
-        {
-          serviceType: 'Custom Projects',
-          revenue: 970000,
-          cost: 582000,
-          profit: 388000,
-          margin: 40,
-          trend: 6
-        }
-      ],
-      totals: {
-        totalRevenue: 2700000,
-        totalCost: 1402000,
-        totalProfit: 1298000,
-        overallMargin: 48,
-        overallTrend: 9
-      },
-      period: {
-        startDate,
-        endDate
+        credentials: 'include' // Use cookies for authentication
       }
+    )
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch financial reports')
     }
+    
+    return await response.json()
   } catch (error) {
     console.error('Error fetching financial reports:', error)
     throw error
