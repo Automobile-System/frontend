@@ -23,61 +23,29 @@ export default function ServiceTimeline({ }: ServiceTimelineProps) {
 
     return (
         <div>
-            <h4 style={{
-                fontSize: '16px',
-                fontWeight: '600',
-                color: '#1f2937',
-                marginBottom: '16px'
-            }}>
+            <h4 className="text-base font-semibold text-gray-800 mb-4">
                 Updates Timeline
             </h4>
 
-            <div style={{ position: 'relative' }}>
+            <div className="relative">
                 {timelineEvents.map((event, index) => (
-                    <div key={index} style={{
-                        display: 'flex',
-                        marginBottom: '20px',
-                        position: 'relative'
-                    }}>
+                    <div key={index} className="flex mb-5 relative">
                         {/* Timeline line */}
                         {index < timelineEvents.length - 1 && (
-                            <div style={{
-                                position: 'absolute',
-                                left: '12px',
-                                top: '24px',
-                                bottom: '-20px',
-                                width: '2px',
-                                backgroundColor: '#e5e7eb'
-                            }} />
+                            <div className="absolute left-3 top-6 bottom-[-20px] w-0.5 bg-gray-200" />
                         )}
 
                         {/* Timeline dot */}
-                        <div style={{
-                            width: '24px',
-                            height: '24px',
-                            borderRadius: '50%',
-                            backgroundColor: event.status === 'completed' ? '#10b981' : '#f59e0b',
-                            marginRight: '16px',
-                            flexShrink: 0,
-                            position: 'relative',
-                            zIndex: 1
-                        }} />
+                        <div className={`w-6 h-6 rounded-full mr-4 shrink-0 relative z-[1] ${
+                            event.status === 'completed' ? 'bg-green-500' : 'bg-amber-500'
+                        }`} />
 
                         {/* Event content */}
-                        <div style={{ flex: 1 }}>
-                            <p style={{
-                                fontWeight: '600',
-                                color: '#1f2937',
-                                margin: '0 0 4px 0',
-                                fontSize: '14px'
-                            }}>
+                        <div className="flex-1">
+                            <p className="font-semibold text-gray-800 mb-1 mt-0 text-sm">
                                 {event.time}
                             </p>
-                            <p style={{
-                                color: '#6b7280',
-                                margin: 0,
-                                fontSize: '14px'
-                            }}>
+                            <p className="text-gray-500 m-0 text-sm">
                                 {event.description}
                             </p>
                         </div>

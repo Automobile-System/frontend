@@ -101,6 +101,33 @@ export const deleteCustomerVehicle = (id: string) =>
   apiFetch(`/api/customer/vehicles/${id}`, {
     method: "DELETE"
   });
+
+/* Customer Services */
+export const getCustomerServices = () => apiFetch("/api/customer/services");
+
+export const addCustomerService = (payload: {
+  vehicleId: string;
+  serviceType: string;
+  description: string;
+  scheduledDate: string;
+}) => apiFetch("/api/customer/services", {
+  method: "POST",
+  body: JSON.stringify(payload)
+});
+
+/* Customer Projects */
+export const getCustomerProjects = () => apiFetch("/api/customer/projects");
+
+export const addCustomerProject = (payload: {
+  vehicleId: string;
+  projectType: string;
+  description: string;
+  estimatedDuration: string;
+}) => apiFetch("/api/customer/projects", {
+  method: "POST",
+  body: JSON.stringify(payload)
+});
+
 /* Contact */
 export const postContactMessage = (payload: {
   name: string

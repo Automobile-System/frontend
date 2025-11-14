@@ -902,13 +902,13 @@ export const fetchTopEmployees = async (): Promise<TopEmployee[]> => {
     const data = await response.json()
     
     // Map backend response to TopEmployee interface
-    return Array.isArray(data) ? data.map((item: any) => ({
-      id: item.id || item.employeeId || item.empId,
-      name: item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim(),
-      specialization: item.specialization || item.specialty || item.skill || '-',
+    return Array.isArray(data) ? data.map((item: Record<string, unknown>) => ({
+      id: String(item.id || item.employeeId || item.empId || ''),
+      name: String(item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim() || ''),
+      specialization: String(item.specialization || item.specialty || item.skill || '-'),
       rating: Number(item.rating || item.employeeRating || 0),
-      rewardEligible: item.rewardEligible ?? item.eligible ?? true,
-      overloaded: item.overloaded ?? item.isOverloaded ?? false
+      rewardEligible: Boolean(item.rewardEligible ?? item.eligible ?? true),
+      overloaded: Boolean(item.overloaded ?? item.isOverloaded ?? false)
     })) : []
   } catch (error) {
     console.error('Error fetching top employees:', error)
@@ -939,13 +939,13 @@ export const fetchManagerPerformance = async (): Promise<ManagerPerformance[]> =
     const data = await response.json()
     
     // Map backend response to ManagerPerformance interface
-    return Array.isArray(data) ? data.map((item: any) => ({
-      id: item.id || item.managerId || item.empId,
-      name: item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim(),
+    return Array.isArray(data) ? data.map((item: Record<string, unknown>) => ({
+      id: String(item.id || item.managerId || item.empId || ''),
+      name: String(item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim() || ''),
       tasksAssigned: Number(item.tasksAssigned || item.totalTasks || 0),
       completionRate: Number(item.completionRate || item.completionPercentage || 0),
       avgEmployeeRating: Number(item.avgEmployeeRating || item.averageRating || item.rating || 0),
-      status: item.status || 'Active'
+      status: (item.status === 'Under Review' ? 'Under Review' : 'Active') as 'Active' | 'Under Review'
     })) : []
   } catch (error) {
     console.error('Error fetching manager performance:', error)
@@ -976,14 +976,21 @@ export const fetchAllManagers = async (): Promise<Manager[]> => {
     const data = await response.json()
     
     // Map backend response to Manager interface
-    return Array.isArray(data) ? data.map((item: any) => ({
-      id: item.id || item.managerId || item.employeeId,
-      name: item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim(),
-      email: item.email || '',
-      phone: item.phone || item.phoneNumber || '',
-      joinDate: item.joinDate || item.createdAt || item.hireDate || '-',
-      status: item.status || 'Active'
-    })) : []
+    return Array.isArray(data) ? data.map((item: Record<string, unknown>) => {
+      const status = String(item.status || 'Active');
+      const validStatus: 'Active' | 'Under Review' | 'Frozen' = 
+        status === 'Under Review' ? 'Under Review' : 
+        status === 'Frozen' ? 'Frozen' : 'Active';
+      
+      return {
+        id: String(item.id || item.managerId || item.employeeId || ''),
+        name: String(item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim() || ''),
+        email: String(item.email || ''),
+        phone: String(item.phone || item.phoneNumber || ''),
+        joinDate: String(item.joinDate || item.createdAt || item.hireDate || '-'),
+        status: validStatus
+      };
+    }) : []
   } catch (error) {
     console.error('Error fetching all managers:', error)
     throw error
@@ -1013,15 +1020,22 @@ export const fetchAllEmployees = async (): Promise<Employee[]> => {
     const data = await response.json()
     
     // Map backend response to Employee interface
-    return Array.isArray(data) ? data.map((item: any) => ({
-      id: item.id || item.employeeId || item.empId,
-      name: item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim(),
-      specialization: item.specialization || item.specialty || item.skill || item.jobType || '-',
-      email: item.email || '',
-      phone: item.phone || item.phoneNumber || item.contact || '',
-      rating: Number(item.rating || item.employeeRating || 0),
-      status: item.status || 'Active'
-    })) : []
+    return Array.isArray(data) ? data.map((item: Record<string, unknown>) => {
+      const status = String(item.status || 'Active');
+      const validStatus: 'Active' | 'Frozen' | 'On Leave' = 
+        status === 'Frozen' ? 'Frozen' : 
+        status === 'On Leave' ? 'On Leave' : 'Active';
+      
+      return {
+        id: String(item.id || item.employeeId || item.empId || ''),
+        name: String(item.name || `${item.firstName || ''} ${item.lastName || ''}`.trim() || ''),
+        specialization: String(item.specialization || item.specialty || item.skill || item.jobType || '-'),
+        email: String(item.email || ''),
+        phone: String(item.phone || item.phoneNumber || item.contact || ''),
+        rating: Number(item.rating || item.employeeRating || 0),
+        status: validStatus
+      };
+    }) : []
   } catch (error) {
     console.error('Error fetching all employees:', error)
     throw error
@@ -2091,11 +2105,11 @@ export const fetchCustomerList = async (): Promise<Customer[]> => {
     // Map backend fields to frontend interface with flexible field mapping
     const customers = Array.isArray(data) ? data : (data.customers || data.data || [])
     
-    return customers.map((customer: any) => ({
-      id: customer.id || customer.customerId || customer.customer_id || '',
-      name: customer.name || `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
-      email: customer.email || '',
-      phone: customer.phone || customer.phoneNumber || customer.contactNumber || '',
+    return customers.map((customer: Record<string, unknown>) => ({
+      id: String(customer.id || customer.customerId || customer.customer_id || ''),
+      name: String(customer.name || `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || ''),
+      email: String(customer.email || ''),
+      phone: String(customer.phone || customer.phoneNumber || customer.contactNumber || ''),
       vehicleCount: typeof customer.vehicleCount === 'number' ? customer.vehicleCount : 
                    typeof customer.vehicles === 'number' ? customer.vehicles : 
                    typeof customer.vehicle_count === 'number' ? customer.vehicle_count : 0,
@@ -2103,8 +2117,8 @@ export const fetchCustomerList = async (): Promise<Customer[]> => {
                  typeof customer.spent === 'number' ? customer.spent :
                  typeof customer.total_spent === 'number' ? customer.total_spent :
                  typeof customer.amount === 'number' ? customer.amount : 0,
-      lastServiceDate: customer.lastServiceDate || customer.last_service_date || 
-                      customer.lastService || customer.recentService || '',
+      lastServiceDate: String(customer.lastServiceDate || customer.last_service_date || 
+                      customer.lastService || customer.recentService || ''),
       status: (customer.status === 'Inactive' || customer.status === 'inactive') ? 'Inactive' : 'Active'
     }))
   } catch (error) {
