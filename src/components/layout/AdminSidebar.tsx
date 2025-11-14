@@ -52,13 +52,8 @@ export default function AdminSidebar() {
       label: "Customers Overview",
 
       id: "customerdetails",
-    },
-    {
-      href: "/admin/settings",
-      label: "Settings",
-     
-      id: "settings",
-    },
+    }
+   
   ]
 
   const isActive = (href: string) => pathname === href
@@ -82,16 +77,7 @@ export default function AdminSidebar() {
           ))}
         </nav>
         
-        {/* Logout Button */}
-        <div className="mt-auto px-0 pb-6">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-roboto bg-gradient-to-r from-yellow-500 to-yellow-400 text-black hover:shadow-lg transition-all duration-200"
-          >
-            <LogOut className="w-5 h-5" />
-            Log Out
-          </button>
-        </div>
+        
       </div>
     </aside>
   )

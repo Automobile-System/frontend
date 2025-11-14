@@ -1,606 +1,559 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
-import {
-  fetchCustomerOverview,
+import { useEffect, useState } from "react"
+import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout"
+import { 
+  fetchCustomerAnalytics, 
   fetchCustomerList,
   addCustomer,
   deleteCustomer,
   activateCustomer,
   deactivateCustomer,
-  type CustomerOverview,
+  type CustomerAnalytics,
   type Customer,
-  type AddCustomerRequest,
-} from "@/services/adminService";
+  type AddCustomerRequest
+} from "@/services/adminService"
+import { Users, UserPlus, TrendingUp, DollarSign, Car, Activity, Search, Plus, Trash2, UserCheck, UserX } from "lucide-react"
 import {
-  Search,
-  UserPlus,
-  Mail,
-  Phone,
-  Calendar,
-  Car,
-  Edit,
-  Trash2,
-  X,
-} from "lucide-react";
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieLabelRenderProps
+} from "recharts"
 
 export default function CustomerDetailsPage() {
-  const [overview, setOverview] = useState<CustomerOverview | null>(null);
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<
-    "all" | "active" | "inactive"
-  >("all");
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [newCustomerData, setNewCustomerData] = useState<AddCustomerRequest>({
+  const [analytics, setAnalytics] = useState<CustomerAnalytics | null>(null)
+  const [customers, setCustomers] = useState<Customer[]>([])
+  const [loading, setLoading] = useState(true)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filterStatus, setFilterStatus] = useState<"all" | "Active" | "Inactive">("all")
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [newCustomer, setNewCustomer] = useState<AddCustomerRequest>({
     name: "",
     email: "",
-    phone: "",
-  });
+    phone: ""
+  })
 
   useEffect(() => {
-    loadCustomerData();
-  }, []);
+    loadData()
+  }, [])
 
-  const loadCustomerData = async () => {
+  const loadData = async () => {
     try {
-      setLoading(true);
-      setError(null);
-
-      const [overviewData, customerData] = await Promise.all([
-        fetchCustomerOverview().catch((err) => {
-          console.error("Error fetching overview:", err);
-          // Return default overview data on error
-          return {
-            totalCustomers: 0,
-            newThisMonth: 0,
-            activeCustomers: 0,
-            activityRate: 0,
-            topCustomer: {
-              name: "N/A",
-              email: "N/A",
-              totalSpent: 0,
-              servicesUsed: 0,
-            },
-          };
-        }),
-        fetchCustomerList().catch((err) => {
-          console.error("Error fetching customers:", err);
-          // Return empty array on error
-          return [];
-        }),
-      ]);
-
-      setOverview(overviewData);
-      setCustomers(customerData);
+      setLoading(true)
+      const [analyticsData, customerList] = await Promise.all([
+        fetchCustomerAnalytics(),
+        fetchCustomerList()
+      ])
+      setAnalytics(analyticsData)
+      setCustomers(customerList)
     } catch (error) {
-      console.error("Error loading customer data:", error);
-      setError("Failed to load customer data. Please try again.");
+      console.error("Failed to load customer data:", error)
+      alert("Failed to load customer data")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
-
-  // Filter customers based on search and status
-  const filteredCustomers = customers.filter((customer) => {
-    const matchesSearch =
-      customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.phone.includes(searchTerm);
-
-    const matchesStatus =
-      filterStatus === "all" ||
-      (filterStatus === "active" && customer.status === "Active") ||
-      (filterStatus === "inactive" && customer.status === "Inactive");
-
-    return matchesSearch && matchesStatus;
-  });
+  }
 
   const handleAddCustomer = async () => {
     try {
-      // Validate form
-      if (
-        !newCustomerData.name ||
-        !newCustomerData.email ||
-        !newCustomerData.phone
-      ) {
-        alert("Please fill in all fields");
-        return;
+      if (!newCustomer.name || !newCustomer.email || !newCustomer.phone) {
+        alert("Please fill in all fields")
+        return
       }
-
-      await addCustomer(newCustomerData);
-      await loadCustomerData(); // Refresh data
-      setShowAddModal(false);
-      setNewCustomerData({ name: "", email: "", phone: "" }); // Reset form
-      alert("Customer added successfully!");
+      await addCustomer(newCustomer)
+      alert("Customer added successfully")
+      setShowAddModal(false)
+      setNewCustomer({ name: "", email: "", phone: "" })
+      loadData()
     } catch (error) {
-      console.error("Error adding customer:", error);
-      alert("Failed to add customer");
+      const message = error instanceof Error ? error.message : "Failed to add customer"
+      alert(message)
     }
-  };
+  }
 
   const handleActivate = async (customerId: string) => {
     try {
-      await activateCustomer(customerId);
-      await loadCustomerData(); // Refresh data
-      alert("Customer activated successfully!");
+      await activateCustomer(customerId)
+      alert("Customer activated successfully")
+      loadData()
     } catch (error) {
-      console.error("Error activating customer:", error);
-      alert("Failed to activate customer");
+      const message = error instanceof Error ? error.message : "Failed to activate customer"
+      alert(message)
     }
-  };
+  }
 
   const handleDeactivate = async (customerId: string) => {
     try {
-      if (confirm("Are you sure you want to deactivate this customer?")) {
-        await deactivateCustomer(customerId);
-        await loadCustomerData(); // Refresh data
-        alert("Customer deactivated successfully!");
-      }
+      await deactivateCustomer(customerId)
+      alert("Customer deactivated successfully")
+      loadData()
     } catch (error) {
-      console.error("Error deactivating customer:", error);
-      alert("Failed to deactivate customer");
+      const message = error instanceof Error ? error.message : "Failed to deactivate customer"
+      alert(message)
     }
-  };
+  }
 
   const handleDeleteCustomer = async (customerId: string) => {
-    try {
-      if (confirm("Are you sure you want to delete this customer?")) {
-        await deleteCustomer(customerId);
-        await loadCustomerData(); // Refresh data
-      }
-    } catch (error) {
-      console.error("Error deleting customer:", error);
+    if (!confirm("Are you sure you want to delete this customer?")) {
+      return
     }
-  };
+    try {
+      await deleteCustomer(customerId)
+      alert("Customer deleted successfully")
+      loadData()
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to delete customer"
+      alert(message)
+    }
+  }
+
+  const filteredCustomers = customers.filter(customer => {
+    const matchesSearch = 
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.phone.includes(searchQuery)
+    const matchesFilter = filterStatus === "all" || customer.status === filterStatus
+    return matchesSearch && matchesFilter
+  })
 
   if (loading) {
     return (
       <AdminDashboardLayout>
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#020079] mx-auto"></div>
-            <p className="mt-4 font-roboto text-slate-600">
-              Loading customer data...
-            </p>
-          </div>
+        <div className="flex items-center justify-center h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#020079]"></div>
         </div>
       </AdminDashboardLayout>
-    );
+    )
   }
+
+  if (!analytics) {
+    return (
+      <AdminDashboardLayout>
+        <div className="text-center py-12">
+          <p className="text-gray-500">Failed to load customer analytics</p>
+        </div>
+      </AdminDashboardLayout>
+    )
+  }
+
+  const growthChartData = analytics.growthTrend.labels.map((label, i) => ({
+    month: label,
+    new: analytics.growthTrend.newCustomers[i],
+    total: analytics.growthTrend.totalCustomers[i],
+    active: analytics.growthTrend.activeCustomers[i]
+  }))
+
+  const brandChartData = analytics.vehicleBrandDistribution.brands.slice(0, 10).map((brand, i) => ({
+    name: brand,
+    vehicles: analytics.vehicleBrandDistribution.count[i],
+    customers: analytics.vehicleBrandDistribution.customerCount[i]
+  }))
+
+  const engagementPieData = [
+    { name: 'High (5+)', value: analytics.engagement.highEngagement, color: '#020079' },
+    { name: 'Medium (2-4)', value: analytics.engagement.mediumEngagement, color: '#4040ff' },
+    { name: 'Low (1)', value: analytics.engagement.lowEngagement, color: '#8080ff' },
+    { name: 'None', value: analytics.engagement.noEngagement, color: '#c0c0ff' }
+  ]
+
+  const revenueChartData = analytics.revenueStats.monthlyRevenue.map(item => ({
+    month: item.month,
+    revenue: item.revenue,
+    customers: item.customerCount
+  }))
 
   return (
     <AdminDashboardLayout>
-      <div className="p-8 bg-white min-h-screen">
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600 font-roboto">{error}</p>
-            <button
-              onClick={loadCustomerData}
-              className="mt-2 text-sm text-red-700 underline font-roboto"
-            >
-              Try Again
-            </button>
-          </div>
-        )}
-
-        {/* Page Header */}
-        <div className="mb-10">
-          <h1 className="text-4xl font-bebas text-[#020079] mb-2">
-            Customer Overview
+      <div className="p-6 bg-white/30">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bebas tracking-wider text-[#020079] mb-2">
+            CUSTOMER ANALYTICS DASHBOARD
           </h1>
-          <p className="font-roboto text-slate-500">
-            Manage and monitor all customer information
+          <p className="text-sm text-gray-600 font-roboto">
+            Comprehensive insights into customer behavior, revenue, and engagement
           </p>
         </div>
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-          <Card className="border border-[#020079]/20 hover:border-[#020079] transition-all duration-300 bg-white">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-roboto font-medium text-[#020079]">
-                Total Customers
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bebas text-[#020079] mb-2">
-                {overview?.totalCustomers || 0}
-              </div>
-              <p className="text-sm font-roboto text-slate-500">
-                +{overview?.newThisMonth || 0} new this month
-              </p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-gradient-to-br from-[#020079] to-[#4040ff] rounded-lg p-5 text-white">
+            <div className="flex items-center justify-between mb-2">
+              <Users className="w-8 h-8" />
+              <span className="text-xs font-roboto bg-white/20 px-2 py-1 rounded">Total</span>
+            </div>
+            <div className="text-3xl font-bebas tracking-wider mb-1">
+              {analytics.stats.totalCustomers}
+            </div>
+            <div className="text-sm font-roboto opacity-90">Total Customers</div>
+            <div className="mt-2 text-xs font-roboto">
+              {analytics.stats.activeCustomers} Active  {analytics.stats.inactiveCustomers} Inactive
+            </div>
+          </div>
 
-          <Card className="border border-[#020079]/20 hover:border-[#020079] transition-all duration-300 bg-white">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-roboto font-medium text-[#020079]">
-                Active Customers
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-4xl font-bebas text-[#020079] mb-2">
-                {overview?.activeCustomers || 0}
-              </div>
-              <p className="text-sm font-roboto text-slate-500">
-                {overview?.activityRate || 0}% activity rate
-              </p>
-            </CardContent>
-          </Card>
+          <div className="bg-white rounded-lg p-5 border-2 border-[#020079]/20">
+            <div className="flex items-center justify-between mb-2">
+              <UserPlus className="w-8 h-8 text-[#020079]" />
+              <span className="text-xs font-roboto text-green-600 bg-green-100 px-2 py-1 rounded">
+                This Month
+              </span>
+            </div>
+            <div className="text-3xl font-bebas tracking-wider text-[#020079] mb-1">
+              {analytics.stats.newThisMonth}
+            </div>
+            <div className="text-sm font-roboto text-gray-600">New Customers</div>
+          </div>
+
+          <div className="bg-white rounded-lg p-5 border-2 border-[#020079]/20">
+            <div className="flex items-center justify-between mb-2">
+              <TrendingUp className="w-8 h-8 text-[#020079]" />
+              <span className="text-xs font-roboto text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                {analytics.stats.retentionRate.toFixed(1)}%
+              </span>
+            </div>
+            <div className="text-3xl font-bebas tracking-wider text-[#020079] mb-1">
+              {analytics.stats.retentionRate.toFixed(1)}%
+            </div>
+            <div className="text-sm font-roboto text-gray-600">Retention Rate</div>
+          </div>
+
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-5 text-white">
+            <div className="flex items-center justify-between mb-2">
+              <DollarSign className="w-8 h-8" />
+              <span className="text-xs font-roboto bg-white/20 px-2 py-1 rounded">Total</span>
+            </div>
+            <div className="text-3xl font-bebas tracking-wider mb-1">
+              LKR {(analytics.stats.totalRevenue / 1000000).toFixed(2)}M
+            </div>
+            <div className="text-sm font-roboto opacity-90">Total Revenue</div>
+            <div className="mt-2 text-xs font-roboto">
+              Avg: LKR {(analytics.stats.avgSpendPerCustomer / 1000).toFixed(1)}K
+            </div>
+          </div>
         </div>
 
-        {/* Top Customer Card */}
-        <Card className="border border-[#020079]/20 bg-white mb-10">
-          <CardHeader className="border-b border-[#020079]/20">
-            <CardTitle className="text-xl font-bebas text-[#020079]">
-              Top Spending Customer
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-[#020079]/10 flex items-center justify-center">
-                  <span className="text-2xl font-bebas text-[#020079]">
-                    {overview?.topCustomer?.name?.charAt(0) || "N"}
-                  </span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white rounded-lg p-4 border-2 border-[#020079]/20">
+            <div className="flex items-center gap-3">
+              <Car className="w-10 h-10 text-[#020079]" />
+              <div>
+                <div className="text-2xl font-bebas tracking-wider text-[#020079]">
+                  {analytics.stats.totalVehicles}
                 </div>
-                <div>
-                  <p className="text-lg font-roboto font-semibold text-[#020079]">
-                    {overview?.topCustomer?.name || "N/A"}
-                  </p>
-                  <p className="text-sm font-roboto text-slate-500">
-                    {overview?.topCustomer?.email || "N/A"}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-8">
-                <div className="text-right">
-                  <p className="text-sm font-roboto text-slate-600 mb-1">
-                    Total Spent
-                  </p>
-                  <p className="text-2xl font-bebas text-[#020079]">
-                    LKR{" "}
-                    {(overview?.topCustomer?.totalSpent || 0).toLocaleString()}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-roboto text-slate-600 mb-1">
-                    Services Used
-                  </p>
-                  <p className="text-2xl font-bebas text-[#020079]">
-                    {overview?.topCustomer?.servicesUsed || 0}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Customer List */}
-        <Card className="border border-[#020079]/20 bg-white">
-          <CardHeader className="border-b border-[#020079]/20">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-xl font-bebas text-[#020079]">
-                All Customers
-              </CardTitle>
-              <Button
-                onClick={() => setShowAddModal(true)}
-                className="bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold"
-              >
-                <UserPlus className="w-4 h-4 mr-2" />
-                Add New Customer
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            {/* Filters */}
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-                <Input
-                  type="text"
-                  placeholder="Search by name, email, or phone..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 border-[#020079]/30 focus:border-[#020079] font-roboto"
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant={filterStatus === "all" ? "default" : "outline"}
-                  onClick={() => setFilterStatus("all")}
-                  className={
-                    filterStatus === "all"
-                      ? "bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
-                      : "border-[#020079]/30 text-[#020079] hover:bg-[#020079]/5 font-roboto"
-                  }
-                >
-                  All
-                </Button>
-                <Button
-                  variant={filterStatus === "active" ? "default" : "outline"}
-                  onClick={() => setFilterStatus("active")}
-                  className={
-                    filterStatus === "active"
-                      ? "bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
-                      : "border-[#020079]/30 text-[#020079] hover:bg-[#020079]/5 font-roboto"
-                  }
-                >
-                  Active
-                </Button>
-                <Button
-                  variant={filterStatus === "inactive" ? "default" : "outline"}
-                  onClick={() => setFilterStatus("inactive")}
-                  className={
-                    filterStatus === "inactive"
-                      ? "bg-[#020079] hover:bg-[#03009B] text-white font-roboto"
-                      : "border-[#020079]/30 text-[#020079] hover:bg-[#020079]/5 font-roboto"
-                  }
-                >
-                  Inactive
-                </Button>
-              </div>
-            </div>
-
-            {/* Customer Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b-2 border-[#020079]/20">
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Customer Info
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Contact
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Vehicles
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Total Spent
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Last Service
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-left text-xs font-roboto font-semibold uppercase tracking-wider text-[#020079]">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredCustomers.map((customer) => (
-                    <tr
-                      key={customer.id}
-                      className="hover:bg-[#020079]/5 transition-colors"
-                    >
-                      <td className="px-6 py-4 border-b border-[#020079]/10">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[#020079]/10 flex items-center justify-center">
-                            <span className="text-base font-bebas text-[#020079]">
-                              {customer.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="font-roboto font-semibold text-[#020079]">
-                              {customer.name}
-                            </p>
-                            <p className="text-sm font-roboto text-slate-500">
-                              ID: {customer.id}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 border-b border-[#020079]/10">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 text-sm font-roboto text-slate-600">
-                            <Mail className="w-3 h-3" />
-                            {customer.email}
-                          </div>
-                          <div className="flex items-center gap-2 text-sm font-roboto text-slate-600">
-                            <Phone className="w-3 h-3" />
-                            {customer.phone}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 border-b border-[#020079]/10">
-                        <div className="flex items-center gap-2">
-                          <Car className="w-4 h-4 text-[#020079]" />
-                          <span className="font-roboto font-semibold text-[#020079]">
-                            {customer.vehicleCount}
-                          </span>
-                          <span className="text-sm font-roboto text-slate-500">
-                            {customer.vehicleCount === 1
-                              ? "vehicle"
-                              : "vehicles"}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 border-b border-[#020079]/10">
-                        <span className="font-roboto font-semibold text-[#020079]">
-                          LKR {customer.totalSpent.toLocaleString()}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 border-b border-[#020079]/10">
-                        <div className="flex items-center gap-2 text-sm font-roboto text-slate-600">
-                          <Calendar className="w-3 h-3" />
-                          {customer.lastServiceDate}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 border-b border-[#020079]/10">
-                        <Badge
-                          className={
-                            customer.status === "Active"
-                              ? "bg-[#020079]/10 text-[#020079] hover:bg-[#020079]/20 border-0 font-roboto"
-                              : "bg-[#020079]/10 text-[#020079]/70 hover:bg-[#020079]/20 border-0 font-roboto"
-                          }
-                        >
-                          {customer.status}
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-4 border-b border-[#020079]/10">
-                        <div className="flex flex-col gap-2">
-                          {customer.status === "Active" ? (
-                            <Button
-                              size="sm"
-                              onClick={() => handleDeactivate(customer.id)}
-                              className="bg-orange-500 hover:bg-orange-600 text-white font-roboto w-full"
-                              title="Deactivate customer"
-                            >
-                              <Edit className="w-3 h-3 mr-1" />
-                              Deactivate
-                            </Button>
-                          ) : (
-                            <Button
-                              size="sm"
-                              onClick={() => handleActivate(customer.id)}
-                              className="bg-green-600 hover:bg-green-700 text-white font-roboto w-full"
-                              title="Activate customer"
-                            >
-                              <Edit className="w-3 h-3 mr-1" />
-                              Activate
-                            </Button>
-                          )}
-                          <Button
-                            size="sm"
-                            onClick={() => handleDeleteCustomer(customer.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white font-roboto w-full"
-                            title="Delete customer"
-                          >
-                            <Trash2 className="w-3 h-3 mr-1" />
-                            Delete
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {filteredCustomers.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-slate-400 font-roboto">
-                  No customers found matching your criteria
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Add Customer Modal */}
-        {showAddModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-2xl w-full max-w-md mx-4">
-              <div className="flex items-center justify-between p-6 border-b border-[#020079]/20">
-                <h2 className="text-2xl font-bebas text-[#020079]">
-                  Add New Customer
-                </h2>
-                <button
-                  onClick={() => setShowAddModal(false)}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-              <div className="p-6 space-y-4">
-                <div>
-                  <Label
-                    htmlFor="name"
-                    className="text-sm font-roboto font-medium text-[#020079] mb-2 block"
-                  >
-                    Full Name *
-                  </Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Enter customer name"
-                    value={newCustomerData.name}
-                    onChange={(e) =>
-                      setNewCustomerData({
-                        ...newCustomerData,
-                        name: e.target.value,
-                      })
-                    }
-                    className="border-[#020079]/30 focus:border-[#020079] font-roboto"
-                  />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="email"
-                    className="text-sm font-roboto font-medium text-[#020079] mb-2 block"
-                  >
-                    Email Address *
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter email address"
-                    value={newCustomerData.email}
-                    onChange={(e) =>
-                      setNewCustomerData({
-                        ...newCustomerData,
-                        email: e.target.value,
-                      })
-                    }
-                    className="border-[#020079]/30 focus:border-[#020079] font-roboto"
-                  />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="phone"
-                    className="text-sm font-roboto font-medium text-[#020079] mb-2 block"
-                  >
-                    Phone Number *
-                  </Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+94 77 123 4567"
-                    value={newCustomerData.phone}
-                    onChange={(e) =>
-                      setNewCustomerData({
-                        ...newCustomerData,
-                        phone: e.target.value,
-                      })
-                    }
-                    className="border-[#020079]/30 focus:border-[#020079] font-roboto"
-                  />
-                </div>
-              </div>
-              <div className="flex gap-3 p-6 border-t border-[#020079]/20">
-                <Button
-                  onClick={() => setShowAddModal(false)}
-                  variant="outline"
-                  className="flex-1 border-[#020079]/30 text-[#020079] hover:bg-[#020079]/5 font-roboto"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleAddCustomer}
-                  className="flex-1 bg-[#FFD700] hover:bg-[#E6C200] text-[#020079] font-roboto font-semibold"
-                >
-                  Add Customer
-                </Button>
+                <div className="text-sm font-roboto text-gray-600">Total Vehicles</div>
               </div>
             </div>
           </div>
-        )}
+
+          <div className="bg-white rounded-lg p-4 border-2 border-[#020079]/20">
+            <div className="flex items-center gap-3">
+              <Activity className="w-10 h-10 text-[#020079]" />
+              <div>
+                <div className="text-2xl font-bebas tracking-wider text-[#020079]">
+                  {analytics.stats.totalJobsCompleted}
+                </div>
+                <div className="text-sm font-roboto text-gray-600">Completed Jobs</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border-2 border-[#020079]/20">
+            <div className="flex items-center gap-3">
+              <Users className="w-10 h-10 text-[#020079]" />
+              <div>
+                <div className="text-2xl font-bebas tracking-wider text-[#020079]">
+                  {analytics.engagement.avgServicesPerCustomer.toFixed(1)}
+                </div>
+                <div className="text-sm font-roboto text-gray-600">Avg Services/Customer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div className="bg-white rounded-lg p-5 border-2 border-[#020079]/20">
+            <h3 className="text-xl font-bebas tracking-wider text-[#020079] mb-4">
+              CUSTOMER GROWTH TREND
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={growthChartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="month" style={{ fontSize: '12px', fontFamily: 'Roboto' }} />
+                <YAxis style={{ fontSize: '12px', fontFamily: 'Roboto' }} />
+                <Tooltip />
+                <Legend wrapperStyle={{ fontSize: '12px', fontFamily: 'Roboto' }} />
+                <Line type="monotone" dataKey="new" stroke="#020079" strokeWidth={2} name="New" />
+                <Line type="monotone" dataKey="active" stroke="#4040ff" strokeWidth={2} name="Active" />
+                <Line type="monotone" dataKey="total" stroke="#8080ff" strokeWidth={2} name="Total" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white rounded-lg p-5 border-2 border-[#020079]/20">
+            <h3 className="text-xl font-bebas tracking-wider text-[#020079] mb-4">
+              VEHICLE BRANDS
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={brandChartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="name" style={{ fontSize: '12px', fontFamily: 'Roboto' }} />
+                <YAxis style={{ fontSize: '12px', fontFamily: 'Roboto' }} />
+                <Tooltip />
+                <Legend wrapperStyle={{ fontSize: '12px', fontFamily: 'Roboto' }} />
+                <Bar dataKey="vehicles" fill="#020079" name="Vehicles" />
+                <Bar dataKey="customers" fill="#4040ff" name="Customers" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white rounded-lg p-5 border-2 border-[#020079]/20">
+            <h3 className="text-xl font-bebas tracking-wider text-[#020079] mb-4">
+              CUSTOMER ENGAGEMENT
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={engagementPieData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {engagementPieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-white rounded-lg p-5 border-2 border-[#020079]/20">
+            <h3 className="text-xl font-bebas tracking-wider text-[#020079] mb-4">
+              MONTHLY REVENUE
+            </h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={revenueChartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="month" style={{ fontSize: '12px', fontFamily: 'Roboto' }} />
+                <YAxis style={{ fontSize: '12px', fontFamily: 'Roboto' }} />
+                <Tooltip />
+                <Legend wrapperStyle={{ fontSize: '12px', fontFamily: 'Roboto' }} />
+                <Bar dataKey="revenue" fill="#10b981" name="Revenue" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-5 border-2 border-[#020079]/20 mb-6">
+          <h3 className="text-xl font-bebas tracking-wider text-[#020079] mb-4">
+            TOP 10 CUSTOMERS BY SPENDING
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+            {analytics.revenueStats.topSpenders.map((spender, index) => (
+              <div key={spender.customerId} className="bg-gradient-to-br from-[#020079] to-[#4040ff] rounded-lg p-4 text-white">
+                <div className="text-xs font-roboto mb-1 opacity-80">#{index + 1}</div>
+                <div className="text-lg font-bebas tracking-wider truncate">{spender.name}</div>
+                <div className="text-2xl font-bebas tracking-wider mt-1">
+                  LKR {(spender.totalSpent / 1000).toFixed(1)}K
+                </div>
+                <div className="text-xs font-roboto mt-1 opacity-90">
+                  {spender.servicesCount} services
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-5 border-2 border-[#020079]/20">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-xl font-bebas tracking-wider text-[#020079]">
+              CUSTOMER LIST ({filteredCustomers.length})
+            </h3>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center gap-2 bg-[#020079] text-white px-4 py-2 rounded-lg hover:bg-[#020079]/90 transition-colors font-roboto text-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Add Customer
+            </button>
+          </div>
+
+          <div className="flex gap-4 mb-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search by name, email, or phone..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-lg focus:border-[#020079] focus:outline-none font-roboto text-sm"
+              />
+            </div>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value as "all" | "Active" | "Inactive")}
+              className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-[#020079] focus:outline-none font-roboto text-sm"
+            >
+              <option value="all">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-[#020079]/5 border-b-2 border-[#020079]/20">
+                  <th className="px-4 py-3 text-left text-sm font-bebas tracking-wider text-[#020079]">Customer</th>
+                  <th className="px-4 py-3 text-left text-sm font-bebas tracking-wider text-[#020079]">Contact</th>
+                  <th className="px-4 py-3 text-center text-sm font-bebas tracking-wider text-[#020079]">Vehicles</th>
+                  <th className="px-4 py-3 text-right text-sm font-bebas tracking-wider text-[#020079]">Total Spent</th>
+                  <th className="px-4 py-3 text-center text-sm font-bebas tracking-wider text-[#020079]">Last Service</th>
+                  <th className="px-4 py-3 text-center text-sm font-bebas tracking-wider text-[#020079]">Status</th>
+                  <th className="px-4 py-3 text-center text-sm font-bebas tracking-wider text-[#020079]">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCustomers.map((customer) => (
+                  <tr key={customer.id} className="border-b border-gray-200 hover:bg-[#020079]/5 transition-colors">
+                    <td className="px-4 py-3">
+                      <div className="font-roboto text-sm font-medium text-gray-900">{customer.name}</div>
+                      <div className="font-roboto text-xs text-gray-500">{customer.id}</div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="font-roboto text-sm text-gray-900">{customer.email}</div>
+                      <div className="font-roboto text-xs text-gray-500">{customer.phone}</div>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="font-roboto text-sm font-medium text-[#020079]">{customer.vehicleCount}</span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <span className="font-roboto text-sm font-medium text-green-600">
+                        LKR {(customer.totalSpent / 1000).toFixed(1)}K
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="font-roboto text-xs text-gray-500">{customer.lastServiceDate}</span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-roboto font-medium ${
+                        customer.status === "Active" 
+                          ? "bg-green-100 text-green-700" 
+                          : "bg-gray-100 text-gray-700"
+                      }`}>
+                        {customer.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-center gap-2">
+                        {customer.status === "Active" ? (
+                          <button
+                            onClick={() => handleDeactivate(customer.id)}
+                            className="p-1 text-orange-600 hover:bg-orange-100 rounded transition-colors"
+                            title="Deactivate"
+                          >
+                            <UserX className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleActivate(customer.id)}
+                            className="p-1 text-green-600 hover:bg-green-100 rounded transition-colors"
+                            title="Activate"
+                          >
+                            <UserCheck className="w-4 h-4" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDeleteCustomer(customer.id)}
+                          className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-2xl font-bebas tracking-wider text-[#020079] mb-4">
+              ADD NEW CUSTOMER
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-roboto font-medium text-gray-700 mb-1">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={newCustomer.name}
+                  onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
+                  className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-[#020079] focus:outline-none font-roboto text-sm"
+                  placeholder="John Doe"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-roboto font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={newCustomer.email}
+                  onChange={(e) => setNewCustomer({ ...newCustomer, email: e.target.value })}
+                  className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-[#020079] focus:outline-none font-roboto text-sm"
+                  placeholder="john@example.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-roboto font-medium text-gray-700 mb-1">
+                  Phone
+                </label>
+                <input
+                  type="tel"
+                  value={newCustomer.phone}
+                  onChange={(e) => setNewCustomer({ ...newCustomer, phone: e.target.value })}
+                  className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:border-[#020079] focus:outline-none font-roboto text-sm"
+                  placeholder="+94 77 123 4567"
+                />
+              </div>
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-roboto text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddCustomer}
+                  className="flex-1 px-4 py-2 bg-[#020079] text-white rounded-lg hover:bg-[#020079]/90 transition-colors font-roboto text-sm"
+                >
+                  Add Customer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminDashboardLayout>
-  );
+  )
 }

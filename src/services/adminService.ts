@@ -440,6 +440,93 @@ export interface AddCustomerRequest {
   phone: string
 }
 
+// --- Enhanced Customer Analytics Types ---
+export interface CustomerAnalytics {
+  stats: CustomerStats
+  topCustomers: CustomerDetail[]
+  growthTrend: CustomerGrowthTrend
+  vehicleBrandDistribution: VehicleBrandDistribution
+  engagement: CustomerEngagement
+  revenueStats: RevenueByCustomer
+}
+
+export interface CustomerStats {
+  totalCustomers: number
+  activeCustomers: number
+  newThisMonth: number
+  inactiveCustomers: number
+  retentionRate: number
+  totalVehicles: number
+  totalJobsCompleted: number
+  totalRevenue: number
+  avgSpendPerCustomer: number
+}
+
+export interface CustomerDetail {
+  customerId: string
+  name: string
+  email: string
+  phone: string
+  joinDate: string
+  vehicleCount: number
+  totalJobs: number
+  completedJobs: number
+  activeJobs: number
+  totalSpent: number
+  lastServiceDate: string
+  vehicleBrands: string[]
+  status: "Active" | "Inactive"
+  engagementScore: number
+}
+
+export interface CustomerGrowthTrend {
+  labels: string[]
+  newCustomers: number[]
+  totalCustomers: number[]
+  activeCustomers: number[]
+}
+
+export interface VehicleBrandDistribution {
+  brands: string[]
+  count: number[]
+  customerCount: number[]
+}
+
+export interface CustomerEngagement {
+  highEngagement: number
+  mediumEngagement: number
+  lowEngagement: number
+  noEngagement: number
+  avgServicesPerCustomer: number
+  monthlyEngagement: EngagementByMonth[]
+}
+
+export interface EngagementByMonth {
+  month: string
+  activeCustomers: number
+  totalServices: number
+}
+
+export interface RevenueByCustomer {
+  totalRevenue: number
+  avgRevenuePerCustomer: number
+  topSpenders: TopSpender[]
+  monthlyRevenue: MonthlyRevenueData[]
+}
+
+export interface TopSpender {
+  customerId: string
+  name: string
+  totalSpent: number
+  servicesCount: number
+}
+
+export interface MonthlyRevenueData {
+  month: string
+  revenue: number
+  customerCount: number
+}
+
 // ============================================================================
 // COMMON/SHARED ENDPOINTS (Used across multiple pages)
 // ============================================================================
@@ -2057,6 +2144,36 @@ export const fetchCustomerOverview = async (): Promise<CustomerOverview> => {
     }
   } catch (error) {
     console.error('Failed to fetch customer overview:', error)
+    throw error
+  }
+}
+
+/**
+ * CUSTOMER ANALYTICS: Fetch comprehensive customer analytics
+ * Endpoint: GET /api/admin/customers/analytics
+ */
+export const fetchCustomerAnalytics = async (): Promise<CustomerAnalytics> => {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    const token = localStorage.getItem('authToken')
+    
+    const response = await fetch(`${baseUrl}/api/admin/customers/analytics`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      credentials: 'include'
+    })
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch customer analytics')
+    }
+    
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('Failed to fetch customer analytics:', error)
     throw error
   }
 }

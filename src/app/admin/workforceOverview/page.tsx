@@ -417,55 +417,7 @@ export default function WorkforceOverviewPage() {
           </CardContent>
         </Card>
 
-        {/* AI Reward Suggestions */}
-        <Card className="mb-8 bg-white border-[#FFD700]/40">
-          <CardHeader className="border-b border-[#020079]/20">
-            <CardTitle className="text-xl font-bebas text-[#020079]">
-              AI Reward Suggestions
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 pt-6">
-            <div className="border-l-4 border-[#FFD700] bg-white p-4 rounded-r-lg">
-              <div className="flex items-start gap-3">
-                <div>
-                  <p className="font-roboto font-semibold text-[#020079] mb-1">
-                    Performance Bonus
-                  </p>
-                  <p className="text-sm font-roboto text-[#020079]/70">
-                    Nimal Fernando completed 12 tasks this month with 100%
-                    customer satisfaction. Suggest LKR 15,000 bonus.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="border-l-4 border-[#FFD700] bg-white p-4 rounded-r-lg">
-              <div className="flex items-start gap-3">
-                <div>
-                  <p className="font-roboto font-semibold text-[#020079] mb-1">
-                    Consistency Award
-                  </p>
-                  <p className="text-sm font-roboto text-[#020079]/70">
-                    Ruwan Silva maintained 4.8+ rating for 6 consecutive months.
-                    Consider promotion or salary increase.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="border-l-4 border-[#FFD700] bg-white p-4 rounded-r-lg">
-              <div className="flex items-start gap-3">
-                <div>
-                  <p className="font-roboto font-semibold text-[#020079] mb-1">
-                    High-Demand Bonus
-                  </p>
-                  <p className="text-sm font-roboto text-[#020079]/70">
-                    Electrical specialists handled 35% more workload. Recommend
-                    demand-based bonus for Kamal Perera.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        
 
         {/* Manage All Managers */}
         <Card className="mb-8 bg-white border-[#020079]/20">
