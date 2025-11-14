@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Button } from "../ui/button"
 import { User } from "@/hooks/useAuth"
 
@@ -9,8 +9,6 @@ interface HeroAuthButtonsProps {
 }
 
 export function HeroAuthButtons({ user }: HeroAuthButtonsProps) {
-  const router = useRouter()
-
   const getDashboardUrl = () => {
     if (!user) return '/'
     
@@ -28,42 +26,24 @@ export function HeroAuthButtons({ user }: HeroAuthButtonsProps) {
     }
   }
 
-  const handleDashboard = () => {
-    const url = getDashboardUrl()
-    console.log('Navigating to:', url, 'User role:', user?.role)
-    router.push(url)
-  }
-
-  const handleLogin = () => {
-    router.push('/login')
-  }
-
-  const handleSignup = () => {
-    router.push('/signup')
-  }
-
-  const handleBooking = () => {
-    router.push('/booking')
-  }
-
   if (!user) {
     return (
       <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-600">
         <Button 
           size="lg"
-          onClick={handleLogin}
+          asChild
           className="btn-accent text-black px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-accent-glow group"
         >
-          LOG IN
+          <Link href="/login">LOG IN</Link>
         </Button>
         
         <Button 
           variant="outline"
           size="lg"
-          onClick={handleSignup}
+          asChild
           className="btn-accent-outline backdrop-blur-sm px-8 py-4 text-lg font-medium transition-all duration-300"
         >
-          SIGN UP
+          <Link href="/signup">SIGN UP</Link>
         </Button>
       </div>
     )
@@ -73,19 +53,19 @@ export function HeroAuthButtons({ user }: HeroAuthButtonsProps) {
     <div className="flex flex-col sm:flex-row gap-4 animate-fade-up delay-600">
       <Button 
         size="lg"
-        onClick={handleDashboard}
+        asChild
         className="btn-accent text-black px-8 py-4 text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-accent-glow group"
       >
-        GO TO DASHBOARD
+        <Link href={getDashboardUrl()}>GO TO DASHBOARD</Link>
       </Button>
       
       <Button 
         variant="outline"
         size="lg"
-        onClick={handleBooking}
+        asChild
         className="btn-accent-outline backdrop-blur-sm px-8 py-4 text-lg font-medium transition-all duration-300"
       >
-        BOOK SERVICE
+        <Link href="/booking">BOOK SERVICE</Link>
       </Button>
     </div>
   )

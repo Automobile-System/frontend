@@ -128,12 +128,12 @@ export default function PersonalInfo({ customer }: PersonalInfoProps) {
             alignItems: "center",
           }}
         >
-          <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+          {/* <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
             Customer ID
           </span>
           <span style={{ color: "#111827", fontWeight: "500" }}>
             {customer.customerId}
-          </span>
+          </span> */}
         </div>
       </div>
     </div>

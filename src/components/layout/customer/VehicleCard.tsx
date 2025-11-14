@@ -41,126 +41,48 @@ export default function VehicleCard({ vehicle, onDelete }: VehicleCardProps) {
 
     return (
         <div
-            style={{
-                background: 'white',
-                borderRadius: '0.75rem',
-                border: '1px solid #e5e7eb',
-                padding: '1.5rem',
-                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                transition: 'all 0.25s ease',
-                cursor: 'pointer'
-            }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.1)';
-                e.currentTarget.style.borderColor = '#d1d5db';
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-                e.currentTarget.style.borderColor = '#e5e7eb';
-            }}
+            className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm transition-all duration-250 cursor-pointer hover:-translate-y-1 hover:shadow-md hover:border-gray-300"
         >
             {/* Vehicle Header */}
-            <div style={{ marginBottom: '1rem' }}>
-                <h3
-                    style={{
-                        fontSize: '1.25rem',
-                        fontWeight: '600',
-                        color: '#111827',
-                        margin: '0 0 0.25rem 0'
-                    }}
-                >
+            <div className="mb-4">
+                <h3 className="text-xl font-semibold text-gray-900 mb-1">
                     {vehicle.brandName} {vehicle.model}
                 </h3>
-                <p
-                    style={{
-                        color: '#6b7280',
-                        fontSize: '0.875rem',
-                        margin: 0
-                    }}
-                >
+                <p className="text-gray-500 text-sm m-0">
                     Registration: {vehicle.registrationNo}
                 </p>
             </div>
 
             {/* Vehicle Details */}
-            <div style={{ marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <span
-                        style={{
-                            fontWeight: '500',
-                            color: '#374151',
-                            minWidth: '120px'
-                        }}
-                    >
+            <div className="mb-4">
+                <div className="flex items-center mb-2">
+                    <span className="font-medium text-gray-700 min-w-[120px]">
                         Engine Capacity:
                     </span>
-                    <span style={{ color: '#111827' }}>{vehicle.capacity} CC</span>
+                    <span className="text-gray-900">{vehicle.capacity} CC</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <span
-                        style={{
-                            fontWeight: '500',
-                            color: '#374151',
-                            minWidth: '120px'
-                        }}
-                    >
+                <div className="flex items-center">
+                    <span className="font-medium text-gray-700 min-w-[120px]">
                         Vehicle ID:
                     </span>
-                    <span style={{ color: '#6b7280', fontSize: '0.75rem' }}>
+                    <span className="text-gray-500 text-xs">
                         {vehicle.vehicleId.substring(0, 8)}...
                     </span>
                 </div>
             </div>
 
             {/* Customer Badge */}
-            <div
-                style={{
-                    background: '#eff6ff',
-                    padding: '0.75rem',
-                    borderRadius: '0.5rem',
-                    marginBottom: '1rem',
-                    border: '1px solid #dbeafe'
-                }}
-            >
-                <p
-                    style={{
-                        fontSize: '0.875rem',
-                        color: '#1e40af',
-                        margin: 0,
-                        textAlign: 'center',
-                        fontWeight: '500'
-                    }}
-                >
+            <div className="bg-blue-50 p-3 rounded-lg mb-4 border border-blue-100">
+                <p className="text-sm text-blue-800 m-0 text-center font-medium">
                     🚗 Your Vehicle
                 </p>
             </div>
 
             {/* Action Buttons */}
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div className="flex gap-2">
                 <button
                     onClick={viewServiceHistory}
-                    style={{
-                        flex: 1,
-                        background: 'transparent',
-                        border: '1px solid #d1d5db',
-                        color: '#374151',
-                        padding: '0.5rem',
-                        borderRadius: '0.5rem',
-                        cursor: 'pointer',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                        e.currentTarget.style.background = '#f9fafb';
-                        e.currentTarget.style.borderColor = '#9ca3af';
-                    }}
-                    onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent';
-                        e.currentTarget.style.borderColor = '#d1d5db';
-                    }}
+                    className="flex-1 bg-transparent border border-gray-300 text-gray-700 p-2 rounded-lg cursor-pointer text-sm font-medium transition-all duration-200 hover:bg-gray-50 hover:border-gray-400"
                 >
                     Service History
                 </button>
@@ -168,47 +90,18 @@ export default function VehicleCard({ vehicle, onDelete }: VehicleCardProps) {
                 <button
                     onClick={handleDelete}
                     disabled={isDeleting}
-                    style={{
-                        background: showConfirm ? '#dc2626' : 'transparent',
-                        border: '1px solid #dc2626',
-                        color: showConfirm ? 'white' : '#dc2626',
-                        padding: '0.5rem 0.75rem',
-                        borderRadius: '0.5rem',
-                        cursor: isDeleting ? 'not-allowed' : 'pointer',
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        transition: 'all 0.2s ease',
-                        opacity: isDeleting ? 0.6 : 1,
-                        whiteSpace: 'nowrap'
-                    }}
-                    onMouseEnter={(e) => {
-                        if (!isDeleting) {
-                            e.currentTarget.style.background = '#dc2626';
-                            e.currentTarget.style.color = 'white';
-                        }
-                    }}
-                    onMouseLeave={(e) => {
-                        if (!isDeleting && !showConfirm) {
-                            e.currentTarget.style.background = 'transparent';
-                            e.currentTarget.style.color = '#dc2626';
-                        }
-                    }}
+                    className={`border border-red-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                        showConfirm 
+                            ? 'bg-red-600 text-white' 
+                            : 'bg-transparent text-red-600 hover:bg-red-600 hover:text-white'
+                    } ${isDeleting ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                     {isDeleting ? 'Deleting...' : showConfirm ? 'Confirm?' : '🗑️'}
                 </button>
             </div>
 
             {showConfirm && !isDeleting && (
-                <div style={{
-                    marginTop: '0.5rem',
-                    padding: '0.5rem',
-                    backgroundColor: '#fee2e2',
-                    borderRadius: '0.5rem',
-                    border: '1px solid #fecaca',
-                    fontSize: '0.75rem',
-                    color: '#991b1b',
-                    textAlign: 'center'
-                }}>
+                <div className="mt-2 p-2 bg-red-50 rounded-lg border border-red-200 text-xs text-red-800 text-center">
                     Click again to confirm deletion
                 </div>
             )}

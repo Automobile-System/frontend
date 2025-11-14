@@ -1,15 +1,45 @@
 ﻿'use client'
 
+import { useEffect, useState } from 'react';
+import { Loader } from 'lucide-react';
+
 interface ServiceFrequency {
     month: string;
     jobs: number;
 }
 
-interface ServiceChartProps {
-    data: ServiceFrequency[];
-}
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080';
 
-export default function ServiceChart({ data }: ServiceChartProps) {
+export default function ServiceChart() {
+    const [data, setData] = useState<ServiceFrequency[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchServiceFrequency = async () => {
+            try {
+                setIsLoading(true);
+                const response = await fetch(`${BASE_URL}/api/customer/dashboard/service-frequency?period=1year`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    setData(result);
+                }
+            } catch (error) {
+                console.error('Error fetching service frequency:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchServiceFrequency();
+    }, []);
+
     // Transform data to match component format and add trend
     const serviceData = data.map((item, index, arr) => ({
         month: item.month,
@@ -35,30 +65,22 @@ export default function ServiceChart({ data }: ServiceChartProps) {
 
     const maxServices = Math.max(...displayData.map(d => d.services));
 
+    if (isLoading) {
+        return (
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-md h-fit flex items-center justify-center min-h-[400px]">
+                <Loader className="w-12 h-12 text-[#03009B] animate-spin" />
+            </div>
+        );
+    }
+
     return (
-        <div style={{
-            background: 'white',
-            borderRadius: '1rem',
-            border: '1px solid #e5e7eb',
-            padding: '1.5rem',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            height: 'fit-content'
-        }}>
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-md h-fit">
             {/* Header */}
-            <div style={{ marginBottom: '1.5rem' }}>
-                <h2 style={{
-                    fontSize: '1.25rem',
-                    fontWeight: '700',
-                    color: '#111827',
-                    margin: '0 0 0.5rem 0'
-                }}>
+            <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-2">
                     Service Frequency
                 </h2>
-                <p style={{
-                    fontSize: '0.875rem',
-                    color: '#6b7280',
-                    margin: 0
-                }}>
+                <p className="text-sm text-gray-500">
                     Your service history over the past year
                 </p>
             </div>
@@ -71,92 +93,37 @@ export default function ServiceChart({ data }: ServiceChartProps) {
                 </div>
 
                 {/* Chart Bars */}
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    justifyContent: 'space-between',
-                    height: 'calc(100% - 1.5rem)',
-                    gap: '0.5rem',
-                    paddingBottom: '0.5rem'
-                }}>
+                <div className="flex items-end justify-between h-[calc(100%-1.5rem)] gap-2 pb-2">
 
                     {displayData.map((data) => {
                         const barHeight = `${(data.services / maxServices) * 100}%`;
                         const isCurrentMonth = data.month === 'Nov';
 
                         return (
-                            <div key={data.month} style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                flex: 1,
-                                height: '100%',
-                                justifyContent: 'flex-end'
-                            }}>
+                            <div key={data.month} className="flex flex-col items-center flex-1 h-full justify-end">
                                 {/* Bar */}
                                 <div
                                     style={{
                                         width: '80%',
                                         height: barHeight,
-                                        backgroundColor: isCurrentMonth ? '#3b82f6' :
-                                            data.trend === 'up' ? '#10b981' : '#ef4444',
-                                        borderRadius: '0.25rem 0.25rem 0 0',
-                                        marginBottom: '0.75rem',
-                                        transition: 'all 0.3s ease',
-                                        position: 'relative',
-                                        boxShadow: isCurrentMonth ? '0 4px 6px -1px rgba(59, 130, 246, 0.3)' :
-                                            data.trend === 'up' ? '0 2px 4px rgba(16, 185, 129, 0.3)' :
-                                                '0 2px 4px rgba(239, 68, 68, 0.3)',
                                         minHeight: '0.5rem'
                                     }}
-                                    onMouseEnter={(e) => {
-                                        const tooltip = e.currentTarget.querySelector('.tooltip') as HTMLElement;
-                                        if (tooltip) tooltip.style.opacity = '1';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        const tooltip = e.currentTarget.querySelector('.tooltip') as HTMLElement;
-                                        if (tooltip) tooltip.style.opacity = '0';
-                                    }}
+                                    className={`rounded-t mb-3 transition-all duration-300 relative group ${
+                                        isCurrentMonth 
+                                            ? 'bg-[#03009B] shadow-[0_4px_6px_-1px_rgba(3,0,155,0.3)]' 
+                                            : data.trend === 'up' 
+                                                ? 'bg-gray-600 shadow-[0_2px_4px_rgba(107,114,128,0.3)]' 
+                                                : 'bg-gray-400 shadow-[0_2px_4px_rgba(156,163,175,0.3)]'
+                                    }`}
                                 >
                                     {/* Tooltip */}
-                                    <div className="tooltip" style={{
-                                        position: 'absolute',
-                                        top: '-2.5rem',
-                                        left: '50%',
-                                        transform: 'translateX(-50%)',
-                                        backgroundColor: '#1f2937',
-                                        color: 'white',
-                                        padding: '0.375rem 0.75rem',
-                                        borderRadius: '0.375rem',
-                                        fontSize: '0.75rem',
-                                        fontWeight: '500',
-                                        whiteSpace: 'nowrap',
-                                        opacity: 0,
-                                        transition: 'opacity 0.2s',
-                                        pointerEvents: 'none',
-                                        zIndex: 10
-                                    }}>
+                                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                                         {data.services} service{data.services !== 1 ? 's' : ''}
                                     </div>
-                                    {/* Tooltip arrow */}
-                                    <div style={{
-                                        position: 'absolute',
-                                        bottom: '-0.25rem',
-                                        left: '50%',
-                                        transform: 'translateX(-50%)',
-                                        width: '0.5rem',
-                                        height: '0.5rem',
-                                        backgroundColor: '#020079',
-                                        rotate: '45deg'
-                                    }}></div>
                                 </div>
 
                                 {/* Month Label */}
-                                <span style={{
-                                    fontSize: '0.75rem',
-                                    color: isCurrentMonth ? '#3b82f6' : '#6b7280',
-                                    fontWeight: isCurrentMonth ? '700' : '500'
-                                }}>
+                                <span className={`text-xs ${isCurrentMonth ? 'text-[#03009B] font-bold' : 'text-gray-500 font-medium'}`}>
                                     {data.month}
                                 </span>
                             </div>
@@ -166,104 +133,44 @@ export default function ServiceChart({ data }: ServiceChartProps) {
             </div>
 
             {/* Legend */}
-            <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                gap: '2rem',
-                marginTop: '1rem',
-                paddingTop: '1rem',
-                borderTop: '1px solid #f3f4f6'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <div style={{
-                        width: '12px',
-                        height: '12px',
-                        backgroundColor: '#3b82f6',
-                        borderRadius: '2px'
-                    }}></div>
-                    <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Current Month</span>
+            <div className="flex justify-center gap-8 mt-4 pt-4 border-t border-gray-100">
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-[#03009B] rounded-sm"></div>
+                    <span className="text-xs text-gray-500 font-medium">Current Month</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <div style={{
-                        width: '12px',
-                        height: '12px',
-                        backgroundColor: '#10b981',
-                        borderRadius: '2px'
-                    }}></div>
-                    <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Increase</span>
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-gray-600 rounded-sm"></div>
+                    <span className="text-xs text-gray-500 font-medium">Increase</span>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <div style={{
-                        width: '12px',
-                        height: '12px',
-                        backgroundColor: '#ef4444',
-                        borderRadius: '2px'
-                    }}></div>
-                    <span style={{ fontSize: '0.75rem', color: '#6b7280', fontWeight: '500' }}>Decrease</span>
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-gray-400 rounded-sm"></div>
+                    <span className="text-xs text-gray-500 font-medium">Decrease</span>
                 </div>
             </div>
 
             {/* Summary Stats */}
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '1rem',
-                padding: '1rem',
-                backgroundColor: '#f8fafc',
-                borderRadius: '0.75rem',
-                border: '1px solid #e2e8f0'
-            }}>
-                <div style={{ textAlign: 'center' }}>
-                    <p style={{
-                        fontSize: '0.75rem',
-                        color: '#6b7280',
-                        margin: '0 0 0.25rem 0',
-                        fontWeight: '500'
-                    }}>
+            <div className="flex justify-between mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <div className="text-center">
+                    <p className="text-xs text-gray-500 mb-1 font-medium">
                         Total Services
                     </p>
-                    <p style={{
-                        fontSize: '1.125rem',
-                        color: '#1f2937',
-                        margin: 0,
-                        fontWeight: '700'
-                    }}>
-                        {serviceData.reduce((sum, item) => sum + item.services, 0)}
+                    <p className="text-lg text-gray-900 font-bold">
+                        {displayData.reduce((sum, item) => sum + item.services, 0)}
                     </p>
                 </div>
-                <div style={{ textAlign: 'center' }}>
-                    <p style={{
-                        fontSize: '0.75rem',
-                        color: '#6b7280',
-                        margin: '0 0 0.25rem 0',
-                        fontWeight: '500'
-                    }}>
+                <div className="text-center">
+                    <p className="text-xs text-gray-500 mb-1 font-medium">
                         Avg/Month
                     </p>
-                    <p style={{
-                        fontSize: '1.125rem',
-                        color: '#1f2937',
-                        margin: 0,
-                        fontWeight: '700'
-                    }}>
-                        {(serviceData.reduce((sum, item) => sum + item.services, 0) / serviceData.length).toFixed(1)}
+                    <p className="text-lg text-gray-900 font-bold">
+                        {(displayData.reduce((sum, item) => sum + item.services, 0) / displayData.length).toFixed(1)}
                     </p>
                 </div>
-                <div style={{ textAlign: 'center' }}>
-                    <p style={{
-                        fontSize: '0.75rem',
-                        color: '#6b7280',
-                        margin: '0 0 0.25rem 0',
-                        fontWeight: '500'
-                    }}>
+                <div className="text-center">
+                    <p className="text-xs text-gray-500 mb-1 font-medium">
                         Busiest Month
                     </p>
-                    <p style={{
-                        fontSize: '1.125rem',
-                        color: '#1f2937',
-                        margin: 0,
-                        fontWeight: '700'
-                    }}>
+                    <p className="text-lg text-gray-900 font-bold">
                         May
                     </p>
                 </div>

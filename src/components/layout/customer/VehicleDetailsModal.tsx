@@ -41,120 +41,49 @@ export default function VehicleDetailsModal({
   const serviceStatus = getServiceStatus(nextService);
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 1000,
-        padding: "1rem",
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "1rem",
-          padding: "2rem",
-          maxWidth: "500px",
-          width: "100%",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-        }}
-      >
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4">
+      <div className="bg-white rounded-2xl p-8 max-w-[500px] w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         {/* Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: "2rem",
-          }}
-        >
+        <div className="flex justify-between items-start mb-8">
           <div>
-            <h2
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "600",
-                color: "#111827",
-                margin: "0 0 0.5rem 0",
-              }}
-            >
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
               {vehicle.brandName} {vehicle.model}
             </h2>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                flexWrap: "wrap",
-              }}
-            >
-              <span
-                style={{
-                  padding: "0.25rem 0.75rem",
-                  backgroundColor: "#f3f4f6",
-                  color: "#374151",
-                  borderRadius: "1rem",
-                  fontSize: "0.75rem",
-                  fontWeight: "500",
-                }}
-              >
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
                 {vehicle.registrationNo}
               </span>
             </div>
           </div>
           <button
             onClick={onClose}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "1.5rem",
-              color: "#6b7280",
-              cursor: "pointer",
-              padding: "0.25rem",
-            }}
+            className="bg-none border-none text-2xl text-gray-500 cursor-pointer p-1 hover:text-gray-700"
           >
             ×
           </button>
         </div>
 
         {/* Vehicle Details */}
-        <div style={{ marginBottom: "2rem" }}>
-          <h3
-            style={{
-              fontSize: "1.125rem",
-              fontWeight: "600",
-              color: "#111827",
-              margin: "0 0 1rem 0",
-            }}
-          >
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Vehicle Information
           </h3>
 
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between">
+              <span className="text-gray-500 text-sm">
                 Make & Model
               </span>
-              <span style={{ color: "#111827", fontWeight: "500" }}>
+              <span className="text-gray-900 font-medium">
                 {vehicle.brandName} {vehicle.model}
               </span>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+            <div className="flex justify-between">
+              <span className="text-gray-500 text-sm">
                 Capacity
               </span>
-              <span style={{ color: "#111827", fontWeight: "500" }}>
+              <span className="text-gray-900 font-medium">
                 {vehicle.capacity} passengers
               </span>
             </div>
@@ -162,60 +91,34 @@ export default function VehicleDetailsModal({
         </div>
 
         {/* Service Information */}
-        <div style={{ marginBottom: "2rem" }}>
-          <h3
-            style={{
-              fontSize: "1.125rem",
-              fontWeight: "600",
-              color: "#111827",
-              margin: "0 0 1rem 0",
-            }}
-          >
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Service Information
           </h3>
 
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500 text-sm">
                 Last Service
               </span>
-              <span style={{ color: "#111827", fontWeight: "500" }}>
+              <span className="text-gray-900 font-medium">
                 {formatDate(lastService)}
               </span>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span style={{ color: "#6b7280", fontSize: "0.875rem" }}>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500 text-sm">
                 Next Service
               </span>
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-              >
-                <span style={{ color: "#111827", fontWeight: "500" }}>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-900 font-medium">
                   {formatDate(nextService)}
                 </span>
                 <span
+                  className="px-2 py-1 rounded-md text-xs font-medium"
                   style={{
-                    padding: "0.25rem 0.5rem",
                     backgroundColor: serviceStatus.color + "20",
                     color: serviceStatus.color,
-                    borderRadius: "0.375rem",
-                    fontSize: "0.75rem",
-                    fontWeight: "500",
                   }}
                 >
                   {serviceStatus.status}
@@ -226,27 +129,10 @@ export default function VehicleDetailsModal({
         </div>
 
         {/* Action Buttons */}
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            justifyContent: "flex-end",
-            paddingTop: "1.5rem",
-            borderTop: "1px solid #e5e7eb",
-          }}
-        >
+        <div className="flex gap-4 justify-end pt-6 border-t border-gray-200">
           <button
             onClick={onClose}
-            style={{
-              padding: "0.75rem 1.5rem",
-              border: "1px solid #d1d5db",
-              borderRadius: "0.5rem",
-              backgroundColor: "white",
-              color: "#374151",
-              fontSize: "0.875rem",
-              fontWeight: "500",
-              cursor: "pointer",
-            }}
+            className="px-6 py-3 border border-gray-300 rounded-lg bg-white text-gray-700 text-sm font-medium cursor-pointer hover:bg-gray-50 transition-colors"
           >
             Close
           </button>
@@ -256,17 +142,10 @@ export default function VehicleDetailsModal({
               console.log("Book service for:", vehicle.vehicleId);
               onClose();
             }}
+            className="px-6 py-3 rounded-lg text-white text-sm font-medium cursor-pointer transition-all duration-200 outline-none hover:scale-[1.02] active:scale-[0.98]"
             style={{
-              padding: "0.75rem 1.5rem",
               border: "1px solid var(--color-primary)",
-              borderRadius: "0.5rem",
               backgroundColor: "var(--color-primary)",
-              color: "white",
-              fontSize: "0.875rem",
-              fontWeight: "500",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              outline: "none",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor =
@@ -276,15 +155,6 @@ export default function VehicleDetailsModal({
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = "var(--color-primary)";
               e.currentTarget.style.borderColor = "var(--color-primary)";
-            }}
-            onMouseDown={(e) => {
-              e.currentTarget.style.backgroundColor = "var(--color-primary)";
-              e.currentTarget.style.transform = "scale(0.98)";
-            }}
-            onMouseUp={(e) => {
-              e.currentTarget.style.backgroundColor =
-                "var(--color-primary-hover)";
-              e.currentTarget.style.transform = "scale(1)";
             }}
           >
             Book Service
