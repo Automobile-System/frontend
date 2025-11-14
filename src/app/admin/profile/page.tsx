@@ -61,6 +61,11 @@ export default function AdminProfilePage() {
   });
 
   const [editForm, setEditForm] = useState<AdminProfile>(profile);
+  
+  // Password change state
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -115,6 +120,9 @@ export default function AdminProfilePage() {
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditForm(profile);
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
   };
 
   const handleSaveProfile = async () => {
@@ -122,12 +130,37 @@ export default function AdminProfilePage() {
       console.log('=== SAVING PROFILE ===');
       console.log('Edit form data:', editForm);
       
+      // Validate password if changing
+      if (newPassword || currentPassword) {
+        if (!currentPassword) {
+          showToast.error('Error', 'Please enter your current password');
+          return;
+        }
+        if (!newPassword) {
+          showToast.error('Error', 'Please enter a new password');
+          return;
+        }
+        if (newPassword.length < 6) {
+          showToast.error('Error', 'New password must be at least 6 characters');
+          return;
+        }
+        if (newPassword !== confirmPassword) {
+          showToast.error('Error', 'New passwords do not match');
+          return;
+        }
+      }
+      
       const updateData = {
+        email: editForm.email,
         firstName: editForm.firstName,
         lastName: editForm.lastName,
         phoneNumber: editForm.phoneNumber,
         nationalId: editForm.nationalId,
         profileImageUrl: editForm.profileImageUrl,
+        ...(currentPassword && newPassword && {
+          currentPassword,
+          newPassword
+        })
       };
       
       console.log('Sending update data:', updateData);
@@ -156,7 +189,16 @@ export default function AdminProfilePage() {
       // Update local state with response
       setProfile(editForm);
       setIsEditing(false);
-      showToast.success('Profile Updated', 'Your profile has been updated successfully.');
+      
+      // Clear password fields
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      
+      const message = currentPassword && newPassword 
+        ? 'Your profile and password have been updated successfully.' 
+        : 'Your profile has been updated successfully.';
+      showToast.success('Profile Updated', message);
     } catch (error) {
       console.error('Error updating profile:', error);
       showToast.error('Error', 'Failed to update profile. Please try again.');
@@ -225,6 +267,7 @@ export default function AdminProfilePage() {
                     <label 
                       htmlFor="profile-image-upload"
                       className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Click to upload new profile picture"
                     >
                       <Camera className="h-8 w-8 text-white" />
                       <input
@@ -236,12 +279,31 @@ export default function AdminProfilePage() {
                           const file = e.target.files?.[0];
                           if (file) {
                             console.log('Image file selected:', file.name, file.type, file.size);
-                            // For now, just use a placeholder URL
-                            // In production, you should upload to a storage service
-                            const imageUrl = `https://via.placeholder.com/150?text=${encodeURIComponent(file.name.substring(0, 10))}`;
-                            console.log('Setting image URL to:', imageUrl);
-                            handleInputChange("profileImageUrl", imageUrl);
-                            showToast.success('Image Selected', 'Image will be saved when you click Save Changes');
+                            
+                            // Validate file size (max 5MB)
+                            if (file.size > 5 * 1024 * 1024) {
+                              showToast.error('Error', 'Image size must be less than 5MB');
+                              return;
+                            }
+                            
+                            // Validate file type
+                            if (!file.type.startsWith('image/')) {
+                              showToast.error('Error', 'Please select a valid image file');
+                              return;
+                            }
+                            
+                            // Create preview using FileReader
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              const imageUrl = reader.result as string;
+                              console.log('Image loaded, size:', imageUrl.length, 'bytes');
+                              handleInputChange("profileImageUrl", imageUrl);
+                              showToast.success('Image Selected', 'Image preview loaded. Click Save Changes to update your profile.');
+                            };
+                            reader.onerror = () => {
+                              showToast.error('Error', 'Failed to read image file');
+                            };
+                            reader.readAsDataURL(file);
                           }
                         }}
                       />
@@ -274,9 +336,18 @@ export default function AdminProfilePage() {
                     <p className="text-xs font-roboto font-semibold text-[#020079]/60 mb-1">
                       Email Address
                     </p>
-                    <p className="text-lg font-roboto font-bold text-[#020079] break-all">
-                      {profile.email || 'Not set'}
-                    </p>
+                    {!isEditing ? (
+                      <p className="text-lg font-roboto font-bold text-[#020079] break-all">
+                        {profile.email || 'Not set'}
+                      </p>
+                    ) : (
+                      <Input
+                        type="email"
+                        value={editForm.email}
+                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        className="mt-1 font-roboto text-[#020079] h-10 border-[#020079]/20"
+                      />
+                    )}
                   </div>
                 </div>
 
@@ -341,8 +412,89 @@ export default function AdminProfilePage() {
                   </div>
                 </div>
 
+                {/* National ID */}
+                <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-[#020079]/20">
+                  <div className="flex-1">
+                    <p className="text-xs font-roboto font-semibold text-[#020079]/60 mb-1">
+                      National ID
+                    </p>
+                    {!isEditing ? (
+                      <p className="text-lg font-roboto font-bold text-[#020079]">
+                        {profile.nationalId || 'Not set'}
+                      </p>
+                    ) : (
+                      <Input
+                        value={editForm.nationalId}
+                        onChange={(e) => handleInputChange("nationalId", e.target.value)}
+                        className="mt-1 font-roboto text-[#020079] h-10 border-[#020079]/20"
+                      />
+                    )}
+                  </div>
+                </div>
+
                 
               </div>
+
+              {/* Change Password Section - Only show in edit mode */}
+              {isEditing && (
+                <>
+                  <div className="h-px bg-[#020079]/10 my-6" />
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bebas text-[#020079] mb-4">
+                      Change Password (Optional)
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {/* Current Password */}
+                      <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-[#020079]/20">
+                        <div className="flex-1">
+                          <p className="text-xs font-roboto font-semibold text-[#020079]/60 mb-1">
+                            Current Password
+                          </p>
+                          <Input
+                            type="password"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            placeholder="Enter current password"
+                            className="mt-1 font-roboto text-[#020079] h-10 border-[#020079]/20"
+                          />
+                        </div>
+                      </div>
+
+                      {/* New Password */}
+                      <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-[#020079]/20">
+                        <div className="flex-1">
+                          <p className="text-xs font-roboto font-semibold text-[#020079]/60 mb-1">
+                            New Password
+                          </p>
+                          <Input
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            placeholder="Enter new password"
+                            className="mt-1 font-roboto text-[#020079] h-10 border-[#020079]/20"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Confirm Password */}
+                      <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-[#020079]/20">
+                        <div className="flex-1">
+                          <p className="text-xs font-roboto font-semibold text-[#020079]/60 mb-1">
+                            Confirm New Password
+                          </p>
+                          <Input
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="Confirm new password"
+                            className="mt-1 font-roboto text-[#020079] h-10 border-[#020079]/20"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Action Buttons (Edit Mode) */}
               {isEditing && (
