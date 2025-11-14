@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { CustomerVehicle } from '@/types/authTypes';
 import { deleteCustomerVehicle } from '@/services/api';
-import { Car, Trash2, Edit } from 'lucide-react';
+import { Trash2, Edit } from 'lucide-react';
 
 interface VehicleCardProps {
     vehicle: CustomerVehicle;
