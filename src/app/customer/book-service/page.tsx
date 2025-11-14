@@ -3,7 +3,6 @@ import BookingClient from './BookingClient';
 import { cookies } from 'next/headers';
 import { Vehicle, Service, Employee } from '@/types/booking';
 
-// Force dynamic rendering since we use cookies
 export const dynamic = 'force-dynamic';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080';

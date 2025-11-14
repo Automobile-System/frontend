@@ -20,7 +20,7 @@ export default function EditProfileModal({
     email: customer.email,
     phoneNumber: customer.phoneNumber,
     nationalId: customer.nationalId,
-    profileImageUrl: customer.profileImageUrl || '',
+    profileImageUrl: customer.profileImageUrl || "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -43,97 +43,32 @@ export default function EditProfileModal({
 
   return (
     <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 1000,
-        padding: "1rem",
-      }}
+      className="fixed inset-0 z-[1000] bg-black/50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "1rem",
-          padding: "2rem",
-          maxWidth: "500px",
-          width: "100%",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
-        }}
+        className="bg-white rounded-2xl p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "2rem",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "1.5rem",
-              fontWeight: "600",
-              color: "#111827",
-              margin: 0,
-            }}
-          >
-            Edit Profile
-          </h2>
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl font-semibold text-gray-900">Edit Profile</h2>
+
           <button
             onClick={onClose}
-            style={{
-              background: "none",
-              border: "none",
-              fontSize: "1.5rem",
-              color: "#6b7280",
-              cursor: "pointer",
-              padding: "0.25rem",
-              borderRadius: "0.25rem",
-              transition: "all 0.2s ease",
-              width: "2rem",
-              height: "2rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f3f4f6";
-              e.currentTarget.style.color = "#020079";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "#6b7280";
-            }}
+            className="w-8 h-8 flex items-center justify-center text-gray-500 rounded hover:bg-gray-100 hover:text-[#020079] transition"
           >
             ×
           </button>
         </div>
 
+        {/* Form */}
         <form onSubmit={handleSubmit}>
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
-          >
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <div style={{ flex: 1 }}>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: "0.875rem",
-                    fontWeight: "500",
-                    color: "#374151",
-                    marginBottom: "0.5rem",
-                  }}
-                >
+          <div className="flex flex-col gap-6">
+            {/* First + Last */}
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   First Name
                 </label>
                 <input
@@ -141,36 +76,12 @@ export default function EditProfileModal({
                   value={formData.firstName}
                   onChange={(e) => handleChange("firstName", e.target.value)}
                   required
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.5rem",
-                    fontSize: "0.875rem",
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "#03009B";
-                    e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "#d1d5db";
-                    e.target.style.boxShadow = "none";
-                  }}
+                  className="w-full px-3 py-3 border text-[#020079] border-gray-300 rounded-lg text-sm focus:border-[#03009B] focus:ring-4 focus:ring-[#03009B]/20 outline-none transition"
                 />
               </div>
 
-              <div style={{ flex: 1 }}>
-                <label
-                  style={{
-                    display: "block",
-                    fontSize: "0.875rem",
-                    fontWeight: "500",
-                    color: "#374151",
-                    marginBottom: "0.5rem",
-                  }}
-                >
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Last Name
                 </label>
                 <input
@@ -178,37 +89,14 @@ export default function EditProfileModal({
                   value={formData.lastName}
                   onChange={(e) => handleChange("lastName", e.target.value)}
                   required
-                  style={{
-                    width: "100%",
-                    padding: "0.75rem",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.5rem",
-                    fontSize: "0.875rem",
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "#03009B";
-                    e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "#d1d5db";
-                    e.target.style.boxShadow = "none";
-                  }}
+                  className="w-full px-3 py-3 border text-[#020079] border-gray-300 rounded-lg text-sm focus:border-[#03009B] focus:ring-4 focus:ring-[#03009B]/20 outline-none transition"
                 />
               </div>
             </div>
 
+            {/* Email */}
             <div>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "0.5rem",
-                }}
-              >
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
               </label>
               <input
@@ -216,36 +104,13 @@ export default function EditProfileModal({
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 required
-                style={{
-                  width: "100%",
-                  padding: "0.75rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.5rem",
-                  fontSize: "0.875rem",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#03009B";
-                  e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#d1d5db";
-                  e.target.style.boxShadow = "none";
-                }}
+                className="w-full px-3 py-3 border text-[#020079] border-gray-300 rounded-lg text-sm focus:border-[#03009B] focus:ring-4 focus:ring-[#03009B]/20 outline-none transition"
               />
             </div>
 
+            {/* Phone */}
             <div>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "0.5rem",
-                }}
-              >
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Phone Number
               </label>
               <input
@@ -253,36 +118,13 @@ export default function EditProfileModal({
                 value={formData.phoneNumber}
                 onChange={(e) => handleChange("phoneNumber", e.target.value)}
                 required
-                style={{
-                  width: "100%",
-                  padding: "0.75rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.5rem",
-                  fontSize: "0.875rem",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#03009B";
-                  e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#d1d5db";
-                  e.target.style.boxShadow = "none";
-                }}
+                className="w-full px-3 py-3 border text-[#020079] border-gray-300 rounded-lg text-sm focus:border-[#03009B] focus:ring-4 focus:ring-[#03009B]/20 outline-none transition"
               />
             </div>
 
+            {/* NIC */}
             <div>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "0.5rem",
-                }}
-              >
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 National ID
               </label>
               <input
@@ -290,152 +132,46 @@ export default function EditProfileModal({
                 value={formData.nationalId}
                 onChange={(e) => handleChange("nationalId", e.target.value)}
                 required
-                style={{
-                  width: "100%",
-                  padding: "0.75rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.5rem",
-                  fontSize: "0.875rem",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#03009B";
-                  e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#d1d5db";
-                  e.target.style.boxShadow = "none";
-                }}
+                className="w-full px-3 py-3 border text-[#020079] border-gray-300 rounded-lg text-sm focus:border-[#03009B] focus:ring-4 focus:ring-[#03009B]/20 outline-none transition"
               />
             </div>
 
+            {/* Image URL */}
             <div>
-              <label
-                style={{
-                  display: "block",
-                  fontSize: "0.875rem",
-                  fontWeight: "500",
-                  color: "#374151",
-                  marginBottom: "0.5rem",
-                }}
-              >
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Profile Image URL (Optional)
               </label>
               <input
                 type="url"
                 value={formData.profileImageUrl}
-                onChange={(e) => handleChange("profileImageUrl", e.target.value)}
+                onChange={(e) =>
+                  handleChange("profileImageUrl", e.target.value)
+                }
                 placeholder="https://example.com/image.jpg"
-                style={{
-                  width: "100%",
-                  padding: "0.75rem",
-                  border: "1px solid #d1d5db",
-                  borderRadius: "0.5rem",
-                  fontSize: "0.875rem",
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#03009B";
-                  e.target.style.boxShadow = "0 0 0 3px rgba(3, 0, 155, 0.1)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#d1d5db";
-                  e.target.style.boxShadow = "none";
-                }}
+                className="w-full px-3 py-3 border text-[#020079] border-gray-300 rounded-lg text-sm focus:border-[#03009B] focus:ring-4 focus:ring-[#03009B]/20 outline-none transition"
               />
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              gap: "1rem",
-              justifyContent: "flex-end",
-              marginTop: "2rem",
-              paddingTop: "1.5rem",
-              borderTop: "1px solid #e5e7eb",
-            }}
-          >
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
-              style={{
-                padding: "0.75rem 1.5rem",
-                border: "1px solid #d1d5db",
-                borderRadius: "0.5rem",
-                backgroundColor: "white",
-                color: "#374151",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                outline: "none",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#f9fafb";
-                e.currentTarget.style.borderColor = "#9ca3af";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "white";
-                e.currentTarget.style.borderColor = "#d1d5db";
-              }}
+              className="px-4 py-3 border  border-gray-300 rounded-lg bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 hover:border-gray-400 transition"
             >
               Cancel
             </button>
+
             <button
               type="submit"
               disabled={isSubmitting}
-              style={{
-                padding: "0.75rem 1.5rem",
-                border: "1px solid #03009B",
-                borderRadius: "0.5rem",
-                backgroundColor: isSubmitting ? "#9ca3af" : "#03009B",
-                color: "white",
-                fontSize: "0.875rem",
-                fontWeight: "500",
-                cursor: isSubmitting ? "not-allowed" : "pointer",
-                transition: "all 0.2s ease",
-                outline: "none",
-                opacity: isSubmitting ? 0.6 : 1,
-              }}
-              onMouseEnter={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.backgroundColor = "#020079";
-                  e.currentTarget.style.borderColor = "#020079";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(3, 0, 155, 0.3)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.backgroundColor = "#03009B";
-                  e.currentTarget.style.borderColor = "#03009B";
-                  e.currentTarget.style.boxShadow = "none";
-                }
-              }}
-              onMouseDown={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.backgroundColor = "#01024D";
-                  e.currentTarget.style.transform = "scale(0.98)";
-                }
-              }}
-              onMouseUp={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.backgroundColor = "#020079";
-                  e.currentTarget.style.transform = "scale(1)";
-                }
-              }}
-              onFocus={(e) => {
-                if (!isSubmitting) {
-                  e.currentTarget.style.boxShadow =
-                    "0 0 0 3px rgba(3, 0, 155, 0.3)";
-                }
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.boxShadow = "none";
-              }}
+              className={`px-4 py-3 rounded-lg text-sm font-medium text-white border transition
+                ${
+                  isSubmitting
+                    ? "bg-gray-400 border-gray-400 cursor-not-allowed opacity-60"
+                    : "bg-[#03009B] border-[#03009B] hover:bg-[#020079] hover:border-[#020079] focus:ring-4 focus:ring-[#03009B]/30"
+                }`}
             >
               {isSubmitting ? "Saving..." : "Save Changes"}
             </button>

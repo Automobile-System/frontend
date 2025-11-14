@@ -29,105 +29,31 @@ export default function ServiceDetails({
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        borderRadius: "12px",
-        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-        height: "fit-content",
-        position: "sticky",
-        top: "20px",
-      }}
-    >
+    <div className="bg-white rounded-xl shadow-md h-fit sticky top-5">
       {/* Header */}
-      <div
-        style={{
-          padding: "20px 24px",
-          borderBottom: "1px solid #e5e7eb",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          backgroundColor: "rgba(2, 0, 121, 0.02)",
-        }}
-      >
-        <h3
-          style={{
-            fontSize: "20px",
-            fontWeight: "700",
-            color: "#020079",
-            margin: 0,
-          }}
-        >
+      <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-[#020079]/[0.02]">
+        <h3 className="text-xl font-bold text-[#020079] m-0">
           Service Details
         </h3>
         <button
           onClick={onClose}
-          style={{
-            background: "none",
-            border: "none",
-            fontSize: "24px",
-            color: "#6b7280",
-            cursor: "pointer",
-            padding: "4px",
-            borderRadius: "4px",
-            transition: "all 0.2s ease",
-            lineHeight: "1",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#f3f4f6";
-            e.currentTarget.style.color = "#020079";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent";
-            e.currentTarget.style.color = "#6b7280";
-          }}
+          className="bg-none border-none text-2xl text-gray-500 cursor-pointer p-1 rounded transition-all duration-200 leading-none hover:bg-gray-100 hover:text-[#020079]"
         >
           ×
         </button>
       </div>
 
       {/* Tabs */}
-      <div
-        style={{
-          display: "flex",
-          borderBottom: "2px solid #e5e7eb",
-          backgroundColor: "white",
-        }}
-      >
+      <div className="flex border-b-2 border-gray-200 bg-white">
         {(["details", "timeline", "chat"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            style={{
-              flex: 1,
-              padding: "14px 16px",
-              border: "none",
-              backgroundColor: "transparent",
-              color: activeTab === tab ? "#03009B" : "#6b7280",
-              fontSize: "14px",
-              fontWeight: activeTab === tab ? "600" : "500",
-              cursor: "pointer",
-              textTransform: "capitalize",
-              borderBottom:
-                activeTab === tab
-                  ? "3px solid #03009B"
-                  : "3px solid transparent",
-              transition: "all 0.2s ease",
-              position: "relative",
-              bottom: "-2px",
-            }}
-            onMouseEnter={(e) => {
-              if (activeTab !== tab) {
-                e.currentTarget.style.color = "#03009B";
-                e.currentTarget.style.backgroundColor = "rgba(3, 0, 155, 0.05)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (activeTab !== tab) {
-                e.currentTarget.style.color = "#6b7280";
-                e.currentTarget.style.backgroundColor = "transparent";
-              }
-            }}
+            className={`flex-1 px-4 py-3.5 border-none bg-transparent text-sm font-medium cursor-pointer capitalize relative -bottom-0.5 transition-all duration-200 ${
+              activeTab === tab
+                ? "text-[#03009B] font-semibold border-b-[3px] border-[#03009B]"
+                : "text-gray-500 border-b-[3px] border-transparent hover:text-[#03009B] hover:bg-[#03009B]/[0.05]"
+            }`}
           >
             {tab === "chat" ? "💬 Chat" : tab}
           </button>
@@ -135,179 +61,56 @@ export default function ServiceDetails({
       </div>
 
       {/* Content */}
-      <div style={{ padding: "24px", minHeight: "400px" }}>
+      <div className="p-6 min-h-[400px]">
         {activeTab === "details" && (
           <div>
-            <div style={{ marginBottom: "20px" }}>
-              <h4
-                style={{
-                  fontSize: "18px",
-                  fontWeight: "700",
-                  color: "#020079",
-                  marginBottom: "20px",
-                  paddingBottom: "12px",
-                  borderBottom: "2px solid rgba(2, 0, 121, 0.1)",
-                }}
-              >
+            <div className="mb-5">
+              <h4 className="text-lg font-bold text-[#020079] mb-5 pb-3 border-b-2 border-[#020079]/10">
                 Service Information
               </h4>
 
-              <div style={{ display: "grid", gap: "16px" }}>
-                <div
-                  style={{
-                    padding: "12px",
-                    backgroundColor: "rgba(2, 0, 121, 0.02)",
-                    borderRadius: "8px",
-                    borderLeft: "3px solid #03009B",
-                  }}
-                >
-                  <span
-                    style={{
-                      color: "#6b7280",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
+              <div className="grid gap-4">
+                <div className="p-3 bg-[#020079]/[0.02] rounded-lg border-l-[3px] border-[#03009B]">
+                  <span className="text-gray-500 text-xs font-semibold uppercase tracking-wide">
                     Vehicle:
                   </span>
-                  <p
-                    style={{
-                      color: "#020079",
-                      margin: "6px 0 0 0",
-                      fontWeight: "600",
-                      fontSize: "15px",
-                    }}
-                  >
+                  <p className="text-[#020079] mt-1.5 mb-0 font-semibold text-[15px]">
                     {serviceDetails.vehicle}
                   </p>
                 </div>
 
-                <div
-                  style={{
-                    padding: "12px",
-                    backgroundColor: "rgba(2, 0, 121, 0.02)",
-                    borderRadius: "8px",
-                    borderLeft: "3px solid #03009B",
-                  }}
-                >
-                  <span
-                    style={{
-                      color: "#6b7280",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
+                <div className="p-3 bg-[#020079]/[0.02] rounded-lg border-l-[3px] border-[#03009B]">
+                  <span className="text-gray-500 text-xs font-semibold uppercase tracking-wide">
                     Service Type:
                   </span>
-                  <p
-                    style={{
-                      color: "#020079",
-                      margin: "6px 0 0 0",
-                      fontWeight: "600",
-                      fontSize: "15px",
-                    }}
-                  >
+                  <p className="text-[#020079] mt-1.5 mb-0 font-semibold text-[15px]">
                     {serviceDetails.serviceType}
                   </p>
                 </div>
 
-                <div
-                  style={{
-                    padding: "12px",
-                    backgroundColor: "rgba(2, 0, 121, 0.02)",
-                    borderRadius: "8px",
-                    borderLeft: "3px solid #03009B",
-                  }}
-                >
-                  <span
-                    style={{
-                      color: "#6b7280",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
+                <div className="p-3 bg-[#020079]/[0.02] rounded-lg border-l-[3px] border-[#03009B]">
+                  <span className="text-gray-500 text-xs font-semibold uppercase tracking-wide">
                     Current Status:
                   </span>
-                  <p
-                    style={{
-                      color: "#E6C200",
-                      margin: "6px 0 0 0",
-                      fontWeight: "600",
-                      padding: "6px 12px",
-                      backgroundColor: "rgba(230, 194, 0, 0.1)",
-                      borderRadius: "6px",
-                      display: "inline-block",
-                      fontSize: "14px",
-                    }}
-                  >
+                  <p className="text-[#E6C200] mt-1.5 mb-0 font-semibold px-3 py-1.5 bg-[#E6C200]/10 rounded-md inline-block text-sm">
                     In Progress
                   </p>
                 </div>
 
-                <div
-                  style={{
-                    padding: "12px",
-                    backgroundColor: "rgba(2, 0, 121, 0.02)",
-                    borderRadius: "8px",
-                    borderLeft: "3px solid #03009B",
-                  }}
-                >
-                  <span
-                    style={{
-                      color: "#6b7280",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
+                <div className="p-3 bg-[#020079]/[0.02] rounded-lg border-l-[3px] border-[#03009B]">
+                  <span className="text-gray-500 text-xs font-semibold uppercase tracking-wide">
                     Assigned Employee:
                   </span>
-                  <p
-                    style={{
-                      color: "#020079",
-                      margin: "6px 0 0 0",
-                      fontWeight: "600",
-                      fontSize: "15px",
-                    }}
-                  >
+                  <p className="text-[#020079] mt-1.5 mb-0 font-semibold text-[15px]">
                     {serviceDetails.assignedEmployee}
                   </p>
                 </div>
 
-                <div
-                  style={{
-                    padding: "12px",
-                    backgroundColor: "rgba(2, 0, 121, 0.02)",
-                    borderRadius: "8px",
-                    borderLeft: "3px solid #03009B",
-                  }}
-                >
-                  <span
-                    style={{
-                      color: "#6b7280",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
+                <div className="p-3 bg-[#020079]/[0.02] rounded-lg border-l-[3px] border-[#03009B]">
+                  <span className="text-gray-500 text-xs font-semibold uppercase tracking-wide">
                     Expected Completion:
                   </span>
-                  <p
-                    style={{
-                      color: "#020079",
-                      margin: "6px 0 0 0",
-                      fontWeight: "600",
-                      fontSize: "15px",
-                    }}
-                  >
+                  <p className="text-[#020079] mt-1.5 mb-0 font-semibold text-[15px]">
                     {serviceDetails.expectedCompletion}
                   </p>
                 </div>
@@ -318,14 +121,7 @@ export default function ServiceDetails({
 
         {activeTab === "timeline" && <ServiceTimeline serviceId={serviceId} />}
         {activeTab === "chat" && (
-          <div
-            style={{
-              backgroundColor: "#f9fafb",
-              borderRadius: "12px",
-              padding: "16px",
-              border: "1px solid #e5e7eb",
-            }}
-          >
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
             <ServiceChat serviceId={serviceId} employeeName="Ruwan Silva" />
           </div>
         )}

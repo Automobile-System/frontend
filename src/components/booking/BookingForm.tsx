@@ -23,7 +23,6 @@ const services = [
   "Lube Services",
   "Exterior & Interior Detailing",
   "Engine Tune ups",
-  "Wash and Grooming",
   "Undercarriage Degreasing",
   "Windscreean Treatments",
   "Inspection Reports",

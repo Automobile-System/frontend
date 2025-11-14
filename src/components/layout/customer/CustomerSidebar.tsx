@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import clsx from "clsx";
 import { LogOut } from "lucide-react";
 
@@ -19,8 +20,7 @@ export default function CustomerSidebar() {
   const menuItems = [
     { name: "Dashboard", path: "/customer/dashboard" },
     { name: "My Vehicles", path: "/customer/vehicles" },
-    { name: "Book Service / Project", path: "/customer/book-service" },
-    { name: "My Services", path: "/customer/services" },
+    { name: "My Projects & Services", path: "/customer/services" },
   ];
 
   return (
@@ -37,9 +37,9 @@ export default function CustomerSidebar() {
           const isActive = pathname === item.path;
 
           return (
-            <button
+            <Link
               key={item.name}
-              onClick={() => router.push(item.path)}
+              href={item.path}
               className={clsx(
                 "w-full text-left px-4 py-3 rounded-lg flex items-center justify-start font-roboto text-sm transition-all duration-200",
                 isActive
@@ -48,39 +48,17 @@ export default function CustomerSidebar() {
               )}
             >
               {item.name}
-            </button>
+            </Link>
           )})}
         </nav>
 
       {/* Logout Button */}
-      <div style={{ paddingBottom: "1.5rem" }}>
+      <div className="pb-6">
         <button
           onClick={handleLogout}
-          style={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            gap: "0.75rem",
-            padding: "0.75rem 1rem",
-            borderRadius: "0.5rem",
-            background: "linear-gradient(to right, #eab308, #facc15)", // yellow-500 to yellow-400
-            color: "black",
-            border: "none",
-            cursor: "pointer",
-            transition: "all 0.2s ease",
-            fontSize: "0.875rem",
-            fontFamily: "var(--font-roboto, sans-serif)",
-            fontWeight: "500",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = "none";
-          }}
+          className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-400 text-black border-none cursor-pointer transition-all duration-200 text-sm font-roboto font-medium hover:shadow-lg"
         >
-          <LogOut style={{ width: "1.25rem", height: "1.25rem" }} />
+          <LogOut className="w-5 h-5" />
           <span>Log Out</span>
         </button>
       </div>

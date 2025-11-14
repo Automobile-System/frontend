@@ -63,27 +63,9 @@ export default function ServiceList({
   selectedServiceId,
 }: ServiceListProps) {
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        borderRadius: "12px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          padding: "24px",
-          borderBottom: "1px solid #e5e7eb",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "20px",
-            fontWeight: "600",
-            color: "#1f2937",
-          }}
-        >
+    <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="p-6 border-b border-gray-200">
+        <h2 className="text-xl font-semibold text-gray-800">
           Active Services & Projects
         </h2>
       </div>
@@ -97,17 +79,12 @@ export default function ServiceList({
               isSelected={selectedServiceId === service.id}
             />
             {index < mockServices.length - 1 && (
-              <div
-                style={{
-                  height: "1px",
-                  backgroundColor: "#e5e7eb",
-                  margin: "0 24px",
-                }}
-              />
+              <div className="h-px bg-gray-200 mx-6" />
             )}
           </div>
         ))}
       </div>
-    </div>
+      </div>
+
   );
 }
