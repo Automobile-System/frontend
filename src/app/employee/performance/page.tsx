@@ -44,59 +44,84 @@ export default function PerformancePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMonth] = useState("November 2025");
 
-  const [earnings] = useState<EarningsBreakdown>({
-    baseSalary: 75000,
-    performanceBonus: 12500,
-    demandBonus: 8200,
-    overtimeHours: 12,
-    overtimeAmount: 5400,
-    totalEarnings: 101100,
+  const [earnings, setEarnings] = useState<EarningsBreakdown>({
+    baseSalary: 0,
+    performanceBonus: 0,
+    demandBonus: 0,
+    overtimeHours: 0,
+    overtimeAmount: 0,
+    totalEarnings: 0,
   });
 
-  const [demandPercentage] = useState(78);
+  const [demandPercentage, setDemandPercentage] = useState(0);
 
-  // Mock data for charts
-  const monthlyTaskData: MonthlyData[] = [
-    { month: "May", tasksCompleted: 18, avgCompletionTime: 2.5, rating: 4.6 },
-    { month: "Jun", tasksCompleted: 22, avgCompletionTime: 2.3, rating: 4.7 },
-    { month: "Jul", tasksCompleted: 25, avgCompletionTime: 2.1, rating: 4.8 },
-    { month: "Aug", tasksCompleted: 28, avgCompletionTime: 2.0, rating: 4.8 },
-    { month: "Sep", tasksCompleted: 24, avgCompletionTime: 2.2, rating: 4.7 },
-    { month: "Oct", tasksCompleted: 30, avgCompletionTime: 1.9, rating: 4.9 },
-    { month: "Nov", tasksCompleted: 32, avgCompletionTime: 1.8, rating: 4.8 },
-  ];
-
-  const serviceTypeData: ServiceTypeData[] = [
-    { type: "Engine Repair", count: 45, percentage: 35, color: "bg-blue-500" },
-    {
-      type: "Brake Service",
-      count: 32,
-      percentage: 25,
-      color: "bg-emerald-500",
-    },
-    { type: "Oil Change", count: 25, percentage: 20, color: "bg-purple-500" },
-    {
-      type: "Tire Rotation",
-      count: 18,
-      percentage: 14,
-      color: "bg-orange-500",
-    },
-    { type: "Others", count: 8, percentage: 6, color: "bg-gray-400" },
-  ];
+  // Chart data - will be populated from API
+  const [monthlyTaskData, setMonthlyTaskData] = useState<MonthlyData[]>([]);
+  const [serviceTypeData, setServiceTypeData] = useState<ServiceTypeData[]>([]);
 
   useEffect(() => {
-    // Simulate data loading
-    // TODO: Replace with actual API call
-    // fetch('/api/employee/performance')
-    //   .then(res => res.json())
-    //   .then(data => setEarnings(data));
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
+    const loadPerformanceData = async () => {
+      setIsLoading(true);
+      
+      try {
+        const { getMonthlyEarnings, getChartsData, getDemandMeterStatus } = await import("@/services/employeeService");
+        
+        const [earningsData, chartsData, demandData] = await Promise.all([
+          getMonthlyEarnings(),
+          getChartsData(),
+          getDemandMeterStatus(),
+        ]);
+        
+        // Update earnings state
+        setEarnings({
+          baseSalary: earningsData.baseSalary || 0,
+          performanceBonus: earningsData.performanceBonus || 0,
+          demandBonus: earningsData.demandBonus || 0,
+          overtimeHours: earningsData.overtimeHours || 0,
+          overtimeAmount: earningsData.overtimePay || 0,
+          totalEarnings: earningsData.totalEarnings || 0,
+        });
+        
+        setDemandPercentage(Math.round(demandData.demandPercentage || 0));
+        
+        // Transform chartsData.monthlyTasksData to MonthlyData[]
+        if (chartsData.monthlyTasksData) {
+          const transformedMonthlyData: MonthlyData[] = chartsData.monthlyTasksData.map((item: Record<string, unknown>) => ({
+            month: (item.month as string) || "",
+            tasksCompleted: (item.completedTasks as number) || 0,
+            avgCompletionTime: 0, // Backend may not provide this, calculate if available
+            rating: 0, // Backend may not provide this, calculate if available
+          }));
+          setMonthlyTaskData(transformedMonthlyData);
+        }
+        
+        // Transform chartsData.serviceDistributionData to ServiceTypeData[]
+        if (chartsData.serviceDistributionData) {
+          const total = chartsData.serviceDistributionData.reduce((sum: number, item: Record<string, unknown>) => sum + ((item.count as number) || 0), 0);
+          const transformedServiceData: ServiceTypeData[] = chartsData.serviceDistributionData.map((item: Record<string, unknown>, index: number) => {
+            const colors = ["bg-blue-500", "bg-emerald-500", "bg-purple-500", "bg-orange-500", "bg-gray-400"];
+            const count = (item.count as number) || 0;
+            return {
+              type: (item.serviceType as string) || "Unknown",
+              count: count,
+              percentage: total > 0 ? Math.round((count / total) * 100) : 0,
+              color: colors[index % colors.length],
+            };
+          });
+          setServiceTypeData(transformedServiceData);
+        }
+        
+      } catch (error) {
+        console.error("Error loading performance data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadPerformanceData();
   }, []);
 
-  const maxTasks = Math.max(...monthlyTaskData.map((d) => d.tasksCompleted));
+  const maxTasks = monthlyTaskData.length > 0 ? Math.max(...monthlyTaskData.map((d) => d.tasksCompleted)) : 0;
 
   return (
     <EmployeeLayout>
@@ -161,7 +186,7 @@ export default function PerformancePage() {
                   Tasks This Month
                 </p>
                 <p className="text-3xl font-bold text-[#020079]">
-                  {monthlyTaskData[monthlyTaskData.length - 1].tasksCompleted}
+                  {monthlyTaskData.length > 0 ? monthlyTaskData[monthlyTaskData.length - 1].tasksCompleted : 0}
                 </p>
                 <p className="text-xs text-[#020079] mt-2 font-semibold">
                   +6.7% completion rate
@@ -180,11 +205,7 @@ export default function PerformancePage() {
                   Avg Completion
                 </p>
                 <p className="text-3xl font-bold text-[#020079]">
-                  {
-                    monthlyTaskData[monthlyTaskData.length - 1]
-                      .avgCompletionTime
-                  }
-                  h
+                  {monthlyTaskData.length > 0 ? monthlyTaskData[monthlyTaskData.length - 1].avgCompletionTime : 0}h
                 </p>
                 <p className="text-xs text-[#020079] mt-2 font-semibold">
                   -15% faster than avg
@@ -467,9 +488,9 @@ export default function PerformancePage() {
                   </div>
                 </div>
 
-                <div className="h-64">
+                  <div className="h-64">
                   <div className="flex items-end justify-between h-full gap-2 px-2">
-                    {monthlyTaskData.map((data, index) => (
+                    {monthlyTaskData.length > 0 ? monthlyTaskData.map((data, index) => (
                       <div
                         key={index}
                         className="flex-1 flex flex-col items-center gap-2"
@@ -498,7 +519,11 @@ export default function PerformancePage() {
                           {data.month}
                         </p>
                       </div>
-                    ))}
+                    )) : (
+                      <div className="flex items-center justify-center w-full h-full text-gray-500">
+                        <p>No data available</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -550,105 +575,113 @@ export default function PerformancePage() {
                     ))}
                   </div>
 
-                  {/* Line chart */}
-                  <svg
-                    className="w-full h-full relative z-10"
-                    viewBox="0 0 400 200"
-                    preserveAspectRatio="none"
-                  >
-                    <defs>
-                      <linearGradient
-                        id="lineGradient"
-                        x1="0%"
-                        y1="0%"
-                        x2="100%"
-                        y2="0%"
-                      >
-                        <stop offset="0%" stopColor="#E6C200" />
-                        <stop offset="100%" stopColor="#E6C200" />
-                      </linearGradient>
-                      <linearGradient
-                        id="areaGradient"
-                        x1="0%"
-                        y1="0%"
-                        x2="0%"
-                        y2="100%"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor="#E6C200"
-                          stopOpacity="0.3"
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor="#E6C200"
-                          stopOpacity="0"
-                        />
-                      </linearGradient>
-                    </defs>
+                    {/* Line chart */}
+                  {monthlyTaskData.length > 0 ? (
+                    <svg
+                      className="w-full h-full relative z-10"
+                      viewBox="0 0 400 200"
+                      preserveAspectRatio="none"
+                    >
+                      <defs>
+                        <linearGradient
+                          id="lineGradient"
+                          x1="0%"
+                          y1="0%"
+                          x2="100%"
+                          y2="0%"
+                        >
+                          <stop offset="0%" stopColor="#E6C200" />
+                          <stop offset="100%" stopColor="#E6C200" />
+                        </linearGradient>
+                        <linearGradient
+                          id="areaGradient"
+                          x1="0%"
+                          y1="0%"
+                          x2="0%"
+                          y2="100%"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#E6C200"
+                            stopOpacity="0.3"
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#E6C200"
+                            stopOpacity="0"
+                          />
+                        </linearGradient>
+                      </defs>
 
-                    {/* Area under line */}
-                    <path
-                      d={`M 0 ${
-                        200 - (monthlyTaskData[0].avgCompletionTime / 3) * 200
-                      } ${monthlyTaskData
-                        .map(
-                          (d, i) =>
-                            `L ${(i / (monthlyTaskData.length - 1)) * 400} ${
-                              200 - (d.avgCompletionTime / 3) * 200
-                            }`
-                        )
-                        .join(" ")} L 400 200 L 0 200 Z`}
-                      fill="url(#areaGradient)"
-                    />
+                      {/* Area under line */}
+                      <path
+                        d={`M 0 ${
+                          200 - (monthlyTaskData[0].avgCompletionTime / 3) * 200
+                        } ${monthlyTaskData
+                          .map(
+                            (d, i) =>
+                              `L ${(i / (monthlyTaskData.length - 1)) * 400} ${
+                                200 - (d.avgCompletionTime / 3) * 200
+                              }`
+                          )
+                          .join(" ")} L 400 200 L 0 200 Z`}
+                        fill="url(#areaGradient)"
+                      />
 
-                    {/* Line */}
-                    <polyline
-                      points={monthlyTaskData
-                        .map(
-                          (d, i) =>
-                            `${(i / (monthlyTaskData.length - 1)) * 400},${
-                              200 - (d.avgCompletionTime / 3) * 200
-                            }`
-                        )
-                        .join(" ")}
-                      fill="none"
-                      stroke="url(#lineGradient)"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-
-                    {/* Points */}
-                    {monthlyTaskData.map((d, i) => (
-                      <circle
-                        key={i}
-                        cx={(i / (monthlyTaskData.length - 1)) * 400}
-                        cy={200 - (d.avgCompletionTime / 3) * 200}
-                        r="5"
-                        fill="#ffffff"
-                        stroke="#E6C200"
+                      {/* Line */}
+                      <polyline
+                        points={monthlyTaskData
+                          .map(
+                            (d, i) =>
+                              `${(i / (monthlyTaskData.length - 1)) * 400},${
+                                200 - (d.avgCompletionTime / 3) * 200
+                              }`
+                          )
+                          .join(" ")}
+                        fill="none"
+                        stroke="url(#lineGradient)"
                         strokeWidth="3"
-                        className="hover:r-7 transition-all cursor-pointer"
-                      >
-                        <title>
-                          {d.month}: {d.avgCompletionTime}h
-                        </title>
-                      </circle>
-                    ))}
-                  </svg>
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+
+                      {/* Points */}
+                      {monthlyTaskData.map((d, i) => (
+                        <circle
+                          key={i}
+                          cx={(i / (monthlyTaskData.length - 1)) * 400}
+                          cy={200 - (d.avgCompletionTime / 3) * 200}
+                          r="5"
+                          fill="#ffffff"
+                          stroke="#E6C200"
+                          strokeWidth="3"
+                          className="hover:r-7 transition-all cursor-pointer"
+                        >
+                          <title>
+                            {d.month}: {d.avgCompletionTime}h
+                          </title>
+                        </circle>
+                      ))}
+                    </svg>
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full text-gray-500">
+                      <p>No data available</p>
+                    </div>
+                  )}
 
                   {/* X-axis labels */}
-                  <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 mt-2">
-                    {monthlyTaskData.map((data, index) => (
-                      <span
-                        key={index}
-                        className="text-xs font-semibold text-[#020079]"
-                      >
-                        {data.month}
-                      </span>
-                    ))}
-                  </div>
+                  {monthlyTaskData.length > 0 && (
+                    <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 mt-2">
+                      {monthlyTaskData.map((data, index) => (
+                        <span
+                          key={index}
+                          className="text-xs font-semibold text-[#020079]"
+                        >
+                          {data.month}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-[#020079]/20">
@@ -656,11 +689,7 @@ export default function PerformancePage() {
                     <span className="text-gray-600">
                       Current:{" "}
                       <span className="font-bold text-[#E6C200]">
-                        {
-                          monthlyTaskData[monthlyTaskData.length - 1]
-                            .avgCompletionTime
-                        }
-                        h
+                        {monthlyTaskData.length > 0 ? monthlyTaskData[monthlyTaskData.length - 1].avgCompletionTime : 0}h
                       </span>
                     </span>
                     <span className="text-gray-600 flex items-center gap-1">
@@ -702,71 +731,79 @@ export default function PerformancePage() {
                     ))}
                   </div>
 
-                  {/* Rating line chart */}
-                  <svg
-                    className="w-full h-full relative z-10 pl-8"
-                    viewBox="0 0 400 200"
-                    preserveAspectRatio="none"
-                  >
-                    <defs>
-                      <linearGradient
-                        id="ratingGradient"
-                        x1="0%"
-                        y1="0%"
-                        x2="100%"
-                        y2="0%"
-                      >
-                        <stop offset="0%" stopColor="#020079" />
-                        <stop offset="100%" stopColor="#03009B" />
-                      </linearGradient>
-                    </defs>
+                    {/* Rating line chart */}
+                  {monthlyTaskData.length > 0 ? (
+                    <svg
+                      className="w-full h-full relative z-10 pl-8"
+                      viewBox="0 0 400 200"
+                      preserveAspectRatio="none"
+                    >
+                      <defs>
+                        <linearGradient
+                          id="ratingGradient"
+                          x1="0%"
+                          y1="0%"
+                          x2="100%"
+                          y2="0%"
+                        >
+                          <stop offset="0%" stopColor="#020079" />
+                          <stop offset="100%" stopColor="#03009B" />
+                        </linearGradient>
+                      </defs>
 
-                    {/* Line */}
-                    <polyline
-                      points={monthlyTaskData
-                        .map(
-                          (d, i) =>
-                            `${(i / (monthlyTaskData.length - 1)) * 380},${
-                              200 - ((d.rating - 3) / 2) * 200
-                            }`
-                        )
-                        .join(" ")}
-                      fill="none"
-                      stroke="url(#ratingGradient)"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                      {/* Line */}
+                      <polyline
+                        points={monthlyTaskData
+                          .map(
+                            (d, i) =>
+                              `${(i / (monthlyTaskData.length - 1)) * 380},${
+                                200 - ((d.rating - 3) / 2) * 200
+                              }`
+                          )
+                          .join(" ")}
+                        fill="none"
+                        stroke="url(#ratingGradient)"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
 
-                    {/* Points with stars */}
-                    {monthlyTaskData.map((d, i) => (
-                      <g key={i}>
-                        <circle
-                          cx={(i / (monthlyTaskData.length - 1)) * 380}
-                          cy={200 - ((d.rating - 3) / 2) * 200}
-                          r="6"
-                          fill="#ffffff"
-                          stroke="#E6C200"
-                          strokeWidth="3"
-                        />
-                        <title>
-                          {d.month}: {d.rating}/5.0
-                        </title>
-                      </g>
-                    ))}
-                  </svg>
+                      {/* Points with stars */}
+                      {monthlyTaskData.map((d, i) => (
+                        <g key={i}>
+                          <circle
+                            cx={(i / (monthlyTaskData.length - 1)) * 380}
+                            cy={200 - ((d.rating - 3) / 2) * 200}
+                            r="6"
+                            fill="#ffffff"
+                            stroke="#E6C200"
+                            strokeWidth="3"
+                          />
+                          <title>
+                            {d.month}: {d.rating}/5.0
+                          </title>
+                        </g>
+                      ))}
+                    </svg>
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full text-gray-500">
+                      <p>No data available</p>
+                    </div>
+                  )}
 
                   {/* X-axis labels */}
-                  <div className="absolute bottom-0 left-8 right-0 flex justify-between px-2 mt-2">
-                    {monthlyTaskData.map((data, index) => (
-                      <span
-                        key={index}
-                        className="text-xs font-semibold text-[#020079]"
-                      >
-                        {data.month}
-                      </span>
-                    ))}
-                  </div>
+                  {monthlyTaskData.length > 0 && (
+                    <div className="absolute bottom-0 left-8 right-0 flex justify-between px-2 mt-2">
+                      {monthlyTaskData.map((data, index) => (
+                        <span
+                          key={index}
+                          className="text-xs font-semibold text-[#020079]"
+                        >
+                          {data.month}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-[#020079]/20">
@@ -774,18 +811,15 @@ export default function PerformancePage() {
                     <span className="text-gray-600">
                       Current:{" "}
                       <span className="font-bold text-[#E6C200]">
-                        {monthlyTaskData[monthlyTaskData.length - 1].rating}/5.0
+                        {monthlyTaskData.length > 0 ? monthlyTaskData[monthlyTaskData.length - 1].rating : 0}/5.0
                       </span>
                     </span>
                     <span className="text-gray-600">
                       Average:{" "}
                       <span className="font-bold text-[#020079]">
-                        {(
-                          monthlyTaskData.reduce(
-                            (acc, d) => acc + d.rating,
-                            0
-                          ) / monthlyTaskData.length
-                        ).toFixed(2)}
+                        {monthlyTaskData.length > 0 ? (
+                          monthlyTaskData.reduce((acc, d) => acc + d.rating, 0) / monthlyTaskData.length
+                        ).toFixed(2) : "0.00"}
                         /5.0
                       </span>
                     </span>
@@ -810,7 +844,7 @@ export default function PerformancePage() {
                 </div>
 
                 <div className="space-y-4">
-                  {serviceTypeData.map((service, index) => (
+                  {serviceTypeData.length > 0 ? serviceTypeData.map((service, index) => (
                     <div key={index} className="group">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
@@ -857,7 +891,11 @@ export default function PerformancePage() {
                         />
                       </div>
                     </div>
-                  ))}
+                  )) : (
+                    <div className="flex items-center justify-center py-8 text-gray-500">
+                      <p>No service data available</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-6 pt-4 border-t border-[#020079]/20">
@@ -865,8 +903,7 @@ export default function PerformancePage() {
                     <p className="text-sm text-gray-600">
                       Total Services:{" "}
                       <span className="font-bold text-[#020079]">
-                        {serviceTypeData.reduce((acc, s) => acc + s.count, 0)}{" "}
-                        tasks
+                        {serviceTypeData.reduce((acc, s) => acc + s.count, 0)} tasks
                       </span>
                     </p>
                   </div>

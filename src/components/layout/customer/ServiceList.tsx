@@ -63,49 +63,24 @@ export default function ServiceList({
   selectedServiceId,
 }: ServiceListProps) {
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        borderRadius: "12px",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-        overflow: "hidden",
-      }}
-    >
-      <div
-        style={{
-          padding: "24px",
-          borderBottom: "1px solid #e5e7eb",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "20px",
-            fontWeight: "600",
-            color: "#1f2937",
-          }}
-        >
+    <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+      <div className="p-6 border-b-2 border-[#020079]/10 bg-gradient-to-r from-[#020079]/5 to-transparent">
+        <h2 className="text-2xl font-bold text-[#020079] font-bebas tracking-wide">
           Active Services & Projects
         </h2>
+        <p className="text-sm text-gray-600 mt-1 font-roboto">
+          {mockServices.length} {mockServices.length === 1 ? 'item' : 'items'} in progress
+        </p>
       </div>
 
-      <div>
-        {mockServices.map((service, index) => (
-          <div key={service.id}>
-            <ServiceCard
-              service={service}
-              onClick={() => onServiceSelect(service.id)}
-              isSelected={selectedServiceId === service.id}
-            />
-            {index < mockServices.length - 1 && (
-              <div
-                style={{
-                  height: "1px",
-                  backgroundColor: "#e5e7eb",
-                  margin: "0 24px",
-                }}
-              />
-            )}
-          </div>
+      <div className="divide-y divide-gray-200">
+        {mockServices.map((service) => (
+          <ServiceCard
+            key={service.id}
+            service={service}
+            onClick={() => onServiceSelect(service.id)}
+            isSelected={selectedServiceId === service.id}
+          />
         ))}
       </div>
     </div>

@@ -10,61 +10,20 @@ export default function ServicesPage() {
 
     return (
         <CustomerLayout>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "2rem",
-                    maxWidth: "1400px",
-                    margin: "0 auto",
-                    width: "100%",
-                }}
-            >
+            <div className="flex flex-col gap-8 max-w-7xl mx-auto w-full">
                 {/* Header */}
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        justifyContent: "space-between",
-                        marginBottom: "1rem",
-                        paddingBottom: "1.5rem",
-                        borderBottom: "2px solid rgba(2, 0, 121, 0.1)",
-                    }}
-                >
+                <div className="flex items-start justify-between mb-4 pb-6 border-b-2 border-[#020079]/10">
                     <div>
-                        <h1
-                            style={{
-                                fontSize: "2.5rem",
-                                fontWeight: "700",
-                                color: "#020079",
-                                margin: "0 0 0.5rem 0",
-                                fontFamily: "var(--font-bebas, sans-serif)",
-                                letterSpacing: "0.5px",
-                            }}
-                        >
+                        <h1 className="text-4xl font-bold text-[#020079] mb-2 font-bebas tracking-wide">
                             My Services / Projects
                         </h1>
-                        <p
-                            style={{
-                                color: "#6b7280",
-                                margin: 0,
-                                fontSize: "1rem",
-                                fontFamily: "var(--font-roboto, sans-serif)",
-                            }}
-                        >
+                        <p className="text-gray-600 text-base font-roboto">
                             Track and manage all your vehicle services
                         </p>
                     </div>
                 </div>
 
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: selectedService ? "1fr 400px" : "1fr",
-                        gap: "2rem",
-                        alignItems: "start",
-                    }}
-                >
+                <div className={`grid ${selectedService ? 'grid-cols-1 lg:grid-cols-[1fr_400px]' : 'grid-cols-1'} gap-6 items-start`}>
                     <ServiceList 
                         onServiceSelect={setSelectedService} 
                         selectedServiceId={selectedService}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from 'react'
+import { clearEmployeeCache } from '@/services/employeeService'
 import { useRouter } from 'next/navigation'
 
 export interface User {
@@ -61,6 +62,8 @@ export function useAuth() {
       if (response.ok) {
         setUser(null)
         setIsAuthenticated(false)
+        // Clear any cached employee-specific data
+        try { clearEmployeeCache(); } catch {}
         router.push('/login')
         return { success: true }
       } else {
