@@ -13,8 +13,8 @@ interface CustomerProject {
   jobId: number;
   title: string;
   description: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-  projectStatus: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD';
+  status: 'PENDING' | 'APPROVED' | 'COMPLETED' | 'IN_PROGRESS' | 'WAITING_PARTS' | 'SCHEDULED' | 'CANCELLED';
+  projectStatus: 'PENDING' | 'APPROVED' | 'COMPLETED' | 'IN_PROGRESS' | 'WAITING_PARTS' | 'SCHEDULED' | 'CANCELLED';
   arrivingDate: string;
   completionDate: string | null;
   cost: number | null;
@@ -31,22 +31,17 @@ interface CustomerProject {
 
 interface ProjectItemCardProps {
   project: CustomerProject;
-  onViewDetails: (projectId: number) => void;
+  onViewDetails: (jobId: number) => void;
 }
 
 const statusColors = {
   PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-300',
-  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-300',
+  APPROVED: 'bg-cyan-100 text-cyan-800 border-cyan-300',
   COMPLETED: 'bg-green-100 text-green-800 border-green-300',
+  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-300',
+  WAITING_PARTS: 'bg-orange-100 text-orange-800 border-orange-300',
+  SCHEDULED: 'bg-purple-100 text-purple-800 border-purple-300',
   CANCELLED: 'bg-red-100 text-red-800 border-red-300',
-  ON_HOLD: 'bg-orange-100 text-orange-800 border-orange-300',
-};
-
-const projectStatusColors = {
-  PLANNING: 'bg-purple-100 text-purple-800 border-purple-300',
-  IN_PROGRESS: 'bg-blue-100 text-blue-800 border-blue-300',
-  COMPLETED: 'bg-green-100 text-green-800 border-green-300',
-  ON_HOLD: 'bg-orange-100 text-orange-800 border-orange-300',
 };
 
 export default function ProjectItemCard({ project, onViewDetails }: ProjectItemCardProps) {
@@ -66,14 +61,9 @@ export default function ProjectItemCard({ project, onViewDetails }: ProjectItemC
             <p className="text-sm text-gray-600">{project.vehicleBrand} {project.vehicleModel}</p>
           </div>
         </div>
-        <div className="flex flex-col gap-1 items-end">
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[project.status]}`}>
-            {project.status.replace('_', ' ')}
-          </span>
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${projectStatusColors[project.projectStatus]}`}>
-            {project.projectStatus.replace('_', ' ')}
-          </span>
-        </div>
+        <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[project.status]}`}>
+          {project.status.replace('_', ' ')}
+        </span>
       </div>
 
       <p className="text-sm text-gray-700 mb-4 line-clamp-2">{project.description}</p>
@@ -118,7 +108,7 @@ export default function ProjectItemCard({ project, onViewDetails }: ProjectItemC
       </div>
 
       <button
-        onClick={() => onViewDetails(project.projectId)}
+        onClick={() => onViewDetails(project.jobId)}
         className="mt-4 w-full text-center px-4 py-2 bg-gray-50 hover:bg-purple-600 hover:text-white text-gray-700 rounded-lg transition-all font-medium text-sm border border-gray-200 hover:border-purple-600"
       >
         View Details

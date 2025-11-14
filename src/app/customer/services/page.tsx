@@ -20,10 +20,11 @@ interface AssignedEmployee {
 
 interface CustomerService {
   serviceId: number;
+  jobId: number;
   title: string;
   description: string;
   category: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  status: 'COMPLETED' | 'IN_PROGRESS' | 'WAITING_PARTS' | 'SCHEDULED' | 'CANCELLED';
   arrivingDate: string;
   cost: number;
   estimatedHours: number;
@@ -39,8 +40,8 @@ interface CustomerProject {
   jobId: number;
   title: string;
   description: string;
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
-  projectStatus: 'PLANNING' | 'IN_PROGRESS' | 'COMPLETED' | 'ON_HOLD';
+  status: 'PENDING' | 'APPROVED' | 'COMPLETED' | 'IN_PROGRESS' | 'WAITING_PARTS' | 'SCHEDULED' | 'CANCELLED';
+  projectStatus: 'PENDING' | 'APPROVED' | 'COMPLETED' | 'IN_PROGRESS' | 'WAITING_PARTS' | 'SCHEDULED' | 'CANCELLED';
   arrivingDate: string;
   completionDate: string | null;
   cost: number | null;
@@ -58,8 +59,8 @@ interface CustomerProject {
 export default function ServicesPage() {
     const [showAddService, setShowAddService] = useState(false);
     const [showAddProject, setShowAddProject] = useState(false);
-    const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null);
-    const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
+    const [selectedServiceJobId, setSelectedServiceJobId] = useState<number | null>(null);
+    const [selectedProjectJobId, setSelectedProjectJobId] = useState<number | null>(null);
     const [services, setServices] = useState<CustomerService[]>([]);
     const [projects, setProjects] = useState<CustomerProject[]>([]);
     const [isLoadingServices, setIsLoadingServices] = useState(true);
@@ -167,7 +168,7 @@ export default function ServicesPage() {
                                 <ServiceItemCard 
                                     key={service.serviceId} 
                                     service={service}
-                                    onViewDetails={(serviceId) => setSelectedServiceId(serviceId)}
+                                    onViewDetails={(jobId) => setSelectedServiceJobId(jobId)}
                                 />
                             ))}
                         </div>
@@ -224,7 +225,7 @@ export default function ServicesPage() {
                                 <ProjectItemCard 
                                     key={project.projectId} 
                                     project={project}
-                                    onViewDetails={(projectId) => setSelectedProjectId(projectId)}
+                                    onViewDetails={(jobId) => setSelectedProjectJobId(jobId)}
                                 />
                             ))}
                         </div>
@@ -246,17 +247,17 @@ export default function ServicesPage() {
                     />
                 )}
 
-                {selectedServiceId && (
+                {selectedServiceJobId && (
                     <ServiceDetailsModal
-                        serviceId={selectedServiceId}
-                        onClose={() => setSelectedServiceId(null)}
+                        jobId={selectedServiceJobId}
+                        onClose={() => setSelectedServiceJobId(null)}
                     />
                 )}
 
-                {selectedProjectId && (
+                {selectedProjectJobId && (
                     <ProjectDetailsModal
-                        projectId={selectedProjectId}
-                        onClose={() => setSelectedProjectId(null)}
+                        jobId={selectedProjectJobId}
+                        onClose={() => setSelectedProjectJobId(null)}
                     />
                 )}
             </div>
