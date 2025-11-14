@@ -22,6 +22,8 @@ import {
   Clock,
   TrendingUp,
 } from "lucide-react";
+import { getMyProfile, updateMyProfile, getDashboardSummary, getChartsData } from "@/services/employeeService";
+import { toast } from "sonner";
 
 // Types
 interface EmployeeProfile {
@@ -43,44 +45,128 @@ interface PerformanceStats {
   customerSatisfaction: number;
 }
 
+// Mock data as fallback
+const MOCK_PROFILE: EmployeeProfile = {
+  id: "1",
+  name: "Ruwan Silva",
+  jobTitle: "Engine Specialist",
+  rating: 4.8,
+  totalReviews: 142,
+  employeeId: "EMP-12345",
+  email: "ruwan.silva@autoservice.com",
+  phone: "+94 77 123 4567",
+  joinedDate: "January 15, 2023",
+  avatar: "",
+};
+
+const MOCK_STATS: PerformanceStats = {
+  tasksCompleted: 328,
+  hoursWorked: 1450,
+  customerSatisfaction: 96,
+};
+
 export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState<EmployeeProfile>({
-    id: "1",
-    name: "Ruwan Silva",
-    jobTitle: "Engine Specialist",
-    rating: 4.8,
-    totalReviews: 142,
-    employeeId: "EMP-12345",
-    email: "ruwan.silva@autoservice.com",
-    phone: "+94 77 123 4567",
-    joinedDate: "January 15, 2023",
-    avatar: "",
-  });
-
-  const [stats] = useState<PerformanceStats>({
-    tasksCompleted: 328,
-    hoursWorked: 1450,
-    customerSatisfaction: 96,
-  });
-
-  const [editForm, setEditForm] = useState<EmployeeProfile>(profile);
+  const [profile, setProfile] = useState<EmployeeProfile>(MOCK_PROFILE);
+  const [stats, setStats] = useState<PerformanceStats>(MOCK_STATS);
+  const [editForm, setEditForm] = useState<EmployeeProfile>(MOCK_PROFILE);
+  const [isBackendAvailable, setIsBackendAvailable] = useState(false);
 
   useEffect(() => {
-    // Simulate data loading
-    // TODO: Replace with actual API call
-    // fetch('/api/employee/profile')
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     setProfile(data);
-    //     setEditForm(data);
-    //     setIsLoading(false);
-    //   });
+    const loadProfile = async () => {
+      setIsLoading(true);
+      let backendAvailable = false;
+      let currentRating = MOCK_PROFILE.rating;
+      
+      // Try to load profile from backend
+      try {
+        const profileData = await getMyProfile();
+        
+        // Transform API response to match EmployeeProfile interface
+        const transformedProfile: EmployeeProfile = {
+          id: profileData.id || MOCK_PROFILE.id,
+          name: profileData.name || `${profileData.firstName || ""} ${profileData.lastName || ""}`.trim() || MOCK_PROFILE.name,
+          jobTitle: profileData.specialty || MOCK_PROFILE.jobTitle,
+          rating: profileData.currentRating || MOCK_PROFILE.rating,
+          totalReviews: profileData.totalReviews || MOCK_PROFILE.totalReviews,
+          employeeId: profileData.employeeId || profileData.id || MOCK_PROFILE.employeeId,
+          email: profileData.email || MOCK_PROFILE.email,
+          phone: profileData.phone || profileData.phoneNumber || MOCK_PROFILE.phone,
+          joinedDate: profileData.joinDate
+            ? new Date(profileData.joinDate).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })
+            : MOCK_PROFILE.joinedDate,
+          avatar: profileData.profileImageUrl || MOCK_PROFILE.avatar,
+        };
+        
+        currentRating = transformedProfile.rating;
+        setProfile(transformedProfile);
+        setEditForm(transformedProfile);
+        backendAvailable = true;
+      } catch (error) {
+        console.error("Error loading profile from backend, using mock data:", error);
+        // Keep mock data - already set as initial state
+      }
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
+      // Try to load performance stats from backend
+      try {
+        const [dashboardSummary, chartsData] = await Promise.all([
+          getDashboardSummary().catch(() => null),
+          getChartsData().catch(() => null),
+        ]);
+
+        // Calculate tasks completed (sum from monthly tasks data if available, or use this month's count)
+        let tasksCompleted = MOCK_STATS.tasksCompleted;
+        if (chartsData?.monthlyTasksData && chartsData.monthlyTasksData.length > 0) {
+          // Sum all completed tasks from monthly data
+          tasksCompleted = chartsData.monthlyTasksData.reduce(
+            (sum: number, month: { completedTasks?: number }) => sum + (month.completedTasks || 0),
+            0
+          );
+        } else if (dashboardSummary?.tasksCompletedThisMonth) {
+          // If we only have this month's data, use it as approximation
+          tasksCompleted = dashboardSummary.tasksCompletedThisMonth;
+        }
+
+        // Calculate total hours worked
+        let hoursWorked = MOCK_STATS.hoursWorked;
+        if (chartsData?.dailyHoursData && chartsData.dailyHoursData.length > 0) {
+          // Sum all daily hours
+          hoursWorked = Math.round(
+            chartsData.dailyHoursData.reduce((sum: number, day: { hours?: number }) => sum + (day.hours || 0), 0)
+          );
+        } else if (dashboardSummary?.totalHoursLoggedThisMonth) {
+          // Use this month as approximation (multiply by 12 for yearly estimate)
+          hoursWorked = Math.round(dashboardSummary.totalHoursLoggedThisMonth * 12);
+        }
+
+        // Calculate customer satisfaction from rating (use current profile rating or fallback)
+        let customerSatisfaction = MOCK_STATS.customerSatisfaction;
+        if (currentRating > 0) {
+          // Convert rating (0-5) to satisfaction percentage
+          customerSatisfaction = Math.round((currentRating / 5) * 100);
+        }
+
+        setStats({
+          tasksCompleted,
+          hoursWorked,
+          customerSatisfaction,
+        });
+        backendAvailable = true;
+      } catch (error) {
+        console.error("Error loading stats from backend, using mock data:", error);
+        // Keep mock stats - already set as initial state
+      } finally {
+        setIsBackendAvailable(backendAvailable);
+        setIsLoading(false);
+      }
+    };
+    
+    loadProfile();
   }, []);
 
   const handleEditClick = () => {
@@ -93,21 +179,67 @@ export default function ProfilePage() {
     setEditForm(profile);
   };
 
-  const handleSaveProfile = () => {
-    // TODO: Replace with actual API call
-    // fetch('/api/employee/profile', {
-    //   method: 'PUT',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(editForm)
-    // })
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     setProfile(data);
-    //     setIsEditing(false);
-    //   });
+  const handleSaveProfile = async () => {
+    if (!isBackendAvailable) {
+      toast.error("Backend unavailable. Cannot save profile.");
+      return;
+    }
 
-    setProfile(editForm);
-    setIsEditing(false);
+    try {
+      // Map frontend form to backend request format
+      const updateData: {
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+        phoneNumber?: string;
+        profileImageUrl?: string;
+      } = {};
+      
+      // Split name into first/last if needed
+      const nameParts = editForm.name.split(" ");
+      if (nameParts.length >= 2) {
+        updateData.firstName = nameParts[0];
+        updateData.lastName = nameParts.slice(1).join(" ");
+      } else if (nameParts.length === 1) {
+        updateData.firstName = nameParts[0];
+        updateData.lastName = "";
+      }
+      
+      if (editForm.email) updateData.email = editForm.email;
+      if (editForm.phone) updateData.phoneNumber = editForm.phone;
+      if (editForm.avatar) updateData.profileImageUrl = editForm.avatar;
+      
+      const updatedProfile = await updateMyProfile(updateData);
+      
+      // Transform updated response back to EmployeeProfile
+      const transformedProfile: EmployeeProfile = {
+        id: updatedProfile.id || profile.id,
+        name: updatedProfile.name || `${updatedProfile.firstName || ""} ${updatedProfile.lastName || ""}`.trim() || profile.name,
+        jobTitle: updatedProfile.specialty || profile.jobTitle,
+        rating: updatedProfile.currentRating || profile.rating,
+        totalReviews: updatedProfile.totalReviews || profile.totalReviews,
+        employeeId: updatedProfile.employeeId || profile.employeeId,
+        email: updatedProfile.email || profile.email,
+        phone: updatedProfile.phone || updatedProfile.phoneNumber || profile.phone,
+        joinedDate: updatedProfile.joinDate
+          ? new Date(updatedProfile.joinDate).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })
+          : profile.joinedDate,
+        avatar: updatedProfile.profileImageUrl || profile.avatar,
+      };
+      
+      setProfile(transformedProfile);
+      setEditForm(transformedProfile);
+      setIsEditing(false);
+      setIsBackendAvailable(true);
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile. Please try again.");
+    }
   };
 
   const handleInputChange = (field: keyof EmployeeProfile, value: string) => {
@@ -129,12 +261,19 @@ export default function ProfilePage() {
             <p className="text-gray-600 flex items-center gap-2">
               <User className="h-4 w-4" />
               View and manage your personal information
+              {!isBackendAvailable && (
+                <Badge variant="outline" className="ml-2 text-xs">
+                  Offline Mode
+                </Badge>
+              )}
             </p>
           </div>
           {!isEditing && (
             <Button
               onClick={handleEditClick}
-              className="bg-[#020079] hover:bg-[#03009B] text-white px-6 h-11 rounded-xl font-semibold shadow-lg transition-all duration-300"
+              disabled={!isBackendAvailable}
+              className="bg-[#020079] hover:bg-[#03009B] text-white px-6 h-11 rounded-xl font-semibold shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              title={!isBackendAvailable ? "Backend unavailable. Cannot edit profile." : ""}
             >
               <Edit2 className="h-4 w-4 mr-2" />
               Edit Profile

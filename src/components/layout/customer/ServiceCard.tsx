@@ -34,20 +34,19 @@ export default function ServiceCard({
       comment,
       serviceId: service.id,
     });
-    // Here you would typically make an API call to submit the review
     alert(`Thank you for your review! Rating: ${rating} stars`);
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusStyle = (status: string) => {
     switch (status) {
       case "in-progress":
-        return "var(--color-accent)";
+        return "bg-[#E6C200]/10 text-[#E6C200] border border-[#E6C200]/30";
       case "completed":
-        return "#10b981";
+        return "bg-green-500/10 text-green-600 border border-green-500/30";
       case "waiting-parts":
-        return "#ef4444";
+        return "bg-red-500/10 text-red-600 border border-red-500/30";
       default:
-        return "#6b7280";
+        return "bg-gray-500/10 text-gray-600 border border-gray-500/30";
     }
   };
 
@@ -64,205 +63,140 @@ export default function ServiceCard({
     }
   };
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "in-progress":
+        return "⚙️";
+      case "completed":
+        return "✅";
+      case "waiting-parts":
+        return "⏳";
+      default:
+        return "📋";
+    }
+  };
+
+  const getTypeIcon = (type: string) => {
+    return type === "project" ? "🔧" : "🚗";
+  };
+
   return (
     <div
       onClick={onClick}
-      style={{
-        padding: "20px 24px",
-        cursor: "pointer",
-        transition: "all 0.2s ease",
-        backgroundColor: isSelected ? "rgba(3, 0, 155, 0.05)" : "white",
-        borderLeft: isSelected ? "4px solid #03009B" : "4px solid transparent",
-        position: "relative",
-      }}
-      onMouseEnter={(e) => {
-        if (!isSelected) {
-          e.currentTarget.style.backgroundColor = "#f9fafb";
-        } else {
-          e.currentTarget.style.backgroundColor = "rgba(3, 0, 155, 0.08)";
-        }
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = isSelected
-          ? "rgba(3, 0, 155, 0.05)"
-          : "white";
-      }}
+      className={`p-6 cursor-pointer transition-all duration-300 relative group ${
+        isSelected
+          ? "bg-gradient-to-r from-[#020079]/5 to-transparent border-l-4 border-[#020079] shadow-md"
+          : "bg-white hover:bg-gray-50 border-l-4 border-transparent hover:border-[#020079]/30"
+      }`}
     >
       {/* Selection indicator */}
       {isSelected && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            right: 0,
-            width: "4px",
-            height: "100%",
-            backgroundColor: "#03009B",
-            borderTopRightRadius: "4px",
-            borderBottomRightRadius: "4px",
-          }}
-        />
+        <div className="absolute top-0 right-0 w-1 h-full bg-[#020079] rounded-l"></div>
       )}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-        }}
-      >
-        <div style={{ flex: 1 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              marginBottom: "8px",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "18px",
-                fontWeight: isSelected ? "700" : "600",
-                color: isSelected ? "#03009B" : "#1f2937",
-                margin: 0,
-                transition: "color 0.2s ease",
-              }}
-            >
-              {service.title}
-            </h3>
-            <span
-              style={{
-                padding: "4px 12px",
-                borderRadius: "20px",
-                fontSize: "12px",
-                fontWeight: "500",
-                backgroundColor: getStatusColor(service.status),
-                color: "white",
-              }}
-            >
-              {getStatusText(service.status)}
-            </span>
+      
+      <div className="flex justify-between items-start gap-6">
+        <div className="flex-1 space-y-3">
+          {/* Header with Icon and Title */}
+          <div className="flex items-start gap-3">
+            <div className={`text-3xl mt-1 transition-transform duration-300 ${
+              isSelected ? "scale-110" : "group-hover:scale-110"
+            }`}>
+              {getTypeIcon(service.type)}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h3 className={`text-xl font-bold transition-colors duration-200 ${
+                  isSelected ? "text-[#020079]" : "text-gray-900 group-hover:text-[#020079]"
+                }`}>
+                  {service.title}
+                </h3>
+                <span className={`px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 ${
+                  getStatusStyle(service.status)
+                }`}>
+                  <span>{getStatusIcon(service.status)}</span>
+                  {getStatusText(service.status)}
+                </span>
+              </div>
+              
+              {/* Vehicle Info */}
+              <div className="flex items-center gap-2 mt-2 text-gray-600">
+                <span className="text-lg">🚙</span>
+                <p className="text-sm font-medium">{service.vehicle}</p>
+              </div>
+            </div>
           </div>
 
-          <p
-            style={{
-              color: "#6b7280",
-              margin: "4px 0",
-              fontSize: "14px",
-            }}
-          >
-            {service.vehicle}
-          </p>
+          {/* Info Cards */}
+          <div className="flex flex-wrap gap-2">
+            {service.assignedTo && (
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#020079]/5 rounded-lg border border-[#020079]/10">
+                <span className="text-sm">👤</span>
+                <span className="text-sm text-gray-700">
+                  <span className="font-medium text-[#020079]">Assigned:</span> {service.assignedTo}
+                </span>
+              </div>
+            )}
 
-          {service.assignedTo && (
-            <p
-              style={{
-                color: "#374151",
-                margin: "4px 0",
-                fontSize: "14px",
-              }}
-            >
-              Assigned to: {service.assignedTo}
-            </p>
-          )}
+            {service.completedBy && (
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-500/5 rounded-lg border border-green-500/10">
+                <span className="text-sm">✓</span>
+                <span className="text-sm text-gray-700">
+                  <span className="font-medium text-green-600">By:</span> {service.completedBy}
+                </span>
+              </div>
+            )}
 
-          {service.completedBy && (
-            <p
-              style={{
-                color: "#374151",
-                margin: "4px 0",
-                fontSize: "14px",
-              }}
-            >
-              Completed by: {service.completedBy}
-            </p>
-          )}
+            {service.team && (
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#020079]/5 rounded-lg border border-[#020079]/10">
+                <span className="text-sm">👥</span>
+                <span className="text-sm text-gray-700">
+                  <span className="font-medium text-[#020079]">Team:</span> {service.team}
+                </span>
+              </div>
+            )}
+          </div>
 
-          {service.team && (
-            <p
-              style={{
-                color: "#374151",
-                margin: "4px 0",
-                fontSize: "14px",
-              }}
-            >
-              Project Team: {service.team}
-            </p>
-          )}
-
+          {/* Completion Info */}
           {service.expectedCompletion && (
-            <p
-              style={{
-                color: service.status === "in-progress" ? "#d97706" : "#059669",
-                margin: "4px 0",
-                fontSize: "14px",
-                fontWeight: "500",
-              }}
-            >
-              Expected completion: {service.expectedCompletion}
-            </p>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-base">📅</span>
+              <span className={service.status === "in-progress" ? "text-amber-600 font-medium" : "text-green-600 font-medium"}>
+                Expected: {service.expectedCompletion}
+              </span>
+            </div>
           )}
 
           {service.completedOn && (
-            <p
-              style={{
-                color: "#059669",
-                margin: "4px 0",
-                fontSize: "14px",
-                fontWeight: "500",
-              }}
-            >
-              Completed on: {service.completedOn}
-            </p>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-base">🎉</span>
+              <span className="text-green-600 font-medium">
+                Completed: {service.completedOn}
+              </span>
+            </div>
           )}
 
+          {/* Progress Bar */}
           {service.progress !== undefined && (
-            <div style={{ marginTop: "12px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "4px",
-                }}
-              >
-                <span style={{ fontSize: "14px", color: "#374151" }}>
-                  Progress
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-700 flex items-center gap-1">
+                  <span>📊</span> Progress
                 </span>
-                <span
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: "600",
-                    color: "#1f2937",
-                  }}
-                >
+                <span className="text-sm font-bold text-[#020079]">
                   {service.progress}%
                 </span>
               </div>
-              <div
-                style={{
-                  width: "100%",
-                  height: "8px",
-                  backgroundColor: "#e5e7eb",
-                  borderRadius: "4px",
-                  overflow: "hidden",
-                }}
-              >
+              <div className="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">
                 <div
-                  style={{
-                    width: `${service.progress}%`,
-                    height: "100%",
-                    backgroundColor: "#03009B",
-                    borderRadius: "4px",
-                    transition: "width 0.3s ease",
-                  }}
+                  className="h-full bg-gradient-to-r from-[#020079] to-[#E6C200] rounded-full transition-all duration-500 ease-out shadow-sm"
+                  style={{ width: `${service.progress}%` }}
                 />
               </div>
             </div>
           )}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <div className="flex flex-col items-end gap-3">
           {service.status === "completed" && (
             <>
               <button
@@ -270,36 +204,9 @@ export default function ServiceCard({
                   e.stopPropagation();
                   setShowReviewModal(true);
                 }}
-                style={{
-                  padding: "8px 16px",
-                  border: "1px solid #03009B",
-                  borderRadius: "6px",
-                  backgroundColor: "white",
-                  color: "#03009B",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  outline: "none",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#03009B";
-                  e.currentTarget.style.color = "white";
-                  e.currentTarget.style.boxShadow =
-                    "0 2px 8px rgba(3, 0, 155, 0.2)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "white";
-                  e.currentTarget.style.color = "#03009B";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-                onMouseDown={(e) => {
-                  e.currentTarget.style.transform = "scale(0.98)";
-                }}
-                onMouseUp={(e) => {
-                  e.currentTarget.style.transform = "scale(1)";
-                }}
+                className="px-5 py-2.5 border-2 border-[#E6C200] rounded-lg bg-white text-[#E6C200] text-sm font-semibold hover:bg-[#E6C200] hover:text-white transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2"
               >
+                <span>⭐</span>
                 Leave Review
               </button>
               <LeaveReviewModal
@@ -313,50 +220,10 @@ export default function ServiceCard({
           )}
           <button
             onClick={onClick}
-            style={{
-              padding: "8px 16px",
-              border: "1px solid #03009B",
-              borderRadius: "6px",
-              backgroundColor: "#03009B",
-              color: "white",
-              fontSize: "14px",
-              fontWeight: "500",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              outline: "none",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#03009B";
-              e.currentTarget.style.borderColor = "#03009B";
-              e.currentTarget.style.boxShadow =
-                "0 4px 12px rgba(3, 0, 155, 0.3)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "#03009B";
-              e.currentTarget.style.borderColor = "#03009B";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-            onMouseDown={(e) => {
-              e.currentTarget.style.backgroundColor = "#03009B";
-              e.currentTarget.style.transform = "scale(0.98)";
-              e.currentTarget.style.opacity = "0.9";
-            }}
-            onMouseUp={(e) => {
-              e.currentTarget.style.backgroundColor = "#03009B";
-              e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.opacity = "1";
-              e.currentTarget.style.boxShadow =
-                "0 4px 12px rgba(3, 0, 155, 0.3)";
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.boxShadow =
-                "0 0 0 3px rgba(3, 0, 155, 0.2)";
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.boxShadow = "none";
-            }}
+            className="px-6 py-2.5 bg-gradient-to-r from-[#020079] to-[#020079]/90 hover:from-[#020079]/90 hover:to-[#020079] text-white rounded-lg text-sm font-semibold transition-all duration-200 hover:shadow-xl hover:scale-105 active:scale-95 flex items-center gap-2"
           >
             View Details
+            <span className="text-lg">→</span>
           </button>
         </div>
       </div>

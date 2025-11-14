@@ -48,6 +48,10 @@ export const postProject = (payload: Record<string, unknown>) =>
 
 export const getProjects = () => apiFetch("/api/projects");
 
+/* Service catalog (public GET) */
+export const getServicesList = () => apiFetch("/api/services");
+export const getServiceById = (id: string | number) => apiFetch(`/api/services/${id}`);
+
 /* Dropdown lists */
 export const getServiceTypes = () => apiFetch("/api/services/types");
 export const getAvailableEmployees = () => apiFetch("/api/employees/available");
