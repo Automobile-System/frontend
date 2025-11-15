@@ -884,23 +884,29 @@ export const fetchFinancialReports = async (
 ): Promise<FinancialReport> => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8080'
+    const url = `${baseUrl}/api/admin/financial-reports?serviceFilter=${serviceFilter}&startDate=${startDate}&endDate=${endDate}`
     
-    const response = await fetch(
-      `${baseUrl}/api/admin/financial-reports?serviceFilter=${serviceFilter}&startDate=${startDate}&endDate=${endDate}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include' // Use cookies for authentication
-      }
-    )
+    console.log('Fetching financial reports from:', url)
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include' // Use cookies for authentication
+    })
+    
+    console.log('Financial reports response status:', response.status)
     
     if (!response.ok) {
-      throw new Error('Failed to fetch financial reports')
+      const errorText = await response.text()
+      console.error('Financial reports error response:', errorText)
+      throw new Error(`Failed to fetch financial reports: ${response.status} ${response.statusText}`)
     }
     
-    return await response.json()
+    const data = await response.json()
+    console.log('Financial reports data received:', data)
+    return data
   } catch (error) {
     console.error('Error fetching financial reports:', error)
     throw error
@@ -1388,6 +1394,64 @@ export const activateManager = async (managerId: string): Promise<{ success: boo
     return await response.json()
   } catch (error) {
     console.error('Error activating manager:', error)
+    throw error
+  }
+}
+
+/**
+ * WORKFORCE: Delete manager
+ * Used in: Workforce Overview Page
+ * Backend: DELETE /api/admin/workforce/managers/:id
+ */
+export const deleteManager = async (managerId: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
+
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/managers/${managerId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include' // Use cookies for authentication
+    })
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to delete manager')
+    }
+    
+    return await response.json()
+  } catch (error) {
+    console.error('Error deleting manager:', error)
+    throw error
+  }
+}
+
+/**
+ * WORKFORCE: Delete employee
+ * Used in: Workforce Overview Page
+ * Backend: DELETE /api/admin/workforce/employees/:id
+ */
+export const deleteEmployee = async (employeeId: string): Promise<{ success: boolean; message: string }> => {
+  try {
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
+
+    const response = await fetch(`${API_BASE_URL}/api/admin/workforce/employees/${employeeId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include' // Use cookies for authentication
+    })
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Failed to delete employee')
+    }
+    
+    return await response.json()
+  } catch (error) {
+    console.error('Error deleting employee:', error)
     throw error
   }
 }

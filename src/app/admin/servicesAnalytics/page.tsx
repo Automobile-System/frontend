@@ -82,6 +82,11 @@ export default function ServicesAnalyticsPage() {
         getDetailedServiceAnalytics(),
         getAllServices()
       ])
+      console.log('Analytics Data:', analyticsData)
+      console.log('Service Summary:', analyticsData?.serviceSummary)
+      console.log('Average Service Cost:', analyticsData?.serviceSummary?.averageCost)
+      console.log('Project Analytics:', analyticsData?.projectAnalytics?.summary)
+      console.log('Average Project Cost:', analyticsData?.projectAnalytics?.summary?.averageCost)
       setAnalytics(analyticsData)
       setServices(servicesData)
     } catch (error) {
@@ -342,17 +347,24 @@ export default function ServicesAnalyticsPage() {
               <CardContent className="py-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    
+                    <DollarSign className="w-10 h-10 text-white/80" />
                     <div>
                       <p className="text-sm font-roboto text-white/80">Average Service Cost</p>
                       <p className="text-3xl font-bebas text-white">
-                        LKR {analytics?.serviceSummary?.averageCost 
-                          ? (analytics.serviceSummary.averageCost * 320).toLocaleString('en-US', { maximumFractionDigits: 0 })
-                          : '0'}
+                        {analytics?.serviceSummary?.averageCost && analytics.serviceSummary.averageCost > 0
+                          ? `LKR ${analytics.serviceSummary.averageCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          : 'No Cost Data'}
                       </p>
                     </div>
                   </div>
-                  
+                  <div className="text-right">
+                    <p className="text-xs font-roboto text-white/60">
+                      {analytics?.serviceSummary?.completed || 0} Completed
+                    </p>
+                    <p className="text-sm font-roboto text-white/80">
+                      {analytics?.serviceSummary?.totalServices || 0} Total Services
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -506,17 +518,24 @@ export default function ServicesAnalyticsPage() {
               <CardContent className="py-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                  
+                    <DollarSign className="w-10 h-10 text-white/80" />
                     <div>
                       <p className="text-sm font-roboto text-white/80">Average Project Cost</p>
                       <p className="text-3xl font-bebas text-white">
-                        LKR {analytics?.projectAnalytics?.summary?.averageCost 
-                          ? (analytics.projectAnalytics.summary.averageCost * 320).toLocaleString('en-US', { maximumFractionDigits: 0 })
-                          : '0'}
+                        {analytics?.projectAnalytics?.summary?.averageCost && analytics.projectAnalytics.summary.averageCost > 0
+                          ? `LKR ${analytics.projectAnalytics.summary.averageCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                          : 'No Cost Data'}
                       </p>
                     </div>
                   </div>
-                  
+                  <div className="text-right">
+                    <p className="text-xs font-roboto text-white/60">
+                      {analytics?.projectAnalytics?.summary?.completed || 0} Completed
+                    </p>
+                    <p className="text-sm font-roboto text-white/80">
+                      {analytics?.projectAnalytics?.summary?.totalProjects || 0} Total Projects
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -613,15 +632,31 @@ export default function ServicesAnalyticsPage() {
                 Task Delays
               </CardTitle>
               <CardDescription className="font-roboto text-[#020079]/70">
-                Tasks on hold or waiting
+                Tasks on hold or waiting for parts
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col items-center justify-center h-[300px]">
-                <div className="text-8xl font-bebas text-orange-600">
-                  {analytics?.taskDelays?.totalDelayed || 0}
+              <div className="flex flex-col items-center justify-center h-[300px] gap-6">
+                <div className="text-center">
+                  <div className="text-7xl font-bebas text-orange-600">
+                    {(analytics?.serviceSummary?.waitingParts || 0) + (analytics?.projectAnalytics?.summary?.waitingParts || 0)}
+                  </div>
+                  <p className="font-roboto text-[#020079]/70 mt-2 text-lg">Total Tasks Waiting for Parts</p>
                 </div>
-                <p className="font-roboto text-[#020079]/70 mt-2 text-lg">Delayed Tasks</p>
+                <div className="flex gap-8 text-center">
+                  <div>
+                    <div className="text-4xl font-bebas text-orange-500">
+                      {analytics?.serviceSummary?.waitingParts || 0}
+                    </div>
+                    <p className="font-roboto text-[#020079]/60 text-sm">Services</p>
+                  </div>
+                  <div>
+                    <div className="text-4xl font-bebas text-orange-500">
+                      {analytics?.projectAnalytics?.summary?.waitingParts || 0}
+                    </div>
+                    <p className="font-roboto text-[#020079]/60 text-sm">Projects</p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
