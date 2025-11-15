@@ -41,12 +41,7 @@ export default function AdminSidebar() {
     
       id: "analytics",
     },
-    {
-      href: "/admin/aiInsights",
-      label: "AI Insights",
-     
-      id: "ai",
-    },
+   
     {
       href: "/admin/customerdetails",
       label: "Customers Overview",
