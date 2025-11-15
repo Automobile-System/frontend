@@ -5,7 +5,7 @@ import AdminDashboardLayout from "@/components/layout/AdminDashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { UserPlus, Edit, Lock, CheckCircle, Loader } from "lucide-react";
+import { UserPlus, Edit, Lock, CheckCircle, Loader, Trash2 } from "lucide-react";
 import {
   fetchWorkforceOverview,
   fetchTopEmployees,
@@ -19,6 +19,8 @@ import {
   freezeEmployee as freezeEmployeeApi,
   activateEmployee as activateEmployeeApi,
   activateManager as activateManagerApi,
+  deleteManager as deleteManagerApi,
+  deleteEmployee as deleteEmployeeApi,
   type WorkforceOverview,
   type TopEmployee,
   type Manager,
@@ -254,6 +256,36 @@ export default function WorkforceOverviewPage() {
         "Failed to activate employee. Please try again."
       );
       console.error("Error activating employee:", error);
+    }
+  };
+
+  const handleDeleteManager = async (managerId: string) => {
+    if (!confirm("Are you sure you want to permanently delete this manager? This action cannot be undone.")) {
+      return;
+    }
+    
+    try {
+      const result = await deleteManagerApi(managerId);
+      showToast.success("Manager Deleted", result.message);
+      await loadAllData(); // Reload all data
+    } catch (error) {
+      showToast.error("Error", "Failed to delete manager. Please try again.");
+      console.error("Error deleting manager:", error);
+    }
+  };
+
+  const handleDeleteEmployee = async (employeeId: string) => {
+    if (!confirm("Are you sure you want to permanently delete this employee? This action cannot be undone.")) {
+      return;
+    }
+    
+    try {
+      const result = await deleteEmployeeApi(employeeId);
+      showToast.success("Employee Deleted", result.message);
+      await loadAllData(); // Reload all data
+    } catch (error) {
+      showToast.error("Error", "Failed to delete employee. Please try again.");
+      console.error("Error deleting employee:", error);
     }
   };
 
@@ -574,6 +606,15 @@ export default function WorkforceOverviewPage() {
                                 Deactivate
                               </Button>
                             )}
+                            <Button
+                              onClick={() => handleDeleteManager(manager.id)}
+                              size="sm"
+                              variant="outline"
+                              className="border-red-300 text-red-600 hover:bg-red-50 font-roboto"
+                            >
+                              <Trash2 className="w-3 h-3 mr-1" />
+                              Delete
+                            </Button>
                           </div>
                         </td>
                       </tr>
@@ -749,6 +790,15 @@ export default function WorkforceOverviewPage() {
                                 Deactivate
                               </Button>
                             )}
+                            <Button
+                              onClick={() => handleDeleteEmployee(employee.id)}
+                              size="sm"
+                              variant="outline"
+                              className="border-red-300 text-red-600 hover:bg-red-50 font-roboto"
+                            >
+                              <Trash2 className="w-3 h-3 mr-1" />
+                              Delete
+                            </Button>
                           </div>
                         </td>
                       </tr>

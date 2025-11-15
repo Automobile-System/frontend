@@ -399,13 +399,13 @@ export default function CustomerDetailsPage() {
                 placeholder="Search by name, email, or phone..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-lg focus:border-[#020079] focus:outline-none font-roboto text-sm"
+                className="w-full pl-10 pr-4 py-2 border-2 text-black border-gray-200 rounded-lg focus:border-[#020079] focus:outline-none font-roboto text-sm"
               />
             </div>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as "all" | "Active" | "Inactive")}
-              className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-[#020079] focus:outline-none font-roboto text-sm"
+              className="px-4 py-2 border-2 text-black border-gray-200 rounded-lg focus:border-[#020079] focus:outline-none font-roboto text-sm"
             >
               <option value="all">All Status</option>
               <option value="Active">Active</option>
@@ -462,26 +462,29 @@ export default function CustomerDetailsPage() {
                         {customer.status === "Active" ? (
                           <button
                             onClick={() => handleDeactivate(customer.id)}
-                            className="p-1 text-orange-600 hover:bg-orange-100 rounded transition-colors"
+                            className="flex items-center gap-1 px-3 py-1.5 text-orange-600 hover:bg-orange-100 rounded transition-colors font-roboto text-sm"
                             title="Deactivate"
                           >
                             <UserX className="w-4 h-4" />
+                            Deactivate
                           </button>
                         ) : (
                           <button
                             onClick={() => handleActivate(customer.id)}
-                            className="p-1 text-green-600 hover:bg-green-100 rounded transition-colors"
+                            className="flex items-center gap-1 px-3 py-1.5 text-green-600 hover:bg-green-100 rounded transition-colors font-roboto text-sm"
                             title="Activate"
                           >
                             <UserCheck className="w-4 h-4" />
+                            Activate
                           </button>
                         )}
                         <button
                           onClick={() => handleDeleteCustomer(customer.id)}
-                          className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
+                          className="flex items-center gap-1 px-3 py-1.5 text-red-600 hover:bg-red-100 rounded transition-colors font-roboto text-sm"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
+                          Delete
                         </button>
                       </div>
                     </td>

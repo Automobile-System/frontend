@@ -177,9 +177,7 @@ export default function AdminDashboardPage() {
               <CardTitle className="text-sm font-roboto font-medium text-[#020079]">
                 Total Customers
               </CardTitle>
-              <div className="p-2 bg-[#020079]/10 rounded-full">
-                <Users className="h-4 w-4 text-[#020079]" />
-              </div>
+            
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bebas text-[#020079]">
@@ -194,9 +192,7 @@ export default function AdminDashboardPage() {
               <CardTitle className="text-sm font-roboto font-medium text-[#020079]">
                 Workforce
               </CardTitle>
-              <div className="p-2 bg-indigo-100 rounded-full">
-                <Briefcase className="h-4 w-4 text-indigo-600" />
-              </div>
+             
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bebas text-[#020079]">
@@ -208,14 +204,12 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="border border-[#FFD700]/30 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-amber-50">
+          <Card className="border border-[#020079]/20 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
             <CardHeader className="pb-3 flex flex-row items-center justify-between space-y-0">
               <CardTitle className="text-sm font-roboto font-medium text-[#020079]">
                 Ongoing Work
               </CardTitle>
-              <div className="p-2 bg-amber-100 rounded-full">
-                <Wrench className="h-4 w-4 text-amber-600" />
-              </div>
+           
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bebas text-[#020079]">
@@ -227,14 +221,12 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="border border-green-200 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-green-50">
+          <Card className="border border-[#020079]/20 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-indigo-50">
             <CardHeader className="pb-3 flex flex-row items-center justify-between space-y-0">
               <CardTitle className="text-sm font-roboto font-medium text-[#020079]">
                 Monthly Revenue
               </CardTitle>
-              <div className="p-2 bg-green-100 rounded-full">
-                <DollarSign className="h-4 w-4 text-green-600" />
-              </div>
+            
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bebas text-[#020079]">
@@ -244,22 +236,7 @@ export default function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="border border-[#020079]/20 hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-purple-50">
-            <CardHeader className="pb-3 flex flex-row items-center justify-between space-y-0">
-              <CardTitle className="text-sm font-roboto font-medium text-[#020079]">
-                Completed Services
-              </CardTitle>
-              <div className="p-2 bg-purple-100 rounded-full">
-                <CheckCircle className="h-4 w-4 text-purple-600" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bebas text-[#020079]">
-                {stats?.kpis?.completedServices || 0}
-              </div>
-              <p className="text-xs font-roboto text-slate-500 mt-1">All-time total</p>
-            </CardContent>
-          </Card>
+         
         </div>
 
         {/* Charts Section */}
@@ -360,26 +337,36 @@ export default function AdminDashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="space-y-4">
-                {stats?.topEmployees?.map((employee, index) => (
-                  <div key={employee.employeeId} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bebas text-white ${
-                        index === 0 ? 'bg-[#FFD700]' : index === 1 ? 'bg-[#C0C0C0]' : index === 2 ? 'bg-[#CD7F32]' : 'bg-[#020079]'
-                      }`}>
-                        {index + 1}
+              {stats?.topEmployees && stats.topEmployees.length > 0 ? (
+                <div className="space-y-4">
+                  {stats.topEmployees.map((employee, index) => (
+                    <div key={employee.employeeId} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bebas text-white ${
+                          index === 0 ? 'bg-[#FFD700]' : index === 1 ? 'bg-[#C0C0C0]' : index === 2 ? 'bg-[#CD7F32]' : 'bg-[#020079]'
+                        }`}>
+                          {index + 1}
+                        </div>
+                        <div>
+                          <p className="font-roboto font-medium text-slate-800">{employee.name}</p>
+                          <p className="text-xs font-roboto text-slate-500">{employee.specialty}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-roboto font-medium text-slate-800">{employee.name}</p>
-                        <p className="text-xs font-roboto text-slate-500">{employee.specialty}</p>
+                      <div className="text-right">
+                        <p className="font-bebas text-xl text-[#020079]">{employee.totalHours}h</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bebas text-xl text-[#020079]">{employee.totalHours}h</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <Clock className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                  <p className="font-roboto text-slate-500 mb-1">No Time Log Data Available</p>
+                  <p className="text-xs font-roboto text-slate-400">
+                    Employees need to track time on tasks to appear here
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
